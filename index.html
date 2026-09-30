@@ -196,7 +196,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .val{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:42px;text-align:right}
 
 /* ---- car mode ---- */
-.car{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:100;background:#050908;color:#f6efdd;
+.car{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;z-index:100;background:#050908;color:#f6efdd;
   display:flex;flex-direction:column;
   padding:calc(56px + env(safe-area-inset-top,0px)) calc(8px + env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px));
   --c-mute:#8f9c96; --c-btn:#141f1c; --c-acc:#e2c07a; --c-edge:rgba(246,239,221,.22)}
@@ -307,6 +307,16 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .cp-name{flex:1;font:700 26px/1.1 var(--f-ui)}
 .cp-name small{display:block;font:500 14px var(--f-ui);color:var(--c-mute);margin-top:3px}
 .cp-ar{font:36px/1 var(--f-ar);color:var(--c-acc)}
+
+
+/* ---- car: bottom corner buttons, no page movement ---- */
+.car{touch-action:none;overscroll-behavior:none}
+.car-pick-list{touch-action:pan-y}
+.car-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex:none;padding-top:4px;opacity:.85}
+.car-cluster{display:flex;gap:8px}
+.pick-edit{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--line)}
+.pick-edit svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 
 /* ---- surah switcher, picker, back-to-top ---- */
 .surah-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:2px 26px 2px 4px;position:relative}
@@ -426,16 +436,23 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   <div class="car-top">
     <button class="cbtn" id="carClose" type="button" aria-label="Close car mode"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button class="t car-surah" id="carSurah" type="button" aria-label="Switch surah"><b><span id="carTitle">Verse 1</span> <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></b><span id="carSub"></span></button>
-    <button class="cbtn" id="carLoop" type="button" aria-label="Loop" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg></button>
-    <button class="cbtn" id="carMem" type="button" aria-label="Mark as memorised"><svg><use href="#i-check"/></svg></button>
-    <button class="cbtn" id="carTheme" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
-    <button class="cbtn" id="carRot" type="button" aria-label="Rotate screen"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 9a9 9 0 0 1 3-4.5M3 9V5.5M3 9h3.5M21 15a9 9 0 0 1-3 4.5M21 15v3.5M21 15h-3.5"/></svg></button>
+    <button class="cbtn" id="carSet" type="button" aria-label="Practice settings"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
   </div>
   <div class="car-main" id="carMain">
     <div class="car-stage" id="carStage"><div class="car-ar" id="carAr"></div><div class="car-meal" id="carMeal"></div></div>
     <button class="car-edge left" id="carPrev" type="button" aria-label="Previous verse"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
     <button class="car-edge right" id="carNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
     <div class="car-pp" id="carPP" aria-hidden="true"><svg><use id="carPlayUse" href="#i-play"/></svg></div>
+  </div>
+  <div class="car-foot">
+    <div class="car-cluster">
+      <button class="cbtn" id="carLoop" type="button" aria-label="Loop" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg></button>
+      <button class="cbtn" id="carMem" type="button" aria-label="Mark as memorised"><svg><use href="#i-check"/></svg></button>
+    </div>
+    <div class="car-cluster">
+      <button class="cbtn" id="carTheme" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
+      <button class="cbtn" id="carRot" type="button" aria-label="Rotate screen"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 9a9 9 0 0 1 3-4.5M3 9V5.5M3 9h3.5M21 15a9 9 0 0 1-3 4.5M21 15v3.5M21 15h-3.5"/></svg></button>
+    </div>
   </div>
   <div class="car-bar"><i id="carProg"></i></div>
   <div class="car-pick" id="carPick" hidden>
@@ -524,6 +541,16 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   </div>
 </dialog>
 
+<!-- edit reciter -->
+<dialog class="sheet" id="recDlg">
+  <form class="sheet-in" id="recForm">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2 id="recTitle">Reciter</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="field"><label class="lbl" for="recName">Reciter's name</label><input class="txtin" id="recName" list="reciterList" autocomplete="off"></div>
+    <button class="btn" type="submit">Save</button>
+  </form>
+</dialog>
+
 <!-- practice settings -->
 <dialog class="sheet" id="practiceDlg">
   <div class="sheet-in">
@@ -579,6 +606,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
     <div class="field"><label class="lbl" for="addSurah">Surah</label><select id="addSurah"></select></div>
     <div class="field"><label class="lbl" for="addIntro">Recording starts with</label>
       <select id="addIntro"><option value="2">Isti'adha, then Bismillah</option><option value="1">Bismillah</option><option value="0">The first verse</option></select></div>
+    <div class="field"><label class="lbl" for="addReciter">Reciter</label><input class="txtin" id="addReciter" list="reciterList" placeholder="e.g. Yasser Al-Dosari" autocomplete="off"><datalist id="reciterList"></datalist></div>
     <div class="field"><label class="lbl" for="addFile">Audio file</label><input type="file" id="addFile"></div>
     <p class="hint" id="addMsg"></p>
     <button class="btn" type="submit" id="addGo">Add surah</button>
@@ -772,7 +800,8 @@ function renderPicker(){
     groups[j].sort((a,b)=>a.num-b.num).forEach(s=>{
       const n=COUNTS[s.num-1],k=ls.get("hifz-mem-"+s.num,[]).length;
       const li=document.createElement("li");li.className="pick-row"+(s===CUR?" cur":"");
-      li.innerHTML=`<span class="pick-num"><svg><use href="#star"/></svg><span>${s.num}</span></span><div class="pick-mid"><b></b><span></span><div class="pick-mini"><i style="width:${k/n*100}%"></i></div></div><span class="pick-ar"></span>`;
+      li.innerHTML=`<span class="pick-num"><svg><use href="#star"/></svg><span>${s.num}</span></span><div class="pick-mid"><b></b><span></span><div class="pick-mini"><i style="width:${k/n*100}%"></i></div></div><span class="pick-ar"></span><button class="pick-edit" type="button" aria-label="Change reciter"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>`;
+      li.querySelector(".pick-edit").onclick=ev=>{ev.stopPropagation();editReciter(s);};
       li.querySelector("b").textContent=dispName(s);li.querySelector(".pick-mid span").textContent=`${n} verses · ${k} memorised · ${s.reciter}`;
       li.querySelector(".pick-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
       li.onclick=()=>{$("pickDlg").close();selectSurah(s.id);};g.querySelector("ul").appendChild(li);
@@ -1031,9 +1060,18 @@ let ppTimer=null;
 function carPP(flash){const el=$("carPP");clearTimeout(ppTimer);
   if(!P.playing){el.classList.add("show");return;}
   if(flash){el.classList.add("show");ppTimer=setTimeout(()=>el.classList.remove("show"),700);}else el.classList.remove("show");}
+// iPhone Home Screen apps can report a too-small height after the keyboard closes; use the real screen size there.
+const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+function viewSize(){let W=innerWidth,H=innerHeight;
+  if(standalone()&&screen.width&&screen.height){const port=W<=H||Math.abs(screen.width-W)<2;const sw=Math.min(screen.width,screen.height),sh=Math.max(screen.width,screen.height);
+    if(W<H||port){W=sw;H=sh;}else{W=sh;H=sw;}}
+  return[W,H];}
+function unstick(){const y=scrollY;scrollTo(0,y+1);scrollTo(0,y);}
+document.addEventListener("focusout",e=>{if(e.target.matches("input,textarea,select"))setTimeout(unstick,80);});
+if(window.visualViewport)visualViewport.addEventListener("resize",()=>{if(!document.activeElement||!document.activeElement.matches("input,textarea"))setTimeout(unstick,80);});
 function carLayout(){
   const car=$("car");if(car.hidden)return;
-  const rot=!!S.carRot,W=innerWidth,H=innerHeight;
+  const rot=!!S.carRot,[W,H]=viewSize();
   car.classList.toggle("rot",rot);
   if(rot){car.style.width=H+"px";car.style.height=W+"px";}else{car.style.width="";car.style.height="";}
   const land=rot?H>W:W>H;car.classList.toggle("land",land);
@@ -1049,12 +1087,12 @@ function fitCar(){
   ar.style.fontSize=Math.floor(lo)+"px";
 }
 function openCar(){
-  if(!CUR)return;$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.body.style.overflow="hidden";
+  if(!CUR)return;unstick();$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.documentElement.classList.add("lock");
   carLayout();renderCar();wake();
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
-  $("car").hidden=true;$("carPick").hidden=true;document.body.style.overflow="";try{WL&&WL.release();}catch(e){}WL=null;
+  $("car").hidden=true;$("carPick").hidden=true;document.documentElement.classList.remove("lock");try{WL&&WL.release();}catch(e){}WL=null;
   try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
@@ -1073,6 +1111,8 @@ function renderCarPick(){
     b.querySelector(".cp-name").append(nm,sm);b.querySelector(".cp-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
     b.onclick=()=>{$("carPick").hidden=true;unlock();if(s!==CUR){selectSurah(s.id);}play();};box.appendChild(b);});
 }
+$("car").addEventListener("touchmove",e=>{if(!e.target.closest(".car-pick-list"))e.preventDefault();},{passive:false});
+$("carSet").onclick=()=>openSheet("practiceDlg");
 $("carSurah").onclick=e=>{e.stopPropagation();renderCarPick();$("carPick").hidden=false;};
 $("carPickClose").onclick=()=>{$("carPick").hidden=true;};
 $("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
@@ -1291,7 +1331,7 @@ $("removeBtn").onclick=async()=>{
 
 // ---------- adding a surah from the phone ----------
 for(let i=1;i<=114;i++)$("addSurah").add(new Option(`${i} · ${NAMES[i-1]}`,i));$("addSurah").value="89";
-function openAdd(){$("addMsg").textContent="";$("addFile").value="";$("addGo").disabled=false;openSheet("addDlg");}
+function openAdd(){$("addMsg").textContent="";$("addFile").value="";$("addGo").disabled=false;fillReciterList();$("addReciter").value=ls.get("hifz-lastReciter","");openSheet("addDlg");}
 $("emptyAdd").onclick=openAdd;
 $("addForm").addEventListener("submit",async e=>{
   e.preventDefault();const f=$("addFile").files[0];
@@ -1306,7 +1346,8 @@ $("addForm").addEventListener("submit",async e=>{
     const K=KNOWN.find(k=>k.num===num&&Math.abs(ab.duration-k.dur)<1.0);
     const B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introN);
     const id="u-"+num+"-"+Date.now().toString(36);
-    const now=Date.now(),rec={id,num,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:now,updated:now,type:f.type||"audio/mpeg"};
+    const recName=$("addReciter").value.trim()||(K?K.reciter:"Your recording");if($("addReciter").value.trim())ls.set("hifz-lastReciter",recName);
+    const now=Date.now(),rec={id,num,reciter:recName,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:now,updated:now,type:f.type||"audio/mpeg"};
     await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);scheduleSync(1000);
     if(K)status("Recording recognised","Verse cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few verses to check the cuts. Use “Fix verse timings” for any that are off.");
@@ -1334,7 +1375,7 @@ function autoSplit(ab,K){
 function fromRecord(r){
   const K=r.known?KNOWN.find(k=>k.num===r.num):null,I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
   const intro=r.introN===2?I:r.introN===1?[I[1]]:[];
-  return{id:r.id,num:r.num,reciter:K?K.reciter:"Your recording",src:URL.createObjectURL(r.blob),blob:r.blob,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
+  return{id:r.id,num:r.num,reciter:r.reciter||(K?K.reciter:"Your recording"),src:URL.createObjectURL(r.blob),blob:r.blob,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
     B:r.B.slice(),B0:r.B0.slice(),added:r.added,updated:r.updated||r.added,type:r.type||(r.blob&&r.blob.type)||"audio/mpeg",juz:juzOf(r.num,1)};
 }
 
@@ -1344,7 +1385,7 @@ function fromRecord(r){
 const SY={cfg:ls.get("hifz-sync",null),sha:null,busy:false,again:false,timer:null,last:ls.get("hifz-sync-last",0),err:""};
 const tomb=()=>ls.get("hifz-deleted",{});
 const memU=num=>ls.get("hifz-memu-"+num,0);
-function recOf(s){return{id:s.id,num:s.num,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
+function recOf(s){return{id:s.id,num:s.num,reciter:s.reciter,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
 function saveLocal(s){return idb.put(recOf(s));}
 function touch(s){s.updated=Date.now();}
 function scheduleSync(ms){if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setTimeout(syncNow,ms??2500);syncBadge("pending");}
@@ -1398,14 +1439,14 @@ async function syncNow(){
       // 2) merge surahs (newest change wins)
       const out={};
       for(const s of LIB){const r=remote.surahs[s.id];
-        if(r&&r.updated>(s.updated||s.added)){s.B=r.B.slice();s.B0=(r.B0||r.B).slice();s.updated=r.updated;await saveLocal(s);changedLocal=true;if(s===CUR){P.key="";renderTimes();}}
-        out[s.id]={num:s.num,introN:s.intro.length,known:!!s.known,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||s.blob.type||"audio/mpeg",file:r&&r.file};
+        if(r&&r.updated>(s.updated||s.added)){s.B=r.B.slice();s.B0=(r.B0||r.B).slice();s.updated=r.updated;if(r.reciter)s.reciter=r.reciter;await saveLocal(s);changedLocal=true;if(s===CUR){P.key="";renderTimes();}}
+        out[s.id]={num:s.num,reciter:s.reciter,introN:s.intro.length,known:!!s.known,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||s.blob.type||"audio/mpeg",file:r&&r.file};
       }
       for(const[id,r]of Object.entries(remote.surahs)){
         if(out[id]||(del[id]&&del[id]>=r.updated))continue;
         syncBadge("busy",`Downloading ${NAMES[r.num-1]}…`);
         const blob=await downloadAudio(r);
-        const rec={id,num:r.num,introN:r.introN,known:r.known,blob,B:r.B,B0:r.B0||r.B,added:r.added,updated:r.updated,type:r.type};
+        const rec={id,num:r.num,reciter:r.reciter,introN:r.introN,known:r.known,blob,B:r.B,B0:r.B0||r.B,added:r.added,updated:r.updated,type:r.type};
         await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(r.num);if(tt)mergeText(ns,tt);LIB.push(ns);out[id]=Object.assign({},r);changedLocal=true;
       }
       // 3) upload recordings that are only on this device
@@ -1456,6 +1497,14 @@ $("syncOff").onclick=()=>{const b=$("syncOff");if(!b.dataset.arm){b.dataset.arm=
 addEventListener("online",()=>scheduleSync(500));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.cfg&&Date.now()-SY.last>20000)scheduleSync(300);});
 setInterval(()=>{if(SY.cfg&&!SY.busy&&$("syncBtn").dataset.state==="ok")syncBadge("ok");},30000);
+
+// ---------- reciter names ----------
+function reciterNames(){const set=new Set(LIB.map(s=>s.reciter).filter(r=>r&&r!=="Your recording"));const l=ls.get("hifz-lastReciter","");if(l)set.add(l);return[...set];}
+function fillReciterList(){const dl=$("reciterList");dl.innerHTML="";reciterNames().forEach(n=>{const o=document.createElement("option");o.value=n;dl.appendChild(o);});}
+let REC_S=null;
+function editReciter(s){REC_S=s;fillReciterList();$("recTitle").textContent=`Reciter · ${dispName(s)}`;$("recName").value=s.reciter==="Your recording"?"":s.reciter;openSheet("recDlg");setTimeout(()=>$("recName").focus(),200);}
+$("recForm").addEventListener("submit",e=>{e.preventDefault();const s=REC_S;if(!s)return;const v=$("recName").value.trim()||"Your recording";
+  s.reciter=v;if(v!=="Your recording")ls.set("hifz-lastReciter",v);touch(s);saveLocal(s);scheduleSync();$("recDlg").close();renderPicker();if(s===CUR)renderHeader();});
 
 // ---------- boot ----------
 async function boot(){
