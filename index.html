@@ -226,11 +226,11 @@ dialog form{display:flex;flex-direction:column;gap:12px}
 <dialog id="addDlg">
   <form id="addForm" method="dialog">
     <h2>Add a surah</h2>
-    <p class="hint">Choose the MP3 of one full surah from your Files. The app finds the pauses between verses and splits it; you can fix any cut afterwards. The audio stays on this device.</p>
+    <p class="hint">Choose the MP3 of one full surah. On iPhone, tap the file box, then “Choose File” and pick it from Files. The app finds the pauses between verses and splits it; you can fix any cut afterwards. The audio stays on this device.</p>
     <div class="field"><label class="lbl" for="addSurah">Surah</label><select id="addSurah"></select></div>
     <div class="field"><label class="lbl" for="addIntro">Recording starts with</label>
       <select id="addIntro"><option value="2">Isti'adha, then Bismillah</option><option value="1">Bismillah</option><option value="0">The first verse</option></select></div>
-    <div class="field"><label class="lbl" for="addFile">Audio file</label><input type="file" id="addFile" accept="audio/*"></div>
+    <div class="field"><label class="lbl" for="addFile">Audio file</label><input type="file" id="addFile"></div>
     <p class="hint" id="addMsg"></p>
     <div class="drow"><button class="btn-s" value="cancel" type="button" id="addCancel">Cancel</button><button class="btn-s primary" type="submit" id="addGo">Split and add</button></div>
   </form>
@@ -570,6 +570,7 @@ $("addCancel").onclick=()=>$("addDlg").close();
 $("addForm").addEventListener("submit",async e=>{
   e.preventDefault();const f=$("addFile").files[0];
   if(!f){$("addMsg").textContent="Choose an audio file first.";return;}
+  if(!/^audio\//.test(f.type)&&!/\.(mp3|m4a|aac|wav|mp4|ogg|opus|flac)$/i.test(f.name)){$("addMsg").textContent="That file isn't audio. Choose the surah's MP3 (or M4A) file.";return;}
   const num=+$("addSurah").value,introN=+$("addIntro").value;
   $("addGo").disabled=true;$("addMsg").textContent="Listening for the pauses between verses…";
   try{
