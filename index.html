@@ -53,7 +53,7 @@ svg{display:block}
 .appbar.scrolled{border-bottom-color:var(--line)}
 .appbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1;min-width:0}
-.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:22px/1 var(--f-ar);padding-top:4px}
+.brand-mark{flex:none;width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:22px/1 var(--f-ar);padding-top:4px}
 .iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink);background:var(--surface);border:1px solid var(--line)}
 .iconbtn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .iconbtn .aa{font:600 15px/1 var(--f-ui);letter-spacing:-.02em}
@@ -196,40 +196,64 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .val{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:42px;text-align:right}
 
 /* ---- car mode ---- */
-.car{position:fixed;inset:0;z-index:100;background:#050908;color:#f6efdd;
-  padding:calc(10px + env(safe-area-inset-top,0px)) calc(14px + env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) calc(14px + env(safe-area-inset-left,0px));
-  --c-mute:#8f9c96; --c-btn:#152320; --c-acc:#e2c07a}
-.car.light{background:#fbf9f4;color:#101815;--c-mute:#66736e;--c-btn:#ebe7dc;--c-acc:#8a6320}
-.car-top{display:flex;align-items:center;gap:10px}
+.car{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:100;background:#050908;color:#f6efdd;
+  display:flex;flex-direction:column;
+  padding:calc(8px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px));
+  --c-mute:#8f9c96; --c-btn:#141f1c; --c-acc:#e2c07a; --c-edge:rgba(246,239,221,.22)}
+.car.light{background:#fbf9f4;color:#101815;--c-mute:#66736e;--c-btn:#ebe7dc;--c-acc:#8a6320;--c-edge:rgba(16,24,21,.2)}
+.car.rot{transform-origin:top left;transform:rotate(90deg) translateY(-100%);
+  padding:10px calc(10px + env(safe-area-inset-bottom,0px)) 10px calc(12px + env(safe-area-inset-top,0px))}
+.car-top{display:flex;align-items:center;gap:8px;flex:none}
 .car-top .t{flex:1;min-width:0;text-align:center}
-.car-top b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.car-top span{display:block;font-size:13px;color:var(--c-mute)}
-.cbtn{flex:none;width:48px;height:48px;border-radius:14px;background:var(--c-btn);color:inherit;display:grid;place-items:center;font-weight:700;font-size:15px}
-.cbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.car-top b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.car-top span{display:block;font-size:12px;color:var(--c-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbtn{flex:none;width:44px;height:44px;border-radius:13px;background:var(--c-btn);color:inherit;display:grid;place-items:center}
+.cbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cbtn.on{background:#23845f;color:#fff}
-.car-stage{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:10px;padding:10px 4px;overflow:hidden;touch-action:pan-y}
+.car-main{position:relative;flex:1;min-height:0;display:flex}
+.car-stage{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:8px 46px;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none}
 .car-ar{font-family:var(--f-ar);direction:rtl;text-align:center;line-height:1.75;-webkit-text-stroke:var(--ar-stroke) currentColor;overflow-wrap:break-word}
-.car-meal{text-align:center;color:var(--c-mute);font-size:18px;line-height:1.45}
-.car-bar{height:4px;border-radius:9px;background:var(--c-btn);overflow:hidden;margin:6px 0 12px}
+.car-meal{text-align:center;color:var(--c-mute);line-height:1.45}
+.car-edge{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:120px;display:grid;place-items:center;color:var(--c-edge)}
+.car-edge svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.car-edge.left{left:-4px}.car-edge.right{right:-4px}
+.car-pp{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(0,0,0,.35);color:#fff;pointer-events:none;opacity:0;transition:opacity .35s}
+.car.light .car-pp{background:rgba(0,0,0,.28)}
+.car-pp svg{width:44px;height:44px;fill:currentColor}
+.car-pp.show{opacity:.85}
+.car-bar{flex:none;height:4px;border-radius:9px;background:var(--c-btn);overflow:hidden;margin-top:6px}
 .car-bar i{display:block;height:100%;width:0;background:var(--c-acc)}
-.car-ctrl{display:flex;align-items:center;justify-content:center;gap:18px}
-.car-ctrl .cb{width:78px;height:78px;border-radius:24px;background:var(--c-btn);color:inherit;display:grid;place-items:center}
-.car-ctrl .cb svg{width:34px;height:34px;fill:currentColor}
-.car-ctrl .cb.big{width:104px;height:104px;border-radius:32px;background:var(--c-acc);color:#1a1307}
-.car-ctrl .cb.big svg{width:44px;height:44px}
-.car-note{font-size:12px;color:var(--c-mute);text-align:center;margin-top:10px}
-.car{display:grid;grid-template-rows:auto minmax(0,1fr) auto;grid-template-columns:minmax(0,1fr);grid-template-areas:"top" "main" "side"}
-.car-top{grid-area:top}.car-main{grid-area:main;display:flex;flex-direction:column;min-height:0}.car-side{grid-area:side}
-@media (orientation:landscape) and (max-height:560px){
-  .car{grid-template-rows:auto minmax(0,1fr);grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"top top" "main side";column-gap:16px}
-  .car-side{display:flex;flex-direction:column;justify-content:center}
-  .car-ctrl{flex-direction:column;gap:10px}
-  .car-ctrl .cb{width:62px;height:62px;border-radius:20px}
-  .car-ctrl .cb.big{width:80px;height:80px;border-radius:26px}
-  .car-note{display:none}
-  .car-top .cbtn{width:42px;height:42px}
-  .car-bar{margin:4px 0 0}
-}
+.car.land .car-top b{font-size:15px}
+.car.land .cbtn{width:40px;height:40px}
+.car.land .car-stage{padding:4px 52px}
+
+/* ---- surah switcher, picker, back-to-top ---- */
+.surah-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:2px 26px 2px 4px;position:relative}
+.surah-pick .sp-name{font-weight:700;font-size:17px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.surah-pick .sp-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.surah-pick svg{position:absolute;right:2px;top:50%;margin-top:-10px;width:20px;height:20px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.juz-badge{display:inline-block;margin-top:8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.14)}
+.juz-badge:empty{display:none}
+.pick-list{display:flex;flex-direction:column;gap:14px}
+.pick-juz h3{margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pick-juz ul{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.pick-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-top:1px solid var(--line);cursor:pointer}
+.pick-row:first-child{border-top:0}
+.pick-row.cur{background:var(--now)}
+.pick-num{flex:none;width:34px;height:34px;position:relative;display:grid;place-items:center;color:var(--brass)}
+.pick-num svg{position:absolute;inset:0;width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:1.4}
+.pick-num span{position:relative;font:700 12px var(--f-ui);color:var(--ink)}
+.pick-mid{flex:1;min-width:0}
+.pick-mid b{display:block;font-size:15px}
+.pick-mid span{display:block;font-size:12px;color:var(--muted)}
+.pick-mini{height:4px;border-radius:9px;background:var(--sunk);margin-top:5px;overflow:hidden;max-width:160px}
+.pick-mini i{display:block;height:100%;background:var(--ok)}
+.pick-ar{flex:none;font:26px/1 var(--f-ar);color:var(--brass)}
+.offline{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:8px}
+.fab{position:fixed;right:16px;bottom:calc(104px + env(safe-area-inset-bottom,0px));z-index:29;width:46px;height:46px;border-radius:50%;background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 20px rgba(0,0,0,.15);display:grid;place-items:center;color:var(--ink)}
+.fab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media (min-width:800px){.fab{right:calc(50% - 380px)}}
 @media (max-width:400px){.surah-ar{font-size:38px}.surah-name{font-size:23px}.seg button{font-size:13px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
@@ -248,14 +272,14 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 
 <header class="appbar" id="appbar">
   <div class="appbar-in">
-    <div class="brand"><span class="brand-mark">ح</span>Hifz</div>
+    <span class="brand-mark" aria-hidden="true">ح</span>
+    <button class="surah-pick" id="surahBtn" type="button" aria-label="Choose surah"><span class="sp-name" id="spName">Hifz</span><span class="sp-sub" id="spSub">Add a surah</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></button>
     <button class="iconbtn" id="textBtn" type="button" aria-label="Text size and weight"><span class="aa">Aa</span></button>
     <button class="iconbtn" id="themeBtn" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
   </div>
 </header>
 
 <main class="wrap">
-  <div class="library" id="library" aria-label="Your surahs"></div>
 
   <section class="card empty" id="empty" hidden>
     <div class="ar-big">حفظ</div>
@@ -267,7 +291,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   <section class="surah needs-surah" aria-label="Surah">
     <svg class="pattern" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="pt" width="40" height="40" patternUnits="userSpaceOnUse"><g fill="none" stroke="#fff" stroke-width=".8"><rect x="10" y="10" width="20" height="20"/><rect x="10" y="10" width="20" height="20" transform="rotate(45 20 20)"/></g></pattern></defs><rect width="200" height="200" fill="url(#pt)"/></svg>
     <div class="surah-top">
-      <div><h1 class="surah-name" id="sTitle">Al-Fajr</h1><div class="surah-meta" id="sMeta"></div></div>
+      <div><h1 class="surah-name" id="sTitle">Al-Fajr</h1><div class="surah-meta" id="sMeta"></div><span class="juz-badge" id="sJuz"></span></div>
       <div class="surah-ar" id="sAr"></div>
     </div>
     <div class="memo"><div class="memo-bar"><i id="memoBar"></i></div><span class="memo-txt" id="memoTxt">0 / 0 memorised</span></div>
@@ -313,6 +337,8 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   </div>
 </main>
 
+<button class="fab needs-surah" id="topBtn" type="button" aria-label="Back to top" hidden><svg viewBox="0 0 24 24"><path d="M6 14l6-6 6 6"/></svg></button>
+
 <div class="dock needs-surah">
   <div class="dock-in">
     <div class="prog"><i id="prog"></i></div>
@@ -331,23 +357,35 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 <div class="car" id="car" hidden>
   <div class="car-top">
     <button class="cbtn" id="carClose" type="button" aria-label="Close car mode"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="t"><b id="carTitle">Al-Fajr · Verse 1</b><span id="carSub"></span></div>
+    <div class="t"><b id="carTitle">Verse 1</b><span id="carSub"></span></div>
     <button class="cbtn" id="carMem" type="button" aria-label="Mark as memorised"><svg><use href="#i-check"/></svg></button>
     <button class="cbtn" id="carTheme" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
+    <button class="cbtn" id="carRot" type="button" aria-label="Rotate screen"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 9a9 9 0 0 1 3-4.5M3 9V5.5M3 9h3.5M21 15a9 9 0 0 1-3 4.5M21 15v3.5M21 15h-3.5"/></svg></button>
   </div>
-  <div class="car-main">
+  <div class="car-main" id="carMain">
     <div class="car-stage" id="carStage"><div class="car-ar" id="carAr"></div><div class="car-meal" id="carMeal"></div></div>
-    <div class="car-bar"><i id="carProg"></i></div>
+    <button class="car-edge left" id="carPrev" type="button" aria-label="Previous verse"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="car-edge right" id="carNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    <div class="car-pp" id="carPP" aria-hidden="true"><svg><use id="carPlayUse" href="#i-play"/></svg></div>
   </div>
-  <div class="car-side">
-    <div class="car-ctrl">
-      <button class="cb" id="carPrev" type="button" aria-label="Previous verse"><svg><use href="#i-prev"/></svg></button>
-      <button class="cb big" id="carPlay" type="button" aria-label="Play"><svg><use id="carPlayUse" href="#i-play"/></svg></button>
-      <button class="cb" id="carNext" type="button" aria-label="Next verse"><svg><use href="#i-next"/></svg></button>
-    </div>
-    <div class="car-note">Swipe left or right to change verse. Read only when stopped.</div>
-  </div>
+  <div class="car-bar"><i id="carProg"></i></div>
 </div>
+
+<!-- surah picker -->
+<dialog class="sheet" id="pickDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Your surahs</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <button class="btn" id="pickAdd" type="button">+ Add a surah recording</button>
+    <div id="pickList" class="pick-list"></div>
+    <div class="offline">
+      <b>Arabic text and meal</b>
+      <p class="hint">Texts come from herkul.app. A surah's text is saved on your phone the first time it opens. Save Juz 29–30 now to have them ready offline.</p>
+      <div class="erow"><button class="btn small secondary" id="dl2930" type="button">Save Juz 29–30</button><button class="btn small secondary" id="dlAll" type="button">Save all 114</button></div>
+      <p class="hint" id="dlMsg"></p>
+    </div>
+  </div>
+</dialog>
 
 <!-- practice settings -->
 <dialog class="sheet" id="practiceDlg">
@@ -368,7 +406,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
       <div class="seg" id="order"><button type="button" data-v="seq">In order</button><button type="button" data-v="build">Build up 1, 1–2, 1–3…</button></div>
     </div>
     <div class="field" id="mealBox"><label class="lbl" for="meal">Turkish meal</label>
-      <select id="meal"><option value="hamdi">Elmalılı Hamdi Yazır</option><option value="diyanet">Diyanet İşleri</option><option value="off">Hide meal</option></select></div>
+      <select id="meal"></select></div>
     <div class="toggles">
       <label class="tg"><span>Skip memorised verses<small>Play only the verses you haven't ticked</small></span><span class="sw"><input type="checkbox" id="skipMem"><i></i></span></label>
       <label class="tg"><span>Isti'adha &amp; Bismillah first<small>When starting from verse 1</small></span><span class="sw"><input type="checkbox" id="intro"><i></i></span></label>
@@ -424,16 +462,18 @@ const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.par
 
 // ---------- IndexedDB for surahs the user adds ----------
 const idb={
-  open(){return new Promise((res,rej)=>{try{const r=indexedDB.open("hifz",1);r.onupgradeneeded=()=>r.result.createObjectStore("surahs",{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});},
+  open(){return new Promise((res,rej)=>{try{const r=indexedDB.open("hifz",2);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains("surahs"))d.createObjectStore("surahs",{keyPath:"id"});if(!d.objectStoreNames.contains("texts"))d.createObjectStore("texts",{keyPath:"num"});};r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);}catch(e){rej(e);}});},
   async all(){try{const db=await this.open();return await new Promise((res,rej)=>{const q=db.transaction("surahs").objectStore("surahs").getAll();q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error);});}catch(e){return [];}},
   async put(v){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction("surahs","readwrite");t.objectStore("surahs").put(v);t.oncomplete=res;t.onerror=()=>rej(t.error);});},
-  async del(id){try{const db=await this.open();await new Promise(res=>{const t=db.transaction("surahs","readwrite");t.objectStore("surahs").delete(id);t.oncomplete=res;t.onerror=res;});}catch(e){}}
+  async del(id){try{const db=await this.open();await new Promise(res=>{const t=db.transaction("surahs","readwrite");t.objectStore("surahs").delete(id);t.oncomplete=res;t.onerror=res;});}catch(e){}},
+  async getText(num){try{const db=await this.open();return await new Promise(res=>{const q=db.transaction("texts").objectStore("texts").get(num);q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);});}catch(e){return null;}},
+  async putText(v){try{const db=await this.open();await new Promise(res=>{const t=db.transaction("texts","readwrite");t.objectStore("texts").put(v);t.oncomplete=res;t.onerror=res;});}catch(e){}}
 };
 
 // A surah = {id, num, reciter, src, intro:[{en,ar}], text:[..]|null, meal:{key:{name,v}}|null, B:[boundaries], B0:[original]}
 // Parts = intro parts, then verses; part i spans B[i]..B[i+1].
 let LIB=[], CUR=null;
-const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"hamdi",theme:null,arSize:30,arWeight:1,skipMem:false,carLight:false},ls.get("hifz-s",{}));
+const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:1,skipMem:false,carLight:false,carRot:false},ls.get("hifz-s",{}));
 const save=()=>ls.set("hifz-s",S);
 const nIntro=s=>s.intro.length;
 const itemSpan=(s,i)=>[s.B[i],s.B[i+1]];
@@ -536,10 +576,82 @@ function updateMemo(){
 }
 
 // ---------- rendering ----------
-function renderLibrary(){
-  const el=$("library");el.innerHTML="";
-  LIB.forEach(s=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=`${s.num} · ${NAMES[s.num-1]}`;b.setAttribute("aria-pressed",s===CUR);b.onclick=()=>selectSurah(s.id);el.appendChild(b);});
-  const a=document.createElement("button");a.type="button";a.className="chip add";a.textContent="+ Add surah";a.onclick=openAdd;el.appendChild(a);
+// ---------- juz ----------
+const JUZ_START=[[1,1],[2,142],[2,253],[3,93],[4,24],[4,148],[5,82],[6,111],[7,88],[8,41],[9,93],[11,6],[12,53],[15,1],[17,1],[18,75],[21,1],[23,1],[25,21],[27,56],[29,46],[33,31],[36,28],[39,32],[41,47],[46,1],[51,31],[58,1],[67,1],[78,1]];
+function juzOf(su,a){let j=1;JUZ_START.forEach(([s,v],i)=>{if(su>s||(su===s&&a>=v))j=i+1;});return j;}
+const surahJuz=s=>s.juz||juzOf(s.num,1);
+const dispName=s=>s.trName||NAMES[s.num-1];
+
+// ---------- Arabic text and meal from herkul.app (saved on the phone after the first load) ----------
+const TXT={};
+async function fetchText(num){
+  const r=await fetch(`https://herkul.app/kuran-i-kerim/${num}`,{mode:"cors"});
+  if(!r.ok)throw new Error("http "+r.status);
+  const h=await r.text(),m=h.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+  if(!m)throw new Error("no data");
+  const d=JSON.parse(m[1]).props.pageProps.surah;
+  if(!d||!d.verses||d.verses.length!==COUNTS[num-1])throw new Error("verse count");
+  const tr=x=>(x.translation&&x.translation)||{};
+  const rec={num,ar:d.name||"",tr:d.translation||"",v:d.verses.map(x=>({t:x.text,j:x.juzNumber,sy:tr(x)["suat-yildirim"]||"",au:tr(x)["ali-unal"]||""}))};
+  await idb.putText(rec);TXT[num]=rec;return rec;
+}
+async function getText(num,allowFetch=true){
+  if(TXT[num])return TXT[num];
+  const c=await idb.getText(num);if(c){TXT[num]=c;return c;}
+  if(!allowFetch)return null;
+  try{return await fetchText(num);}catch(e){return null;}
+}
+function mergeText(s,t){
+  s.text=t.v.map(x=>x.t);if(t.ar)s.arName="سورة "+t.ar;if(t.tr)s.trName=t.tr;s.juz=t.v[0].j||s.juz;
+  const m=Object.assign({},s.meal||{});
+  if(t.v.some(x=>x.sy))m.sy={name:"Suat Yıldırım",v:t.v.map(x=>x.sy)};
+  if(t.v.some(x=>x.au))m.au={name:"Ali Ünal",v:t.v.map(x=>x.au)};
+  s.meal=m;s.hasHerkul=true;
+}
+async function ensureText(s){
+  if(s.hasHerkul)return;
+  if(!s.text)$("listNote").textContent="Loading Arabic text from herkul.app…";
+  const t=await getText(s.num);
+  if(t){mergeText(s,t);if(s===CUR){renderHeader();fillMeal();renderVerses();syncUI();if(P.cur!=null)highlight(P.cur);}}
+  else if(s===CUR&&!s.text)$("listNote").textContent="Connect to the internet once to load the Arabic text";
+  renderPicker();
+}
+function fillMeal(){
+  const el=$("meal");el.innerHTML="";const keys=CUR.meal?Object.keys(CUR.meal):[];
+  const order=["sy","au","hamdi","diyanet"].filter(k=>keys.includes(k));
+  order.forEach(k=>el.add(new Option(CUR.meal[k].name+(k==="sy"||k==="au"?" (herkul)":""),k)));
+  el.add(new Option("Hide meal","off"));
+  if(S.meal!=="off"&&!order.includes(S.meal))S.meal=order[0]||"off";
+  el.value=S.meal;
+}
+
+// ---------- surah picker ----------
+function renderPicker(){
+  const box=$("pickList");if(!box)return;box.innerHTML="";
+  const groups={};LIB.forEach(s=>{const j=surahJuz(s);(groups[j]=groups[j]||[]).push(s);});
+  Object.keys(groups).map(Number).sort((a,b)=>a-b).forEach(j=>{
+    const g=document.createElement("div");g.className="pick-juz";g.innerHTML=`<h3>Juz ${j}</h3><ul></ul>`;
+    groups[j].sort((a,b)=>a.num-b.num).forEach(s=>{
+      const n=COUNTS[s.num-1],k=ls.get("hifz-mem-"+s.num,[]).length;
+      const li=document.createElement("li");li.className="pick-row"+(s===CUR?" cur":"");
+      li.innerHTML=`<span class="pick-num"><svg><use href="#star"/></svg><span>${s.num}</span></span><div class="pick-mid"><b></b><span></span><div class="pick-mini"><i style="width:${k/n*100}%"></i></div></div><span class="pick-ar"></span>`;
+      li.querySelector("b").textContent=dispName(s);li.querySelector(".pick-mid span").textContent=`${n} verses · ${k} memorised · ${s.reciter}`;
+      li.querySelector(".pick-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
+      li.onclick=()=>{$("pickDlg").close();selectSurah(s.id);};g.querySelector("ul").appendChild(li);
+    });
+    box.appendChild(g);
+  });
+  if(CUR){$("spName").textContent=`${CUR.num} · ${dispName(CUR)}`;$("spSub").textContent=`Juz ${surahJuz(CUR)} · ${LIB.length} surah${LIB.length>1?"s":""} added`;}
+  else{$("spName").textContent="Hifz";$("spSub").textContent="Add a surah to begin";}
+}
+async function saveTexts(from,to){
+  const msg=$("dlMsg");let ok=0,fail=0;const nums=[];for(let n=from;n<=to;n++)nums.push(n);
+  $("dl2930").disabled=$("dlAll").disabled=true;
+  const work=async()=>{while(nums.length){const n=nums.shift();const t=await getText(n);t?ok++:fail++;msg.textContent=`Saving… ${ok+fail} of ${to-from+1}`;}};
+  await Promise.all([work(),work(),work()]);
+  msg.textContent=fail?`Saved ${ok} surahs. ${fail} could not be loaded; check the internet connection and try again.`:`Saved ${ok} surahs. They now work offline.`;
+  $("dl2930").disabled=$("dlAll").disabled=false;
+  LIB.forEach(s=>{if(!s.hasHerkul&&TXT[s.num])mergeText(s,TXT[s.num]);});if(CUR){renderHeader();fillMeal();renderVerses();syncUI();}renderPicker();
 }
 function mealFor(s,v){
   if(!s.meal||S.meal==="off"||!s.meal[S.meal])return null;
@@ -597,10 +709,10 @@ function syncUI(){
   clip.defaultPlaybackRate=+S.speed;clip.playbackRate=+S.speed;markRange();practiceSummary();
 }
 function renderHeader(){
-  const s=CUR;$("sTitle").textContent=NAMES[s.num-1];$("sAr").textContent=s.arName||"";
-  $("sMeta").textContent=`Surah ${s.num} · ${COUNTS[s.num-1]} verses · ${s.reciter}`;
+  const s=CUR;$("sTitle").textContent=dispName(s);$("sAr").textContent=s.arName||"";
+  $("sMeta").textContent=`Surah ${s.num} · ${COUNTS[s.num-1]} verses · ${s.reciter}`;$("sJuz").textContent=`Juz ${surahJuz(s)}`;
   $("removeBtn").textContent="Remove this surah";delete $("removeBtn").dataset.arm;
-  $("credit").textContent=s.text?"Audio: your file, on this phone · Arabic: herkul.org · Meal: quran.com":"Audio: your file, on this phone";
+  $("credit").textContent=s.text?"Audio: your file, on this phone · Arabic text"+(s.hasHerkul?" and meal":"")+": herkul.app":"Audio: your file, on this phone";
 }
 
 // ---------- playlist ----------
@@ -618,7 +730,7 @@ const P={list:[],i:0,loop:1,playing:false,timer:null,watch:null,key:"",span:null
 const listKey=()=>[CUR.id,S.scope,S.from,S.to,S.vrep,S.order,S.intro,S.skipMem].join("|");
 function ensureList(){const k=listKey();if(k!==P.key||!P.list.length){P.list=buildList();P.i=0;P.loop=1;P.key=k;P.started=false;}}
 
-function setIcon(p){const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");$("carPlay").setAttribute("aria-label",p?"Pause":"Play");}
+function setIcon(p){const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");if(!$("car").hidden)carPP(true);}
 function status(t,s,err){$("nowT").textContent=t;const sp=$("nowS");sp.textContent=s;sp.className=err?"err":"";if(!$("car").hidden)$("carSub").textContent=s;}
 function highlight(item){
   document.querySelectorAll(".v.now").forEach(e=>e.classList.remove("now"));
@@ -662,6 +774,7 @@ function stop(done){
   P.i=0;P.loop=1;setIcon(false);$("prog").style.width=0;$("carProg").style.width=0;
   if($("car").hidden)highlight(null);
   status(done?"Finished":"Ready",done?"Press play to go again":"Press play to start");
+  if(done&&$("car").hidden){const[a]=range(),li=document.querySelector(`.v[data-v="${a}"]`);if(a===1||!li)scrollTo({top:0,behavior:"smooth"});else li.scrollIntoView({block:"center",behavior:"smooth"});}
 }
 function jump(dir){
   unlock();ensureList();if(!P.list.length)return;
@@ -682,25 +795,37 @@ function carItem(){if(P.cur!=null)return P.cur;ensureList();return P.list[P.i]?P
 function renderCar(){
   if($("car").hidden||!CUR)return;
   const item=carItem(),ni=nIntro(CUR),isIntro=item<ni,v=item-ni+1;
-  $("carTitle").textContent=isIntro?CUR.intro[item].en:`${NAMES[CUR.num-1]} · ${v} / ${COUNTS[CUR.num-1]}`;
+  $("carTitle").textContent=isIntro?CUR.intro[item].en:`${dispName(CUR)} · ${v} / ${COUNTS[CUR.num-1]}`;
   $("carSub").textContent=$("nowS").textContent;
   $("carAr").textContent=isIntro?(CUR.intro[item].ar||CUR.intro[item].en):(verseText(CUR,v)||`Verse ${v}`);
   const m=isIntro?null:mealFor(CUR,v);$("carMeal").textContent=m?m.t:"";$("carMeal").hidden=!m;
-  $("carMem").hidden=isIntro;renderCarMem();fitCar();
+  $("carMem").hidden=isIntro;renderCarMem();carPP();fitCar();
 }
 function renderCarMem(){if($("car").hidden)return;const item=carItem(),v=item-nIntro(CUR)+1;$("carMem").classList.toggle("on",MEM.has(v));}
+let ppTimer=null;
+function carPP(flash){const el=$("carPP");clearTimeout(ppTimer);
+  if(!P.playing){el.classList.add("show");return;}
+  if(flash){el.classList.add("show");ppTimer=setTimeout(()=>el.classList.remove("show"),700);}else el.classList.remove("show");}
+function carLayout(){
+  const car=$("car");if(car.hidden)return;
+  const rot=!!S.carRot,W=innerWidth,H=innerHeight;
+  car.classList.toggle("rot",rot);
+  if(rot){car.style.width=H+"px";car.style.height=W+"px";}else{car.style.width="";car.style.height="";}
+  const land=rot?H>W:W>H;car.classList.toggle("land",land);
+  fitCar();
+}
 function fitCar(){
   const st=$("carStage"),ar=$("carAr"),me=$("carMeal");
-  const H=st.clientHeight-20,W=st.clientWidth;if(H<=0)return;
-  me.style.fontSize=Math.max(15,Math.min(22,W/28))+"px";
+  const cs=getComputedStyle(st),H=st.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-6,W=st.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);if(H<=0||W<=0)return;
+  me.style.fontSize=Math.max(14,Math.min(22,W/26))+"px";
   const mh=me.hidden?0:me.offsetHeight+10;
-  let lo=16,hi=Math.min(220,H);
+  let lo=16,hi=Math.min(240,H);
   for(let k=0;k<14;k++){const mid=(lo+hi)/2;ar.style.fontSize=mid+"px";(ar.offsetHeight+mh<=H&&ar.scrollWidth<=W+1)?lo=mid:hi=mid;}
   ar.style.fontSize=Math.floor(lo)+"px";
 }
 function openCar(){
   if(!CUR)return;$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.body.style.overflow="hidden";
-  renderCar();wake();
+  carLayout();renderCar();wake();
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
@@ -709,16 +834,19 @@ function closeCar(){
   if(P.cur!=null)highlight(P.cur);
 }
 $("carBtn").onclick=openCar;$("carClose").onclick=closeCar;
-$("carPlay").onclick=()=>P.playing?pause():play();
-$("carNext").onclick=()=>jump(1);$("carPrev").onclick=()=>jump(-1);
+$("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
 $("carMem").onclick=()=>{const v=carItem()-nIntro(CUR)+1;if(v>=1)toggleMem(v);};
 $("carTheme").onclick=()=>{S.carLight=!S.carLight;save();$("car").classList.toggle("light",S.carLight);};
-(()=>{let x0=null,y0=null;const st=$("carStage");
-  st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
-  st.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5)jump(dx<0?1:-1);},{passive:true});
+$("carRot").onclick=()=>{S.carRot=!S.carRot;save();carLayout();};
+(()=>{let x0=null,y0=null,swiped=false;const st=$("carMain");
+  st.addEventListener("touchstart",e=>{if(e.target.closest(".car-edge"))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;swiped=false;},{passive:true});
+  st.addEventListener("touchend",e=>{if(x0==null)return;let dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
+    if(S.carRot){const t=dx;dx=dy;dy=-t;}
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){swiped=true;jump(dx<0?1:-1);}},{passive:true});
+  $("carStage").addEventListener("click",()=>{if(swiped){swiped=false;return;}P.playing?pause():play();carPP(true);});
 })();
-addEventListener("resize",()=>{if(!$("car").hidden)fitCar();});
-addEventListener("orientationchange",()=>setTimeout(()=>{if(!$("car").hidden)fitCar();},300));
+addEventListener("resize",()=>{if(!$("car").hidden)carLayout();});
+addEventListener("orientationchange",()=>setTimeout(()=>{if(!$("car").hidden)carLayout();},300));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!$("car").hidden)wake();});
 
 // ---------- sheets ----------
@@ -728,6 +856,11 @@ document.querySelectorAll("dialog.sheet").forEach(d=>{
   d.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>d.close());
 });
 $("practiceBtn").onclick=()=>openSheet("practiceDlg");
+$("surahBtn").onclick=()=>{renderPicker();openSheet("pickDlg");};
+$("pickAdd").onclick=()=>{$("pickDlg").close();openAdd();};
+$("dl2930").onclick=()=>saveTexts(67,114);
+$("dlAll").onclick=()=>saveTexts(1,114);
+$("topBtn").onclick=()=>scrollTo({top:0,behavior:"smooth"});
 $("textBtn").onclick=()=>{$("textPreview").textContent=CUR&&CUR.text?CUR.text.slice(0,2).join(" "):"وَالْفَجْرِۙ وَلَيَالٍ عَشْرٍۙ";openSheet("textDlg");};
 $("arSize").oninput=e=>{S.arSize=+e.target.value;save();applyText();};
 document.querySelectorAll("#arWeight button").forEach(b=>b.onclick=()=>{S.arWeight=+b.dataset.v;save();applyText();});
@@ -735,15 +868,15 @@ document.querySelectorAll("#arWeight button").forEach(b=>b.onclick=()=>{S.arWeig
 // ---------- selecting / settings ----------
 function showEmpty(on){
   $("empty").hidden=!on;document.querySelectorAll(".needs-surah").forEach(el=>el.hidden=on);
-  if(on){CUR=null;renderLibrary();}
+  if(on){CUR=null;renderPicker();}
 }
 function selectSurah(id){
   if(!LIB.length)return showEmpty(true);
   showEmpty(false);
   const s=LIB.find(x=>x.id===id)||LIB[0];stop();CUR=s;S.cur=s.id;
   if(S._last!==s.id){S.scope="surah";S.from=1;S.to=COUNTS[s.num-1];S._last=s.id;}
-  save();loadMem();fillSelectors();renderHeader();renderLibrary();renderVerses();syncUI();updateMemo();closeEditor();
-  setTimeout(()=>decodeSurah(s),50);
+  save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();scrollTo(0,0);
+  setTimeout(()=>decodeSurah(s),50);ensureText(s);
 }
 function changed(reset){save();syncUI();if(reset&&P.key!==listKey()){const was=P.playing;stop();if(was)play();}}
 $("from").onchange=e=>{S.from=+e.target.value;if(S.to<S.from)S.to=S.from;changed(true);};
@@ -772,7 +905,7 @@ $("verses").addEventListener("click",e=>{
 $("playBtn").onclick=()=>P.playing?pause():play();
 $("nextBtn").onclick=()=>jump(1);
 $("prevBtn").onclick=()=>jump(-1);
-addEventListener("scroll",()=>$("appbar").classList.toggle("scrolled",scrollY>8),{passive:true});
+addEventListener("scroll",()=>{$("appbar").classList.toggle("scrolled",scrollY>8);$("topBtn").hidden=!CUR||scrollY<innerHeight*1.2;},{passive:true});
 document.addEventListener("keydown",e=>{
   if(e.target.matches("select,input,textarea")||document.querySelector("dialog[open]"))return;
   if(TAP.on&&(e.code==="Space"||e.code==="Enter")){e.preventDefault();tapMark();return;}
@@ -846,7 +979,7 @@ $("addForm").addEventListener("submit",async e=>{
     const B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introN);
     const id="u-"+num+"-"+Date.now().toString(36);
     const rec={id,num,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:Date.now()};
-    await idb.put(rec);LIB.push(fromRecord(rec));$("addDlg").close();S._last=null;selectSurah(id);
+    await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);
     if(K)status("Recording recognised","Verse cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few verses to check the cuts. Use “Fix verse timings” for any that are off.");
   }catch(err){$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah.";$("addGo").disabled=false;}
@@ -874,13 +1007,14 @@ function fromRecord(r){
   const K=r.known?KNOWN.find(k=>k.num===r.num):null,I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
   const intro=r.introN===2?I:r.introN===1?[I[1]]:[];
   return{id:r.id,num:r.num,reciter:K?K.reciter:"Your recording",src:URL.createObjectURL(r.blob),blob:r.blob,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
-    B:r.B.slice(),B0:r.B0.slice(),added:r.added};
+    B:r.B.slice(),B0:r.B0.slice(),added:r.added,juz:juzOf(r.num,1)};
 }
 
 // ---------- boot ----------
 async function boot(){
   applyTheme();applyText();
   const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
+  for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
   if(!LIB.length)return showEmpty(true);
   S._last=S.cur;selectSurah(S.cur);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
