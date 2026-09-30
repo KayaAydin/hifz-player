@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Hifz">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f4d45">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Figtree:wght@400;500;600;700&display=swap">
@@ -198,21 +198,22 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 /* ---- car mode ---- */
 .car{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:100;background:#050908;color:#f6efdd;
   display:flex;flex-direction:column;
-  padding:calc(8px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px));
+  padding:calc(56px + env(safe-area-inset-top,0px)) calc(8px + env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px));
   --c-mute:#8f9c96; --c-btn:#141f1c; --c-acc:#e2c07a; --c-edge:rgba(246,239,221,.22)}
 .car.light{background:#fbf9f4;color:#101815;--c-mute:#66736e;--c-btn:#ebe7dc;--c-acc:#8a6320;--c-edge:rgba(16,24,21,.2)}
 .car.rot{transform-origin:top left;transform:rotate(90deg) translateY(-100%);
-  padding:10px calc(10px + env(safe-area-inset-bottom,0px)) 10px calc(12px + env(safe-area-inset-top,0px))}
-.car-top{display:flex;align-items:center;gap:8px;flex:none}
+  padding:56px calc(10px + env(safe-area-inset-bottom,0px)) 8px calc(12px + env(safe-area-inset-top,0px))}
+.car.rot .car-top{padding:8px calc(10px + env(safe-area-inset-bottom,0px)) 6px calc(12px + env(safe-area-inset-top,0px))}
+.car-top{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:calc(6px + env(safe-area-inset-top,0px)) calc(10px + env(safe-area-inset-right,0px)) 6px calc(10px + env(safe-area-inset-left,0px));opacity:.8}
 .car-top .t{flex:1;min-width:0;text-align:center}
 .car-top b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .car-top span{display:block;font-size:12px;color:var(--c-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cbtn{flex:none;width:44px;height:44px;border-radius:13px;background:var(--c-btn);color:inherit;display:grid;place-items:center}
+.cbtn{flex:none;width:40px;height:40px;border-radius:12px;background:var(--c-btn);color:inherit;display:grid;place-items:center}
 .cbtn svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cbtn.on{background:#23845f;color:#fff}
 .car-main{position:relative;flex:1;min-height:0;display:flex}
 .car-stage{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:8px 46px;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none}
-.car-ar{font-family:var(--f-ar);direction:rtl;text-align:center;line-height:1.75;-webkit-text-stroke:var(--ar-stroke) currentColor;overflow-wrap:break-word}
+.car-ar{font-family:var(--f-ar);direction:rtl;text-align:center;line-height:1.75;-webkit-text-stroke:var(--ar-stroke) currentColor}
 .car-meal{text-align:center;color:var(--c-mute);line-height:1.45}
 .car-edge{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:120px;display:grid;place-items:center;color:var(--c-edge)}
 .car-edge svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
@@ -222,11 +223,54 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .car.light .car-pp{background:rgba(0,0,0,.28)}
 .car-pp svg{width:44px;height:44px;fill:currentColor}
 .car-pp.show{opacity:.85}
-.car-bar{flex:none;height:4px;border-radius:9px;background:var(--c-btn);overflow:hidden;margin-top:6px}
+.car-bar{flex:none;height:3px;border-radius:9px;background:var(--c-btn);overflow:hidden;margin-top:4px}
 .car-bar i{display:block;height:100%;width:0;background:var(--c-acc)}
 .car.land .car-top b{font-size:15px}
-.car.land .cbtn{width:40px;height:40px}
+.car.land .cbtn{width:36px;height:36px}
+.car.land{padding-top:calc(46px + env(safe-area-inset-top,0px))}
 .car.land .car-stage{padding:4px 52px}
+
+
+/* ---- status bar backdrop (Home Screen app draws under the status bar) ---- */
+.sb{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:#0f4d45;z-index:25}
+:root[data-theme="dark"] .sb{background:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sb{background:var(--bg)}}
+
+/* ---- timing fixer ---- */
+.fix{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;flex-direction:column;
+  padding:calc(8px + env(safe-area-inset-top,0px)) calc(12px + env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) calc(12px + env(safe-area-inset-left,0px))}
+.fix-top{display:flex;align-items:center;gap:10px;flex:none;padding-bottom:8px}
+.fix-top .t{flex:1;min-width:0;text-align:center}
+.fix-top b{display:block;font-size:16px}
+.fix-top span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fix-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.fix-left{flex:1;min-height:120px;display:flex}
+.fix-nav{flex:1;display:flex;align-items:stretch;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden}
+.navb{flex:none;width:40px;display:grid;place-items:center;color:var(--muted)}
+.navb:disabled{opacity:.25}
+.navb svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.fix-verse{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px 0;cursor:pointer;overflow:hidden}
+.fix-ar{font-family:var(--f-ar);direction:rtl;text-align:center;line-height:1.7;-webkit-text-stroke:var(--ar-stroke) currentColor}
+.fix-meal{text-align:center;font-size:13px;color:var(--muted);line-height:1.4}
+.fix-right{flex:none;display:flex;flex-direction:column;gap:10px}
+.wave-wrap{position:relative;height:118px;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}
+#fixWave{display:block;width:100%;height:100%;touch-action:none;cursor:pointer}
+.wave-msg{position:absolute;inset:0;display:grid;place-items:center;font-size:13px;color:var(--muted);text-align:center;padding:10px;pointer-events:none}
+.fix-times{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;padding-inline:2px}
+.fix-times b{color:var(--ink)}
+.fix-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fix-col{display:flex;flex-direction:column;gap:6px}
+.nud{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.nud .step{min-height:38px;font-size:14px}
+.fix-play{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:6px}
+.fix-play .btn{padding:8px 6px;font-size:13px}
+@media (orientation:landscape) and (max-height:560px){
+  .fix-body{flex-direction:row}
+  .fix-left{flex:1.1;min-height:0}
+  .fix-right{flex:1;min-width:0;overflow:auto}
+  .wave-wrap{height:96px}
+  .fix .hint{display:none}
+}
 
 /* ---- surah switcher, picker, back-to-top ---- */
 .surah-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:2px 26px 2px 4px;position:relative}
@@ -259,6 +303,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 </style>
 </head>
 <body>
+<div class="sb" aria-hidden="true"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="star" viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="2"/><rect x="8" y="8" width="24" height="24" rx="2" transform="rotate(45 20 20)"/><circle cx="20" cy="20" r="10.5"/></symbol>
@@ -314,19 +359,6 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
     </button>
   </section>
 
-  <div class="editor" id="editor" hidden>
-    <h3 id="edTitle">Fix verse timings</h3>
-    <p class="hint">Tap a verse in the list, then move its start or end until it cuts cleanly. Changes are saved on this phone.</p>
-    <div class="erow"><span class="lbl">Start</span><button class="step" data-ed="s,-0.5" type="button">−0.5</button><button class="step" data-ed="s,-0.1" type="button">−0.1</button><span class="pill" id="edS">–</span><button class="step" data-ed="s,0.1" type="button">+0.1</button><button class="step" data-ed="s,0.5" type="button">+0.5</button></div>
-    <div class="erow"><span class="lbl">End</span><button class="step" data-ed="e,-0.5" type="button">−0.5</button><button class="step" data-ed="e,-0.1" type="button">−0.1</button><span class="pill" id="edE">–</span><button class="step" data-ed="e,0.1" type="button">+0.1</button><button class="step" data-ed="e,0.5" type="button">+0.5</button></div>
-    <div class="erow">
-      <button class="btn small" id="edPlay" type="button">Play this verse</button>
-      <button class="btn small secondary" id="edTap" type="button">Re-mark by tapping</button>
-      <button class="btn small danger" id="edReset" type="button">Reset</button>
-      <button class="btn small secondary" id="edDone" type="button">Done</button>
-    </div>
-  </div>
-
   <div class="list-head needs-surah"><h2>Verses</h2><span class="credit" id="listNote"></span></div>
   <ul class="verses needs-surah" id="verses"></ul>
 
@@ -348,7 +380,6 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
       <button class="rb play" id="playBtn" type="button" aria-label="Play"><svg><use id="playUse" href="#i-play"/></svg></button>
       <button class="rb" id="nextBtn" type="button" aria-label="Next verse"><svg><use href="#i-next"/></svg></button>
       <button class="rb carbtn" id="carBtn" type="button" aria-label="Car mode"><svg viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M4 16h16v2.5H4zM5 11h14"/><circle cx="7.5" cy="13.5" r=".6"/><circle cx="16.5" cy="13.5" r=".6"/></svg></button>
-      <button class="rb mark" id="markBtn" type="button" hidden>Next ▸</button>
     </div>
   </div>
 </div>
@@ -369,6 +400,44 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
     <div class="car-pp" id="carPP" aria-hidden="true"><svg><use id="carPlayUse" href="#i-play"/></svg></div>
   </div>
   <div class="car-bar"><i id="carProg"></i></div>
+</div>
+
+<!-- timing fixer -->
+<div class="fix" id="fix" hidden>
+  <div class="fix-top">
+    <button class="btn small" id="fixDone" type="button">Done</button>
+    <div class="t"><b>Fix timing</b><span id="fixTitle"></span></div>
+    <button class="btn small danger" id="fixReset" type="button">Reset</button>
+  </div>
+  <div class="fix-body">
+    <div class="fix-left">
+      <div class="fix-nav">
+        <button class="navb" id="fixPrev" type="button" aria-label="Previous verse"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="fix-verse" id="fixVerse"><div class="fix-ar" id="fixAr"></div><div class="fix-meal" id="fixMeal"></div></div>
+        <button class="navb" id="fixNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div class="fix-right">
+      <div class="wave-wrap"><canvas id="fixWave"></canvas><div class="wave-msg" id="fixWaveMsg"></div></div>
+      <div class="fix-times"><span>Start <b id="fixS">0:00.0</b></span><span id="fixLen">0.0 s</span><span>End <b id="fixE">0:00.0</b></span></div>
+      <div class="fix-grid">
+        <div class="fix-col">
+          <div class="nud"><button class="step" data-nudge="s,-0.1" type="button">−0.1</button><button class="step" data-nudge="s,0.1" type="button">+0.1</button></div>
+          <button class="btn small secondary" id="fixSHere" type="button">Start here</button>
+        </div>
+        <div class="fix-col">
+          <div class="nud"><button class="step" data-nudge="e,-0.1" type="button">−0.1</button><button class="step" data-nudge="e,0.1" type="button">+0.1</button></div>
+          <button class="btn small secondary" id="fixEHere" type="button">End here</button>
+        </div>
+      </div>
+      <div class="fix-play">
+        <button class="btn small secondary" id="fixBefore" type="button">From 2 s before</button>
+        <button class="btn small" id="fixPlay" type="button">Play verse</button>
+        <button class="btn small secondary" id="fixAfter" type="button">Past the end</button>
+      </div>
+      <p class="hint" id="fixHint">Drag the S and E handles, or tap the waveform to listen from any point and press “Start here” / “End here” at the right moment. Swipe the verse to move to the next one.</p>
+    </div>
+  </div>
 </div>
 
 <!-- surah picker -->
@@ -820,7 +889,7 @@ function fitCar(){
   me.style.fontSize=Math.max(14,Math.min(22,W/26))+"px";
   const mh=me.hidden?0:me.offsetHeight+10;
   let lo=16,hi=Math.min(240,H);
-  for(let k=0;k<14;k++){const mid=(lo+hi)/2;ar.style.fontSize=mid+"px";(ar.offsetHeight+mh<=H&&ar.scrollWidth<=W+1)?lo=mid:hi=mid;}
+  for(let k=0;k<14;k++){const mid=(lo+hi)/2;ar.style.fontSize=mid+"px";(ar.offsetHeight+mh<=H&&ar.scrollWidth<=ar.clientWidth+1)?lo=mid:hi=mid;}
   ar.style.fontSize=Math.floor(lo)+"px";
 }
 function openCar(){
@@ -898,7 +967,6 @@ $("verses").addEventListener("click",e=>{
   const li=e.target.closest(".v");if(!li)return;
   if(e.target.closest(".mem")){toggleMem(+li.dataset.v);return;}
   const item=+li.dataset.item;unlock();
-  if(EDIT.on){EDIT.item=item;renderEditor();highlight(item);return;}
   if(S.hide&&!li.classList.contains("intro")){li.classList.add("peek");setTimeout(()=>li.classList.remove("peek"),4000);}
   if(!startAtItem(item)&&li.dataset.v){const v=+li.dataset.v;S.scope="verse";S.from=v;S.to=v;changed(false);stop();play();}
 });
@@ -908,58 +976,145 @@ $("prevBtn").onclick=()=>jump(-1);
 addEventListener("scroll",()=>{$("appbar").classList.toggle("scrolled",scrollY>8);$("topBtn").hidden=!CUR||scrollY<innerHeight*1.2;},{passive:true});
 document.addEventListener("keydown",e=>{
   if(e.target.matches("select,input,textarea")||document.querySelector("dialog[open]"))return;
-  if(TAP.on&&(e.code==="Space"||e.code==="Enter")){e.preventDefault();tapMark();return;}
+  if(FIX.on)return;
   if(e.code==="Space"){e.preventDefault();P.playing?pause():play();}
   if(e.code==="ArrowRight")jump(1);if(e.code==="ArrowLeft")jump(-1);if(e.code==="Escape"&&!$("car").hidden)closeCar();
 });
 if("mediaSession" in navigator){try{navigator.mediaSession.setActionHandler("play",play);navigator.mediaSession.setActionHandler("pause",pause);navigator.mediaSession.setActionHandler("nexttrack",()=>jump(1));navigator.mediaSession.setActionHandler("previoustrack",()=>jump(-1));}catch(e){}}
 
-// ---------- timing editor ----------
-const EDIT={on:false,item:null};
+// ---------- timing fixer (full-screen window) ----------
+const TAP={on:false};
 function persistB(){idb.put({id:CUR.id,num:CUR.num,introN:CUR.intro.length,known:CUR.known,blob:CUR.blob,B:CUR.B,B0:CUR.B0,added:CUR.added});P.key="";renderTimes();}
-function openEditor(){stop();EDIT.on=true;EDIT.item=EDIT.item??nIntro(CUR);$("editor").hidden=false;$("verses").classList.add("editing");$("editBtn").hidden=true;renderEditor();highlight(EDIT.item);$("editor").scrollIntoView({block:"nearest",behavior:"smooth"});}
-function closeEditor(){EDIT.on=false;$("editor").hidden=true;$("verses").classList.remove("editing");$("editBtn").hidden=false;endTap();highlight(null);}
 function itemName(i){return i<nIntro(CUR)?CUR.intro[i].en:`Verse ${i-nIntro(CUR)+1}`;}
-function renderEditor(){const i=EDIT.item,[a,b]=itemSpan(CUR,i);$("edTitle").textContent=`Fix timing · ${itemName(i)}`;$("edS").textContent=fmt(a);$("edE").textContent=fmt(b);}
-async function preview(a,b){const my=++TOK;const url=await clipURL(CUR,a,b);if(my!==TOK||!url)return;P.mode="clip";clip.onended=null;clip.src=url;clip.playbackRate=1;clip.play().catch(()=>{});}
-document.querySelectorAll("[data-ed]").forEach(btn=>btn.onclick=()=>{
-  unlock();const[w,d]=btn.dataset.ed.split(","),i=EDIT.item,k=w==="s"?i:i+1,B=CUR.B;
-  const lo=k>0?B[k-1]+0.2:0,hi=k<B.length-1?B[k+1]-0.2:B[k]+5;
-  B[k]=Math.round(Math.min(hi,Math.max(lo,B[k]+(+d)))*100)/100;persistB();renderEditor();
-  const[a,b]=itemSpan(CUR,i);w==="s"?preview(a,Math.min(b,a+2.5)):preview(Math.max(a,b-2.5),b);
-});
-$("edPlay").onclick=()=>{unlock();const[a,b]=itemSpan(CUR,EDIT.item);status(itemName(EDIT.item),"Previewing");highlight(EDIT.item);preview(a,b);};
-$("edReset").onclick=()=>{CUR.B=CUR.B0.slice();persistB();renderEditor();status("Timings reset","Back to the original cuts");};
-$("edDone").onclick=closeEditor;
-$("editBtn").onclick=openEditor;
+const FIX={on:false,item:0,win:[0,1],off:0,url:null,stopAt:null,raf:0,drag:null,cursor:null,total:0,moved:false};
+const fixA=new Audio();fixA.preload="auto";fixA.setAttribute("playsinline","");
+const nItems=()=>CUR.B.length-1;
+function closeEditor(){closeFix();}
+async function openFix(item){
+  if(!CUR)return;stop();FIX.on=true;FIX.item=Math.max(0,Math.min(nItems()-1,item??nIntro(CUR)));
+  $("fix").hidden=false;document.body.style.overflow="hidden";
+  $("fixWaveMsg").textContent="Loading the waveform…";$("fixWaveMsg").hidden=false;
+  const buf=await decodeSurah(CUR);
+  FIX.total=buf?buf.duration:CUR.B[CUR.B.length-1]+5;
+  $("fixWaveMsg").hidden=!!buf;if(!buf)$("fixWaveMsg").textContent="The waveform isn't available for very long recordings, but the buttons still work.";
+  fixRender(true);
+}
+function closeFix(){
+  if(!FIX.on)return;FIX.on=false;fixStop();$("fix").hidden=true;document.body.style.overflow="";
+  if(FIX.moved){FIX.moved=false;status("Timings saved","Play a verse to hear the new cuts");}
+}
+function fixWindow(){
+  const[a,b]=itemSpan(CUR,FIX.item),pad=Math.max(2.5,(b-a)*.35);
+  FIX.win=[Math.max(0,a-pad),Math.min(FIX.total,b+pad)];
+  const buf=ENG.buf[CUR.id];
+  if(FIX.url){URL.revokeObjectURL(FIX.url);FIX.url=null;}
+  if(buf){FIX.url=URL.createObjectURL(wavBlob(buf,FIX.win[0],FIX.win[1]));fixA.src=FIX.url;FIX.off=FIX.win[0];}
+  else{if(fixA.getAttribute("src")!==CUR.src)fixA.src=CUR.src;FIX.off=0;}
+}
+function fixRender(newWindow){
+  const i=FIX.item,ni=nIntro(CUR),isIntro=i<ni,v=i-ni+1;
+  $("fixTitle").textContent=`${dispName(CUR)} · ${isIntro?CUR.intro[i].en:`Verse ${v} of ${COUNTS[CUR.num-1]}`}`;
+  $("fixAr").textContent=isIntro?(CUR.intro[i].ar||CUR.intro[i].en):(verseText(CUR,v)||`Verse ${v}`);
+  const m=isIntro?null:mealFor(CUR,v);$("fixMeal").textContent=m?m.t:"";$("fixMeal").hidden=!m;
+  $("fixPrev").disabled=i===0;$("fixNext").disabled=i>=nItems()-1;
+  if(newWindow)fixWindow();
+  fixTimes();fixFit();drawWave();
+}
+function fixTimes(){const[a,b]=itemSpan(CUR,FIX.item);$("fixS").textContent=fmt(a);$("fixE").textContent=fmt(b);$("fixLen").textContent=(b-a).toFixed(1)+" s";}
+function fixFit(){
+  const box=$("fixVerse"),ar=$("fixAr"),me=$("fixMeal");
+  const H=box.clientHeight-16;if(H<=0)return;
+  const mh=me.hidden?0:me.offsetHeight+6;let lo=16,hi=Math.min(110,H);
+  for(let k=0;k<12;k++){const mid=(lo+hi)/2;ar.style.fontSize=mid+"px";(ar.offsetHeight+mh<=H&&ar.scrollWidth<=ar.clientWidth+1)?lo=mid:hi=mid;}
+  ar.style.fontSize=Math.floor(lo)+"px";
+}
+// Move boundary k to time t; neighbours are pushed along so every part keeps at least 0.3 s.
+function setBoundary(k,t){
+  const B=CUR.B,gap=.3,n=B.length-1;
+  t=Math.max(0,Math.min(FIX.total,t));B[k]=Math.round(t*100)/100;
+  for(let j=k+1;j<=n;j++)if(B[j]<B[j-1]+gap)B[j]=Math.round((B[j-1]+gap)*100)/100;
+  if(B[n]>FIX.total){B[n]=Math.round(FIX.total*100)/100;for(let j=n-1;j>=0;j--)if(B[j]>B[j+1]-gap)B[j]=Math.round((B[j+1]-gap)*100)/100;}
+  for(let j=k-1;j>=0;j--)if(B[j]>B[j+1]-gap)B[j]=Math.round(Math.max(0,B[j+1]-gap)*100)/100;
+  FIX.moved=true;
+}
+function commit(){persistB();const[a,b]=itemSpan(CUR,FIX.item);if(a<FIX.win[0]||b>FIX.win[1])fixWindow();fixTimes();drawWave();}
+// ---- waveform ----
+function tToX(t,W){return(t-FIX.win[0])/(FIX.win[1]-FIX.win[0])*W;}
+function xToT(x,W){return FIX.win[0]+x/W*(FIX.win[1]-FIX.win[0]);}
+function drawWave(){
+  const cv=$("fixWave"),dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;if(!W||!H)return;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);}
+  const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+  const css=getComputedStyle(document.documentElement),col=k=>css.getPropertyValue(k).trim();
+  const[a,b]=itemSpan(CUR,FIX.item),xa=tToX(a,W),xb=tToX(b,W),mid=H/2;
+  g.fillStyle=col("--sunk");g.fillRect(0,0,W,H);
+  g.fillStyle=col("--now");g.fillRect(xa,0,xb-xa,H);
+  const buf=ENG.buf[CUR.id];
+  if(buf){
+    const d=buf.getChannelData(0),sr=buf.sampleRate,s0=Math.floor(FIX.win[0]*sr),s1=Math.floor(FIX.win[1]*sr),per=Math.max(1,Math.floor((s1-s0)/W));
+    for(let x=0;x<W;x++){let mx=0;const st=s0+x*per;for(let j=st;j<st+per&&j<d.length;j+=2){const v=Math.abs(d[j]);if(v>mx)mx=v;}
+      const h=Math.max(1,Math.min(1,mx*1.6)*(H*.44));g.fillStyle=(x>=xa&&x<=xb)?col("--accent"):col("--muted");g.globalAlpha=(x>=xa&&x<=xb)?.95:.45;g.fillRect(x,mid-h,1,h*2);}
+    g.globalAlpha=1;
+  }
+  // neighbouring cuts
+  g.font="600 11px "+col("--f-ui");g.textBaseline="top";
+  CUR.B.forEach((t,k)=>{if(k===FIX.item||k===FIX.item+1)return;const x=tToX(t,W);if(x<0||x>W)return;g.fillStyle=col("--muted");g.globalAlpha=.6;g.fillRect(x,0,1,H);g.globalAlpha=1;});
+  const lab=(k)=>k<nIntro(CUR)?"":String(k-nIntro(CUR)+1);
+  for(let k=0;k<nItems();k++){const x1=tToX(CUR.B[k],W),x2=tToX(CUR.B[k+1],W);const cx=(Math.max(0,x1)+Math.min(W,x2))/2;if(x2<0||x1>W||k===FIX.item)continue;g.fillStyle=col("--muted");g.textAlign="center";g.fillText(lab(k),cx,4);}
+  // handles
+  [[xa,"S"],[xb,"E"]].forEach(([x])=>{g.fillStyle=col("--brass");g.fillRect(x-1.5,0,3,H);g.beginPath();g.arc(x,H-12,9,0,Math.PI*2);g.fill();g.beginPath();g.arc(x,12,9,0,Math.PI*2);g.fill();});
+  g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.font="700 10px "+col("--f-ui");g.fillText("S",xa,12);g.fillText("E",xb,12);g.fillText("S",xa,H-12);g.fillText("E",xb,H-12);
+  // playhead
+  const pt=FIX.stopAt!=null&&!fixA.paused?fixA.currentTime+FIX.off:FIX.cursor;
+  if(pt!=null){const x=tToX(pt,W);if(x>=0&&x<=W){g.fillStyle=col("--warn");g.fillRect(x-1,0,2,H);}}
+}
+// ---- playback inside the fixer ----
+function fixPlay(from,to){
+  unlock();fixStop(true);const start=Math.max(FIX.win[0],from),end=Math.min(FIX.win[1],to);
+  const go=()=>{fixA.currentTime=Math.max(0,start-FIX.off);fixA.playbackRate=1;fixA.play().catch(()=>{});FIX.stopAt=end;loop();};
+  fixA.readyState>=1?go():fixA.addEventListener("loadedmetadata",go,{once:true});
+  $("fixPlay").textContent="Stop";
+}
+function loop(){cancelAnimationFrame(FIX.raf);FIX.raf=requestAnimationFrame(()=>{if(FIX.stopAt==null)return;const t=fixA.currentTime+FIX.off;FIX.cursor=t;
+  if(t>=FIX.stopAt||fixA.ended){fixStop();return;}drawWave();loop();});}
+function fixStop(keepLabel){cancelAnimationFrame(FIX.raf);FIX.stopAt=null;try{fixA.pause();}catch(e){}if(!keepLabel)$("fixPlay").textContent="Play verse";drawWave();}
+const nowT=()=>FIX.stopAt!=null&&!fixA.paused?fixA.currentTime+FIX.off:FIX.cursor;
+// ---- controls ----
+$("editBtn").onclick=()=>openFix(P.cur!=null?P.cur:nIntro(CUR));
+$("fixDone").onclick=closeFix;
+$("fixPrev").onclick=()=>{fixStop();FIX.item=Math.max(0,FIX.item-1);FIX.cursor=null;fixRender(true);};
+$("fixNext").onclick=()=>{fixStop();FIX.item=Math.min(nItems()-1,FIX.item+1);FIX.cursor=null;fixRender(true);};
+$("fixPlay").onclick=()=>{if(FIX.stopAt!=null){fixStop();return;}const[a,b]=itemSpan(CUR,FIX.item);fixPlay(a,b);};
+$("fixBefore").onclick=()=>{const[a,b]=itemSpan(CUR,FIX.item);fixPlay(a-2,b);};
+$("fixAfter").onclick=()=>{const[a,b]=itemSpan(CUR,FIX.item);fixPlay(Math.max(a,b-2),b+2);};
+$("fixSHere").onclick=()=>{const t=nowT();if(t==null)return hintTap();setBoundary(FIX.item,t);commit();};
+$("fixEHere").onclick=()=>{const t=nowT();if(t==null)return hintTap();setBoundary(FIX.item+1,t);commit();};
+function hintTap(){$("fixHint").textContent="First tap the waveform or play the audio, then tap “Start here” or “End here” at the right moment.";}
+document.querySelectorAll("[data-nudge]").forEach(b=>b.onclick=()=>{const[w,d]=b.dataset.nudge.split(","),k=w==="s"?FIX.item:FIX.item+1;
+  setBoundary(k,CUR.B[k]+(+d));commit();const[a,e]=itemSpan(CUR,FIX.item);w==="s"?fixPlay(a,Math.min(e,a+2.5)):fixPlay(Math.max(a,e-2.5),e);});
+$("fixReset").onclick=()=>{const b=$("fixReset");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again";setTimeout(()=>{delete b.dataset.arm;b.textContent="Reset";},3500);return;}
+  delete b.dataset.arm;b.textContent="Reset";CUR.B=CUR.B0.slice();persistB();fixRender(true);$("fixHint").textContent="All cuts are back to how they were when the surah was added.";};
+$("fixVerse").addEventListener("click",()=>{const[a,b]=itemSpan(CUR,FIX.item);FIX.stopAt!=null?fixStop():fixPlay(a,b);});
+(()=>{let x0=null,y0=null;const el=$("fixVerse");
+  el.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  el.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){e.preventDefault();(dx<0?$("fixNext"):$("fixPrev")).click();}},{passive:false});
+})();
+(()=>{const cv=$("fixWave");
+  const pos=e=>{const r=cv.getBoundingClientRect();return{x:e.clientX-r.left,W:r.width};};
+  cv.addEventListener("pointerdown",e=>{const{x,W}=pos(e),[a,b]=itemSpan(CUR,FIX.item),xa=tToX(a,W),xb=tToX(b,W);
+    cv.setPointerCapture(e.pointerId);
+    if(Math.abs(x-xa)<22&&Math.abs(x-xa)<=Math.abs(x-xb))FIX.drag="s";else if(Math.abs(x-xb)<22)FIX.drag="e";else FIX.drag=null;
+    if(!FIX.drag){const t=xToT(x,W);FIX.cursor=t;fixPlay(t,FIX.win[1]);}else fixStop();});
+  cv.addEventListener("pointermove",e=>{if(!FIX.drag)return;const{x,W}=pos(e),t=xToT(Math.max(0,Math.min(W,x)),W);setBoundary(FIX.drag==="s"?FIX.item:FIX.item+1,t);fixTimes();drawWave();});
+  const up=()=>{if(!FIX.drag)return;const w=FIX.drag;FIX.drag=null;commit();const[a,b]=itemSpan(CUR,FIX.item);w==="s"?fixPlay(a,Math.min(b,a+2.5)):fixPlay(Math.max(a,b-2.5),b);};
+  cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
+})();
+addEventListener("resize",()=>{if(FIX.on){fixFit();drawWave();}});
 $("removeBtn").onclick=async()=>{
   const b=$("removeBtn");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to remove";setTimeout(()=>{delete b.dataset.arm;b.textContent="Remove this surah";},4000);return;}
   const id=CUR.id;await idb.del(id);try{URL.revokeObjectURL(CUR.src);}catch(e){}LIB=LIB.filter(x=>x.id!==id);delete ENG.buf[id];delete ENG.pending[id];if(LIB.length)selectSurah(LIB[0].id);else showEmpty(true);
 };
-
-// tap-to-mark: play the whole surah; each tap ends the current part
-const TAP={on:false,k:0,watch:null};
-$("edTap").onclick=()=>{
-  stop();TAP.on=true;TAP.k=1;full.src=CUR.src;full.playbackRate=1;
-  $("markBtn").hidden=false;["prevBtn","nextBtn","playBtn","carBtn"].forEach(id=>$(id).hidden=true);
-  const go=()=>{full.currentTime=CUR.B[0];full.play().catch(()=>{});};
-  full.readyState>=1?go():full.addEventListener("loadedmetadata",go,{once:true});
-  tapStatus();TAP.watch=setInterval(()=>{$("prog").style.width=(full.currentTime/(full.duration||1)*100)+"%";if(full.ended)endTap(true);},100);
-};
-function tapStatus(){const i=TAP.k-1;highlight(i);status(`Marking · ${itemName(i)}`,`Tap “Next” the moment ${itemName(i).toLowerCase()} ends`);}
-function tapMark(){
-  if(!TAP.on)return;const B=CUR.B,k=TAP.k;
-  B[k]=Math.round(full.currentTime*100)/100;TAP.k++;
-  if(TAP.k>=B.length-1){B[B.length-1]=Math.max(B[B.length-1],B[k]+0.5);endTap(true);return;}
-  tapStatus();
-}
-function endTap(saveIt){
-  if(!TAP.on)return;TAP.on=false;full.pause();clearInterval(TAP.watch);
-  $("markBtn").hidden=true;["prevBtn","nextBtn","playBtn","carBtn"].forEach(id=>$(id).hidden=false);
-  if(saveIt){persistB();status("Timings saved","Play a verse to check the new cuts");}
-  if(EDIT.on)renderEditor();
-}
-$("markBtn").onclick=tapMark;
 
 // ---------- adding a surah from the phone ----------
 for(let i=1;i<=114;i++)$("addSurah").add(new Option(`${i} · ${NAMES[i-1]}`,i));$("addSurah").value="89";
