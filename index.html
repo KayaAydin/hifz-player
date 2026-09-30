@@ -287,6 +287,27 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .txtin{width:100%;background:var(--sunk);border:1px solid transparent;border-radius:var(--r-sm);padding:10px 12px;min-height:44px;font-size:16px}
 #syncOn,#syncSetup{display:flex;flex-direction:column;gap:12px}
 
+
+/* ---- car: surah switcher + loop ---- */
+.car-surah{color:inherit;cursor:pointer;padding:4px 6px;border-radius:12px}
+.car-surah b{display:inline-flex!important;align-items:center;gap:4px;max-width:100%}
+.car-surah b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.car-surah svg{flex:none;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.car-surah:active{background:var(--c-btn)}
+.cbtn[aria-pressed="true"]{background:var(--c-acc);color:#1a1307}
+.car-pick{position:absolute;inset:0;z-index:5;background:inherit;display:flex;flex-direction:column;
+  padding:calc(10px + env(safe-area-inset-top,0px)) calc(14px + env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) calc(14px + env(safe-area-inset-left,0px))}
+.car.rot .car-pick{padding:12px calc(14px + env(safe-area-inset-bottom,0px)) 12px calc(14px + env(safe-area-inset-top,0px))}
+.car-pick-h{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
+.car-pick-h b{font-size:22px}
+.car-pick-list{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;align-content:start}
+.cp-item{display:flex;align-items:center;gap:14px;min-height:78px;padding:12px 18px;border-radius:18px;background:var(--c-btn);color:inherit;text-align:left}
+.cp-item.cur{outline:3px solid var(--c-acc)}
+.cp-num{font:700 20px var(--f-ui);color:var(--c-acc);min-width:34px}
+.cp-name{flex:1;font:700 26px/1.1 var(--f-ui)}
+.cp-name small{display:block;font:500 14px var(--f-ui);color:var(--c-mute);margin-top:3px}
+.cp-ar{font:36px/1 var(--f-ar);color:var(--c-acc)}
+
 /* ---- surah switcher, picker, back-to-top ---- */
 .surah-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:2px 26px 2px 4px;position:relative}
 .surah-pick .sp-name{font-weight:700;font-size:17px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -404,7 +425,8 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 <div class="car" id="car" hidden>
   <div class="car-top">
     <button class="cbtn" id="carClose" type="button" aria-label="Close car mode"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="t"><b id="carTitle">Verse 1</b><span id="carSub"></span></div>
+    <button class="t car-surah" id="carSurah" type="button" aria-label="Switch surah"><b><span id="carTitle">Verse 1</span> <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></b><span id="carSub"></span></button>
+    <button class="cbtn" id="carLoop" type="button" aria-label="Loop" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg></button>
     <button class="cbtn" id="carMem" type="button" aria-label="Mark as memorised"><svg><use href="#i-check"/></svg></button>
     <button class="cbtn" id="carTheme" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
     <button class="cbtn" id="carRot" type="button" aria-label="Rotate screen"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 9a9 9 0 0 1 3-4.5M3 9V5.5M3 9h3.5M21 15a9 9 0 0 1-3 4.5M21 15v3.5M21 15h-3.5"/></svg></button>
@@ -416,6 +438,10 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
     <div class="car-pp" id="carPP" aria-hidden="true"><svg><use id="carPlayUse" href="#i-play"/></svg></div>
   </div>
   <div class="car-bar"><i id="carProg"></i></div>
+  <div class="car-pick" id="carPick" hidden>
+    <div class="car-pick-h"><b>Switch surah</b><button class="cbtn" id="carPickClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="car-pick-list" id="carPickList"></div>
+  </div>
 </div>
 
 <!-- timing fixer -->
@@ -522,6 +548,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
       <label class="tg"><span>Skip memorised verses<small>Play only the verses you haven't ticked</small></span><span class="sw"><input type="checkbox" id="skipMem"><i></i></span></label>
       <label class="tg"><span>Isti'adha &amp; Bismillah first<small>When starting from verse 1</small></span><span class="sw"><input type="checkbox" id="intro"><i></i></span></label>
       <label class="tg"><span>Hide Arabic to test myself<small>Tap a verse to peek</small></span><span class="sw"><input type="checkbox" id="hideTxt"><i></i></span></label>
+      <label class="tg"><span>Continue to the next surah<small>When a whole surah is played once, go on to your next surah</small></span><span class="sw"><input type="checkbox" id="autoNext"><i></i></span></label>
       <label class="tg"><span>Follow along<small>Scroll to the verse being played</small></span><span class="sw"><input type="checkbox" id="follow"><i></i></span></label>
     </div>
   </div>
@@ -584,7 +611,7 @@ const idb={
 // A surah = {id, num, reciter, src, intro:[{en,ar}], text:[..]|null, meal:{key:{name,v}}|null, B:[boundaries], B0:[original]}
 // Parts = intro parts, then verses; part i spans B[i]..B[i+1].
 let LIB=[], CUR=null;
-const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:1,skipMem:false,carLight:false,carRot:false},ls.get("hifz-s",{}));
+const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:1,skipMem:false,carLight:false,carRot:false,autoNext:true},ls.get("hifz-s",{}));
 const save=()=>ls.set("hifz-s",S);
 const nIntro=s=>s.intro.length;
 const itemSpan=(s,i)=>[s.B[i],s.B[i+1]];
@@ -811,7 +838,7 @@ function practiceSummary(){
 }
 function syncUI(){
   $("from").value=S.from;$("to").value=S.to;$("vrep").value=S.vrep;$("rrep").value=S.rrep;$("gap").value=S.gap;$("speed").value=S.speed;$("meal").value=S.meal;
-  $("intro").checked=S.intro;$("hideTxt").checked=S.hide;$("follow").checked=S.follow;$("skipMem").checked=S.skipMem;
+  $("intro").checked=S.intro;$("hideTxt").checked=S.hide;$("follow").checked=S.follow;$("skipMem").checked=S.skipMem;$("autoNext").checked=S.autoNext;renderCarLoop();
   $("intro").disabled=!CUR.intro.length;$("mealBox").hidden=!CUR.meal;
   setSeg("scope",S.scope);setSeg("order",S.order);
   $("rangeBox").hidden=S.scope==="surah";$("toBox").hidden=S.scope==="verse";
@@ -861,7 +888,8 @@ function describe(e){
 // The whole practice session (verses, repeats, pauses, rounds) is rendered into ONE audio file,
 // so the phone keeps playing it in the background and on the lock screen without the page having to act.
 const REN={key:"",url:null,T:[],dur:0,loopWant:1,loops:0};
-const renKey=()=>[listKey(),CUR.B.join(","),S.gap,S.rrep,S.speed].join("#");
+const renKey=()=>[listKey(),CUR.B.join(","),S.gap,(S.rrep==="0"||S.rrep==="1")?"01":S.rrep,S.speed].join("#");
+function applyLoop(){if(S.rrep==="0"){REN.loopWant=Infinity;clip.loop=true;}else if(S.rrep==="1"){REN.loopWant=1;clip.loop=false;}}
 function planGap(len){const g=+S.gap;return g<0?len:g*(+S.speed);}
 async function renderSession(){
   ensureList();const k=renKey();if(REN.key===k&&REN.url)return true;
@@ -912,7 +940,7 @@ async function sessionStart(li){
   if(!ok)return false;
   P.sess=true;P.started=true;clip.onended=null;delete clip.dataset.full;
   if(clip.getAttribute("src")!==REN.url){clip.src=REN.url;}
-  clip.loop=REN.loopWant>1;REN.loops=0;lastTi=-1;lastT=0;
+  clip.loop=REN.loopWant>1;applyLoop();REN.loops=0;lastTi=-1;lastT=0;
   clip.defaultPlaybackRate=+S.speed;clip.playbackRate=+S.speed;
   const t=REN.T[tiOfList(li||0)].t0;
   const go=()=>{try{clip.currentTime=t;}catch(e){}clip.play().catch(()=>{});};
@@ -962,6 +990,7 @@ function stop(done){
   P.i=0;P.loop=1;lastTi=-1;setIcon(false);$("prog").style.width=0;$("carProg").style.width=0;
   if($("car").hidden)highlight(null);
   status(done?"Finished":"Ready",done?"Press play to go again":"Press play to start");
+  if(done&&autoNextOK()){const nx=nextSurah();if(nx){status("Finished",`Continuing with ${dispName(nx)}…`);setTimeout(()=>{selectSurah(nx.id);play();},900);return;}}
   if(done&&$("car").hidden){const[a]=range(),li=document.querySelector(`.v[data-v="${a}"]`);if(a===1||!li)scrollTo({top:0,behavior:"smooth"});else li.scrollIntoView({block:"center",behavior:"smooth"});}
 }
 function jump(dir){
@@ -1025,11 +1054,27 @@ function openCar(){
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
-  $("car").hidden=true;document.body.style.overflow="";try{WL&&WL.release();}catch(e){}WL=null;
+  $("car").hidden=true;$("carPick").hidden=true;document.body.style.overflow="";try{WL&&WL.release();}catch(e){}WL=null;
   try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
 $("carBtn").onclick=openCar;$("carClose").onclick=closeCar;
+function autoNextOK(){return S.autoNext&&S.scope==="surah"&&S.rrep==="1"&&S.vrep==="1";}
+function nextSurah(){const L=[...LIB].sort((a,b)=>a.num-b.num);return L.find(x=>x.num>CUR.num)||null;}
+function renderCarLoop(){const b=$("carLoop");if(!b)return;const once=S.rrep==="1"||S.rrep==="0";b.hidden=!once;b.setAttribute("aria-pressed",S.rrep==="0");
+  b.setAttribute("aria-label",S.rrep==="0"?"Loop is on":"Loop is off");}
+$("carLoop").onclick=()=>{S.rrep=S.rrep==="0"?"1":"0";save();applyLoop();renderCarLoop();$("rrep").value=S.rrep;practiceSummary();
+  $("carSub").textContent=S.rrep==="0"?"Loop on: the selection repeats until you stop it":"Loop off";};
+function renderCarPick(){
+  const box=$("carPickList");box.innerHTML="";
+  [...LIB].sort((a,b)=>a.num-b.num).forEach(s=>{const b=document.createElement("button");b.type="button";b.className="cp-item"+(s===CUR?" cur":"");
+    b.innerHTML=`<span class="cp-num">${s.num}</span><span class="cp-name"></span><span class="cp-ar"></span>`;
+    b.querySelector(".cp-name").innerHTML="";const nm=document.createElement("span");nm.textContent=dispName(s);const sm=document.createElement("small");sm.textContent=`${COUNTS[s.num-1]} verses · Juz ${surahJuz(s)}`;
+    b.querySelector(".cp-name").append(nm,sm);b.querySelector(".cp-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
+    b.onclick=()=>{$("carPick").hidden=true;unlock();if(s!==CUR){selectSurah(s.id);}play();};box.appendChild(b);});
+}
+$("carSurah").onclick=e=>{e.stopPropagation();renderCarPick();$("carPick").hidden=false;};
+$("carPickClose").onclick=()=>{$("carPick").hidden=true;};
 $("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
 $("carMem").onclick=()=>{const v=carItem()-nIntro(CUR)+1;if(v>=1)toggleMem(v);};
 $("carTheme").onclick=()=>{S.carLight=!S.carLight;save();$("car").classList.toggle("light",S.carLight);};
@@ -1069,9 +1114,9 @@ function showEmpty(on){
 function selectSurah(id){
   if(!LIB.length)return showEmpty(true);
   showEmpty(false);
-  const s=LIB.find(x=>x.id===id)||LIB[0];stop();CUR=s;S.cur=s.id;
+  const s=LIB.find(x=>x.id===id)||LIB[0];stop();CUR=s;S.cur=s.id;P.cur=null;
   if(S._last!==s.id){S.scope="surah";S.from=1;S.to=COUNTS[s.num-1];S._last=s.id;}
-  save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();scrollTo(0,0);
+  save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();if($("car").hidden)scrollTo(0,0);else renderCar();
   setTimeout(()=>decodeSurah(s),50);ensureText(s);
 }
 function changed(reset){save();syncUI();if(reset&&P.key!==listKey()){const was=P.playing;stop();if(was)play();}}
@@ -1086,6 +1131,7 @@ $("intro").onchange=e=>{S.intro=e.target.checked;changed(true);};
 $("hideTxt").onchange=e=>{S.hide=e.target.checked;changed(false);};
 $("follow").onchange=e=>{S.follow=e.target.checked;changed(false);};
 $("skipMem").onchange=e=>{S.skipMem=e.target.checked;changed(true);};
+$("autoNext").onchange=e=>{S.autoNext=e.target.checked;changed(false);};
 document.querySelectorAll("#scope button").forEach(b=>b.onclick=()=>{S.scope=b.dataset.v;changed(true);});
 document.querySelectorAll("#order button").forEach(b=>b.onclick=()=>{S.order=b.dataset.v;changed(true);});
 function applyTheme(){if(S.theme)document.documentElement.dataset.theme=S.theme;}
@@ -1305,7 +1351,7 @@ function scheduleSync(ms){if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setT
 async function gh(path,opt={}){
   const c=SY.cfg,h={Authorization:`Bearer ${c.token}`,"X-GitHub-Api-Version":"2022-11-28",Accept:opt.raw?"application/vnd.github.raw":"application/vnd.github+json"};
   if(opt.body)h["Content-Type"]="application/json";
-  return fetch(`https://api.github.com/repos/${c.repo}/${path}`,{method:opt.method||"GET",headers:h,body:opt.body,cache:"no-store"});
+  return fetch(`https://api.github.com/repos/${c.repo}${path?"/"+path:""}`,{method:opt.method||"GET",headers:h,body:opt.body,cache:"no-store"});
 }
 const extOf=t=>/mp4|m4a|aac/.test(t)?"m4a":/wav/.test(t)?"wav":/ogg|opus/.test(t)?"ogg":"mp3";
 function b64(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(blob);});}
@@ -1393,11 +1439,16 @@ $("syncConnect").onclick=async()=>{
   if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){$("syncMsg").textContent="Type the repository as owner/name, for example kaya/hifz-data.";return;}
   if(token.length<20){$("syncMsg").textContent="Paste the access token you created on GitHub.";return;}
   $("syncMsg").textContent="Checking access…";SY.cfg={repo,token};
-  try{const r=await gh("");if(!r.ok)throw new Error(r.status);const j=await r.json();
+  try{const r=await gh("");
+    if(!r.ok){SY.cfg=null;$("syncMsg").textContent=r.status===401?"GitHub didn't accept the token. Copy it again (it starts with github_pat_) and check it hasn't expired."
+      :r.status===404?`GitHub can't find “${repo}” with this token. Check the spelling (your GitHub username / hifz-data), and that the token's “Repository access” includes hifz-data.`
+      :r.status===403?"GitHub refused access. If the repository belongs to an organisation, the token may need the organisation's approval; a repository under your own account avoids this."
+      :`GitHub answered with error ${r.status}. Try again in a minute.`;return;}
+    const j=await r.json();
     if(!j.private){$("syncMsg").textContent="That repository is public. Make it private first, so your recordings aren't shared.";SY.cfg=null;return;}
     if(j.permissions&&!j.permissions.push){$("syncMsg").textContent="The token can read but not write. Give it “Contents: Read and write”.";SY.cfg=null;return;}
     ls.set("hifz-sync",SY.cfg);$("syncToken").value="";$("syncMsg").textContent="";syncBadge("busy");syncNow();
-  }catch(e){SY.cfg=null;$("syncMsg").textContent="Couldn't open that repository with this token. Check the name and that the token has access to it.";}
+  }catch(e){SY.cfg=null;$("syncMsg").textContent="Couldn't reach GitHub. Check the internet connection and try again.";}
 };
 $("syncNowBtn").onclick=()=>syncNow();
 $("syncOff").onclick=()=>{const b=$("syncOff");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to disconnect";setTimeout(()=>{delete b.dataset.arm;b.textContent="Disconnect this phone";},3500);return;}
@@ -1417,7 +1468,7 @@ async function boot(){
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={S,P,ENG,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,S,P,ENG,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
