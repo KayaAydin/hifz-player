@@ -1,6 +1,6 @@
 // Keeps the app working offline: the app files are cached on first visit.
 // Your surah recordings are stored separately on the device (IndexedDB) and never leave it.
-const VERSION = "hifz-v7";
+const VERSION = "hifz-v8";
 const APP = ["./", "index.html", "manifest.webmanifest", "fonts/hamdullah.woff2",
   "icons/icon-180.png", "icons/icon-192.png", "icons/icon-512.png"];
 self.addEventListener("install", e => {
