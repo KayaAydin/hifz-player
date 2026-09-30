@@ -51,7 +51,7 @@ svg{display:block}
 .appbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom:1px solid transparent}
 .appbar.scrolled{border-bottom-color:var(--line)}
-.appbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.appbar-in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:8px}
 .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1;min-width:0}
 .brand-mark{flex:none;width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:22px/1 var(--f-ar);padding-top:4px}
 .iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink);background:var(--surface);border:1px solid var(--line)}
@@ -272,6 +272,21 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   .fix .hint{display:none}
 }
 
+
+/* ---- sync ---- */
+.iconbtn.sync{position:relative}
+.iconbtn.sync .dot{position:absolute;right:7px;top:7px;width:8px;height:8px;border-radius:50%;background:var(--line);border:1.5px solid var(--surface)}
+.iconbtn.sync[data-state="ok"] .dot{background:var(--ok)}
+.iconbtn.sync[data-state="busy"] .dot,.iconbtn.sync[data-state="pending"] .dot{background:var(--brass);animation:pulse 1s infinite alternate}
+.iconbtn.sync[data-state="error"] .dot{background:var(--warn)}
+.iconbtn.sync[data-state="offline"] .dot{background:var(--muted)}
+@keyframes pulse{to{opacity:.3}}
+.sync-state{margin:0;font-weight:600;font-size:15px}
+.sync-state.err{color:var(--warn)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.5}
+.txtin{width:100%;background:var(--sunk);border:1px solid transparent;border-radius:var(--r-sm);padding:10px 12px;min-height:44px;font-size:16px}
+#syncOn,#syncSetup{display:flex;flex-direction:column;gap:12px}
+
 /* ---- surah switcher, picker, back-to-top ---- */
 .surah-pick{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:2px 26px 2px 4px;position:relative}
 .surah-pick .sp-name{font-weight:700;font-size:17px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -319,6 +334,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
   <div class="appbar-in">
     <span class="brand-mark" aria-hidden="true">ح</span>
     <button class="surah-pick" id="surahBtn" type="button" aria-label="Choose surah"><span class="sp-name" id="spName">Hifz</span><span class="sp-sub" id="spSub">Add a surah</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></button>
+    <button class="iconbtn sync" id="syncBtn" type="button" aria-label="Online sync" data-state="off"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.3 4.4 4.4 0 0 0 7 18z"/></svg><i class="dot"></i></button>
     <button class="iconbtn" id="textBtn" type="button" aria-label="Text size and weight"><span class="aa">Aa</span></button>
     <button class="iconbtn" id="themeBtn" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
   </div>
@@ -452,6 +468,32 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
       <p class="hint">Texts come from herkul.app. A surah's text is saved on your phone the first time it opens. Save Juz 29–30 now to have them ready offline.</p>
       <div class="erow"><button class="btn small secondary" id="dl2930" type="button">Save Juz 29–30</button><button class="btn small secondary" id="dlAll" type="button">Save all 114</button></div>
       <p class="hint" id="dlMsg"></p>
+    </div>
+  </div>
+</dialog>
+
+<!-- online sync -->
+<dialog class="sheet" id="syncDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Online sync</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <p class="sync-state" id="syncState">Not connected</p>
+    <div id="syncOn" hidden>
+      <p class="hint">Recordings, verse cuts and memorised ticks are saved in your private repository <b id="syncRepo"></b>. Changes upload a few seconds after you make them, and every phone or computer connected to the same repository gets them.</p>
+      <div class="erow"><button class="btn small" id="syncNowBtn" type="button">Sync now</button><button class="btn small danger" id="syncOff" type="button">Disconnect this phone</button></div>
+    </div>
+    <div id="syncSetup">
+      <p class="hint">Keep everything in a private GitHub repository that only you can see. Set it up once:</p>
+      <ol class="steps">
+        <li>On github.com, create a new repository called <b>hifz-data</b>. Choose <b>Private</b> and tick “Add a README file”.</li>
+        <li>Open Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token. Under “Repository access” choose <b>Only select repositories</b> → hifz-data. Under “Permissions” set <b>Contents</b> to <b>Read and write</b>. Generate it and copy the token.</li>
+        <li>Enter the repository and paste the token below. Do the same on each device you use.</li>
+      </ol>
+      <div class="field"><label class="lbl" for="syncRepoIn">Repository</label><input class="txtin" id="syncRepoIn" placeholder="your-username/hifz-data" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+      <div class="field"><label class="lbl" for="syncToken">Access token</label><input class="txtin" id="syncToken" type="password" placeholder="github_pat_…" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+      <button class="btn" id="syncConnect" type="button">Connect and sync</button>
+      <p class="hint" id="syncMsg"></p>
+      <p class="hint">The token is kept only on this device and is sent only to GitHub.</p>
     </div>
   </div>
 </dialog>
@@ -613,7 +655,7 @@ async function playPart(i,onEnd){
 }
 function prefetch(){const nx=P.list[P.i+1];if(nx){const[a,b]=itemSpan(CUR,nx.item);clipURL(CUR,a,b);}}
 clip.addEventListener("timeupdate",()=>{
-  if(TAP.on)return;const[a,b]=P.span||[0,1];
+  if(TAP.on||P.sess)return;const[a,b]=P.span||[0,1];
   const f=P.mode==="clip"?clip.currentTime/(clip.duration||1):(clip.currentTime-a)/((b-a)||1);
   const w=Math.max(0,Math.min(100,f*100))+"%";$("prog").style.width=w;$("carProg").style.width=w;
 });
@@ -634,7 +676,7 @@ let MEM=new Set();
 const memKey=()=>"hifz-mem-"+CUR.num;
 function loadMem(){MEM=new Set(ls.get(memKey(),[]));}
 function toggleMem(v){
-  MEM.has(v)?MEM.delete(v):MEM.add(v);ls.set(memKey(),[...MEM].sort((a,b)=>a-b));
+  MEM.has(v)?MEM.delete(v):MEM.add(v);ls.set(memKey(),[...MEM].sort((a,b)=>a-b));ls.set("hifz-memu-"+CUR.num,Date.now());scheduleSync();
   const li=document.querySelector(`.v[data-v="${v}"]`);
   if(li){li.classList.toggle("memd",MEM.has(v));li.querySelector(".mem").setAttribute("aria-pressed",MEM.has(v));}
   updateMemo();if(S.skipMem)P.key="";renderCarMem();
@@ -815,11 +857,76 @@ function describe(e){
   if(rr===0)parts.push(`loop ${P.loop}`);else if(rr>1)parts.push(`round ${P.loop} of ${rr}`);
   return[`${NAMES[CUR.num-1]} · Verse ${e.v}`,parts.join(" · ")||CUR.reciter];
 }
+// ---------- session engine ----------
+// The whole practice session (verses, repeats, pauses, rounds) is rendered into ONE audio file,
+// so the phone keeps playing it in the background and on the lock screen without the page having to act.
+const REN={key:"",url:null,T:[],dur:0,loopWant:1,loops:0};
+const renKey=()=>[listKey(),CUR.B.join(","),S.gap,S.rrep,S.speed].join("#");
+function planGap(len){const g=+S.gap;return g<0?len:g*(+S.speed);}
+async function renderSession(){
+  ensureList();const k=renKey();if(REN.key===k&&REN.url)return true;
+  const buf=await decodeSurah(CUR);if(!buf)return false;
+  const L=P.list;if(!L.length)return false;
+  const rr=+S.rrep;let one=0;L.forEach((e,i)=>{const[a,b]=itemSpan(CUR,e.item);one+=(b-a)+(i<L.length-1||rr!==1?planGap(b-a):0);});
+  let passes=1,loopWant=1;
+  if(rr===0){loopWant=Infinity;}else if(rr>1){if(one*rr<=25*60)passes=rr;else loopWant=rr;}
+  const total=one*passes;
+  const srcSr=buf.sampleRate,target=total<=12*60?44100:22050,f=Math.max(1,Math.round(srcSr/target)),sr=Math.round(srcSr/f);
+  const n=Math.ceil(total*sr)+sr,pcm=new Int16Array(n),ch=[];for(let c=0;c<buf.numberOfChannels;c++)ch.push(buf.getChannelData(c));
+  const T=[];let pos=0;
+  for(let p=0;p<passes;p++)L.forEach((e,i)=>{
+    const[a,b]=itemSpan(CUR,e.item),s0=Math.floor(a*srcSr),m=Math.max(1,Math.floor((b-a)*sr)),fi=Math.min(m>>2,Math.floor(sr*.012)),fo=Math.min(m>>2,Math.floor(sr*.035));
+    T.push({li:i,pass:p,t0:pos/sr,t1:(pos+m)/sr});
+    for(let j=0;j<m;j++){let v=0;const base=s0+j*f;for(let q=0;q<f;q++)for(let c=0;c<ch.length;c++)v+=ch[c][base+q]||0;v/=f*ch.length;
+      const g=j<fi?j/fi:(j>=m-fo?(m-1-j)/fo:1);v*=g;v=v<-1?-1:v>1?1:v;pcm[pos+j]=v<0?v*32768:v*32767;}
+    pos+=m;const last=p===passes-1&&i===L.length-1;if(!last||loopWant>1)pos+=Math.floor(planGap(b-a)*sr);
+  });
+  const bytes=pos*2,dv=new DataView(new ArrayBuffer(44)),w=(o,t)=>{for(let i=0;i<t.length;i++)dv.setUint8(o+i,t.charCodeAt(i));};
+  w(0,"RIFF");dv.setUint32(4,36+bytes,true);w(8,"WAVE");w(12,"fmt ");dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,sr,true);dv.setUint32(28,sr*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);w(36,"data");dv.setUint32(40,bytes,true);
+  if(REN.url)URL.revokeObjectURL(REN.url);
+  REN.url=URL.createObjectURL(new Blob([dv,pcm.subarray(0,pos)],{type:"audio/wav"}));REN.key=k;REN.T=T;REN.dur=pos/sr;REN.loopWant=loopWant;
+  return true;
+}
+function tIndexAt(t){const T=REN.T;let lo=0,hi=T.length-1,ans=0;while(lo<=hi){const mid=(lo+hi)>>1;if(T[mid].t0<=t+.001){ans=mid;lo=mid+1;}else hi=mid-1;}return ans;}
+let lastTi=-1,lastT=0;
+function onSessionTime(){
+  if(!P.sess)return;const t=clip.currentTime,ti=tIndexAt(t),seg=REN.T[ti];if(!seg)return;
+  if(REN.loopWant>1&&t+1<lastT){REN.loops++;P.loop=REN.loops+1;if(REN.loopWant!==Infinity&&REN.loops>=REN.loopWant-1)clip.loop=false;}
+  lastT=t;
+  const e=P.list[seg.li],inGap=t>seg.t1;
+  if(ti!==lastTi){lastTi=ti;P.i=seg.li;if(!REN.loopWant||REN.loopWant===1)P.loop=seg.pass+1;
+    const[tt,sub]=describe(e);status(tt,sub);highlight(e.item);
+    if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:tt,artist:CUR.reciter,album:`Surah ${dispName(CUR)}`,artwork:[{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}}}
+  if(inGap!==P.inGap){P.inGap=inGap;const[tt,sub]=describe(e);status(tt,inGap?sub+" · your turn":sub);}
+  const w=Math.max(0,Math.min(100,(Math.min(t,seg.t1)-seg.t0)/((seg.t1-seg.t0)||1)*100))+"%";$("prog").style.width=w;$("carProg").style.width=w;
+}
+clip.addEventListener("timeupdate",onSessionTime);
+clip.addEventListener("ended",()=>{if(P.sess&&P.playing)stop(true);});
+clip.addEventListener("pause",()=>{if(P.sess&&P.playing&&!clip.ended&&document.visibilityState==="hidden"){P.playing=false;setIcon(false);}});
+clip.addEventListener("play",()=>{if(P.sess&&!P.playing){P.playing=true;setIcon(true);}});
+async function sessionStart(li){
+  const my=++TOK;P.playing=true;setIcon(true);
+  if(!(REN.key===renKey()&&REN.url))status(describe(P.list[P.i]||P.list[0])[0],"Preparing audio…");
+  const ok=await renderSession();if(my!==TOK)return true;
+  if(!ok)return false;
+  P.sess=true;P.started=true;clip.onended=null;delete clip.dataset.full;
+  if(clip.getAttribute("src")!==REN.url){clip.src=REN.url;}
+  clip.loop=REN.loopWant>1;REN.loops=0;lastTi=-1;lastT=0;
+  clip.defaultPlaybackRate=+S.speed;clip.playbackRate=+S.speed;
+  const t=REN.T[tiOfList(li||0)].t0;
+  const go=()=>{try{clip.currentTime=t;}catch(e){}clip.play().catch(()=>{});};
+  clip.readyState>=1?go():clip.addEventListener("loadedmetadata",go,{once:true});
+  return true;
+}
+const tiOfList=i=>{const k=REN.T.findIndex(s=>s.li===i);return k<0?0:k;};
+
+// legacy per-verse engine: only used for recordings too long to render
 function playCurrent(){
   const e=P.list[P.i];if(!e)return stop();
   const[t,sub]=describe(e);status(t,sub);highlight(e.item);P.inGap=false;P.started=true;
   playPart(e.item,afterItem);
-  if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t,artist:CUR.reciter,album:`Surah ${NAMES[CUR.num-1]}`,artwork:[{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}}
+  if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t,artist:CUR.reciter,album:`Surah ${dispName(CUR)}`,artwork:[{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}}
 }
 function afterItem(dur){
   if(!P.playing)return;
@@ -831,30 +938,50 @@ function advance(){
   if(P.i>=P.list.length){const rr=+S.rrep;if(rr===0||P.loop<rr){P.loop++;P.i=0;}else return stop(true);}
   playCurrent();
 }
-function play(){
-  unlock();ensureList();P.playing=true;setIcon(true);
-  if(P.inGap){P.inGap=false;return advance();}
-  if(P.started&&P.mode==="clip"&&clip.paused&&!clip.ended&&clip.currentTime>0){clip.play().catch(()=>{});return;}
-  playCurrent();
+async function playFrom(i){
+  ensureList();P.i=i;P.sess=false;
+  if(await sessionStart(i))return;
+  P.sess=false;P.playing=true;setIcon(true);playCurrent();
+}
+function tiOfListSafe(i){return REN.key===renKey()?tiOfList(i):null;}
+
+// ---------- controls ----------
+async function play(){
+  unlock();ensureList();
+  if(P.sess&&REN.key===renKey()&&clip.getAttribute("src")===REN.url&&clip.paused&&!clip.ended&&clip.currentTime>0){P.playing=true;setIcon(true);clip.play().catch(()=>{});return;}
+  if(!P.sess&&P.started&&P.mode==="clip"&&clip.paused&&!clip.ended&&clip.currentTime>0){P.playing=true;setIcon(true);clip.play().catch(()=>{});return;}
+  if(!P.sess&&P.inGap){P.inGap=false;P.playing=true;setIcon(true);return advance();}
+  const i=P.i;P.sess=false;P.playing=true;setIcon(true);
+  const ok=await sessionStart(i);
+  if(!ok){P.playing=true;playCurrent();}
 }
 function pause(){P.playing=false;clearTimeout(P.timer);clearInterval(P.watch);clip.pause();setIcon(false);}
 function stop(done){
-  TOK++;P.playing=false;P.inGap=false;P.started=false;clearTimeout(P.timer);clearInterval(P.watch);clip.pause();
-  P.i=0;P.loop=1;setIcon(false);$("prog").style.width=0;$("carProg").style.width=0;
+  TOK++;P.playing=false;P.inGap=false;P.started=false;clearTimeout(P.timer);clearInterval(P.watch);clip.pause();clip.loop=false;
+  if(P.sess){try{clip.currentTime=0;}catch(e){}}
+  P.i=0;P.loop=1;lastTi=-1;setIcon(false);$("prog").style.width=0;$("carProg").style.width=0;
   if($("car").hidden)highlight(null);
   status(done?"Finished":"Ready",done?"Press play to go again":"Press play to start");
   if(done&&$("car").hidden){const[a]=range(),li=document.querySelector(`.v[data-v="${a}"]`);if(a===1||!li)scrollTo({top:0,behavior:"smooth"});else li.scrollIntoView({block:"center",behavior:"smooth"});}
 }
 function jump(dir){
   unlock();ensureList();if(!P.list.length)return;
+  if(P.sess&&REN.key===renKey()&&REN.T.length){
+    const cur=tIndexAt(clip.currentTime),item=P.list[REN.T[cur].li].item;let k=cur;
+    if(dir>0){while(k<REN.T.length&&P.list[REN.T[k].li].item===item)k++;if(k>=REN.T.length)k=REN.T.length-1;}
+    else{while(k>0&&P.list[REN.T[k].li].item===item)k--;const pv=P.list[REN.T[k].li].item;while(k>0&&P.list[REN.T[k-1].li].item===pv)k--;}
+    try{clip.currentTime=REN.T[k].t0;}catch(e){}if(clip.paused){P.playing=true;setIcon(true);clip.play().catch(()=>{});}return;
+  }
   const cur=P.list[P.i].item;let i=P.i;
   if(dir>0){while(i<P.list.length&&P.list[i].item===cur)i++;if(i>=P.list.length)i=P.list.length-1;}
   else{while(i>0&&P.list[i].item===cur)i--;const pv=P.list[i].item;while(i>0&&P.list[i-1].item===pv)i--;}
-  clearTimeout(P.timer);P.i=i;P.playing=true;setIcon(true);playCurrent();
+  clearTimeout(P.timer);playFrom(i);
 }
 function startAtItem(item){
   ensureList();const i=P.list.findIndex(e=>e.item===item&&(e.intro||e.rep===1));
-  if(i<0)return false;clearTimeout(P.timer);P.i=i;P.playing=true;setIcon(true);playCurrent();return true;
+  if(i<0)return false;clearTimeout(P.timer);
+  if(P.sess&&REN.key===renKey()&&clip.getAttribute("src")===REN.url){const k=tiOfList(i);try{clip.currentTime=REN.T[k].t0;}catch(e){}P.playing=true;setIcon(true);clip.play().catch(()=>{});return true;}
+  playFrom(i);return true;
 }
 
 // ---------- car mode ----------
@@ -984,7 +1111,7 @@ if("mediaSession" in navigator){try{navigator.mediaSession.setActionHandler("pla
 
 // ---------- timing fixer (full-screen window) ----------
 const TAP={on:false};
-function persistB(){idb.put({id:CUR.id,num:CUR.num,introN:CUR.intro.length,known:CUR.known,blob:CUR.blob,B:CUR.B,B0:CUR.B0,added:CUR.added});P.key="";renderTimes();}
+function persistB(){touch(CUR);saveLocal(CUR);P.key="";renderTimes();scheduleSync();}
 function itemName(i){return i<nIntro(CUR)?CUR.intro[i].en:`Verse ${i-nIntro(CUR)+1}`;}
 const FIX={on:false,item:0,win:[0,1],off:0,url:null,stopAt:null,raf:0,drag:null,cursor:null,total:0,moved:false};
 const fixA=new Audio();fixA.preload="auto";fixA.setAttribute("playsinline","");
@@ -1113,7 +1240,7 @@ $("fixVerse").addEventListener("click",()=>{const[a,b]=itemSpan(CUR,FIX.item);FI
 addEventListener("resize",()=>{if(FIX.on){fixFit();drawWave();}});
 $("removeBtn").onclick=async()=>{
   const b=$("removeBtn");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to remove";setTimeout(()=>{delete b.dataset.arm;b.textContent="Remove this surah";},4000);return;}
-  const id=CUR.id;await idb.del(id);try{URL.revokeObjectURL(CUR.src);}catch(e){}LIB=LIB.filter(x=>x.id!==id);delete ENG.buf[id];delete ENG.pending[id];if(LIB.length)selectSurah(LIB[0].id);else showEmpty(true);
+  const id=CUR.id;const tb=tomb();tb[id]=Date.now();ls.set("hifz-deleted",tb);scheduleSync(1000);await idb.del(id);try{URL.revokeObjectURL(CUR.src);}catch(e){}LIB=LIB.filter(x=>x.id!==id);delete ENG.buf[id];delete ENG.pending[id];if(LIB.length)selectSurah(LIB[0].id);else showEmpty(true);
 };
 
 // ---------- adding a surah from the phone ----------
@@ -1133,8 +1260,8 @@ $("addForm").addEventListener("submit",async e=>{
     const K=KNOWN.find(k=>k.num===num&&Math.abs(ab.duration-k.dur)<1.0);
     const B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introN);
     const id="u-"+num+"-"+Date.now().toString(36);
-    const rec={id,num,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:Date.now()};
-    await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);
+    const now=Date.now(),rec={id,num,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:now,updated:now,type:f.type||"audio/mpeg"};
+    await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);scheduleSync(1000);
     if(K)status("Recording recognised","Verse cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few verses to check the cuts. Use “Fix verse timings” for any that are off.");
   }catch(err){$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah.";$("addGo").disabled=false;}
@@ -1162,16 +1289,131 @@ function fromRecord(r){
   const K=r.known?KNOWN.find(k=>k.num===r.num):null,I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
   const intro=r.introN===2?I:r.introN===1?[I[1]]:[];
   return{id:r.id,num:r.num,reciter:K?K.reciter:"Your recording",src:URL.createObjectURL(r.blob),blob:r.blob,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
-    B:r.B.slice(),B0:r.B0.slice(),added:r.added,juz:juzOf(r.num,1)};
+    B:r.B.slice(),B0:r.B0.slice(),added:r.added,updated:r.updated||r.added,type:r.type||(r.blob&&r.blob.type)||"audio/mpeg",juz:juzOf(r.num,1)};
 }
+
+// ---------- online sync (your own private GitHub repository) ----------
+// Everything that matters is kept in one private repo: library.json (surahs, verse cuts, memorised ticks)
+// and audio/<id>.<ext> (the recordings). Each device keeps a local copy and merges by "latest change wins".
+const SY={cfg:ls.get("hifz-sync",null),sha:null,busy:false,again:false,timer:null,last:ls.get("hifz-sync-last",0),err:""};
+const tomb=()=>ls.get("hifz-deleted",{});
+const memU=num=>ls.get("hifz-memu-"+num,0);
+function recOf(s){return{id:s.id,num:s.num,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
+function saveLocal(s){return idb.put(recOf(s));}
+function touch(s){s.updated=Date.now();}
+function scheduleSync(ms){if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setTimeout(syncNow,ms??2500);syncBadge("pending");}
+async function gh(path,opt={}){
+  const c=SY.cfg,h={Authorization:`Bearer ${c.token}`,"X-GitHub-Api-Version":"2022-11-28",Accept:opt.raw?"application/vnd.github.raw":"application/vnd.github+json"};
+  if(opt.body)h["Content-Type"]="application/json";
+  return fetch(`https://api.github.com/repos/${c.repo}/${path}`,{method:opt.method||"GET",headers:h,body:opt.body,cache:"no-store"});
+}
+const extOf=t=>/mp4|m4a|aac/.test(t)?"m4a":/wav/.test(t)?"wav":/ogg|opus/.test(t)?"ogg":"mp3";
+function b64(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;r.readAsDataURL(blob);});}
+function b64text(str){return btoa(unescape(encodeURIComponent(str)));}
+async function pullLib(){
+  const r=await gh("contents/library.json");
+  if(r.status===404){SY.sha=null;return{surahs:{},deleted:{},mem:{}};}
+  if(r.status===401||r.status===403)throw new Error("auth");
+  if(!r.ok)throw new Error("http "+r.status);
+  const j=await r.json();SY.sha=j.sha;
+  const raw=await gh("contents/library.json",{raw:true});const lib=await raw.json();
+  return Object.assign({surahs:{},deleted:{},mem:{}},lib);
+}
+async function pushLib(lib){
+  const body={message:"Hifz: update library",content:b64text(JSON.stringify(lib,null,1))};if(SY.sha)body.sha=SY.sha;
+  const r=await gh("contents/library.json",{method:"PUT",body:JSON.stringify(body)});
+  if(r.status===409||r.status===422)return false; // someone else saved first: pull and merge again
+  if(!r.ok)throw new Error("http "+r.status);
+  SY.sha=(await r.json()).content.sha;return true;
+}
+async function uploadAudio(s){
+  const path=`audio/${s.id}.${extOf(s.type||s.blob.type)}`;
+  const head=await gh("contents/"+path);if(head.ok)return path; // already there
+  syncBadge("busy",`Uploading ${dispName(s)}…`);
+  const r=await gh("contents/"+path,{method:"PUT",body:JSON.stringify({message:`Hifz: add ${s.num} ${NAMES[s.num-1]}`,content:await b64(s.blob)})});
+  if(!r.ok&&r.status!==422)throw new Error("upload "+r.status);
+  return path;
+}
+async function downloadAudio(meta){
+  const r=await gh("contents/"+meta.file,{raw:true});if(!r.ok)throw new Error("download "+r.status);
+  return new Blob([await r.arrayBuffer()],{type:meta.type||"audio/mpeg"});
+}
+async function syncNow(){
+  if(!SY.cfg)return;if(SY.busy){SY.again=true;return;}
+  if(!navigator.onLine){syncBadge("offline");return;}
+  SY.busy=true;syncBadge("busy","Syncing…");
+  try{
+    for(let attempt=0;attempt<3;attempt++){
+      const remote=await pullLib();
+      const del=Object.assign({},remote.deleted||{});Object.entries(tomb()).forEach(([id,t])=>{if(!del[id]||del[id]<t)del[id]=t;});
+      let changedLocal=false;
+      // 1) apply deletions
+      for(const id of Object.keys(del)){const s=LIB.find(x=>x.id===id);if(s&&(s.updated||s.added)<=del[id]){await idb.del(id);LIB=LIB.filter(x=>x!==s);changedLocal=true;}}
+      // 2) merge surahs (newest change wins)
+      const out={};
+      for(const s of LIB){const r=remote.surahs[s.id];
+        if(r&&r.updated>(s.updated||s.added)){s.B=r.B.slice();s.B0=(r.B0||r.B).slice();s.updated=r.updated;await saveLocal(s);changedLocal=true;if(s===CUR){P.key="";renderTimes();}}
+        out[s.id]={num:s.num,introN:s.intro.length,known:!!s.known,B:s.B,B0:s.B0,added:s.added,updated:s.updated||s.added,type:s.type||s.blob.type||"audio/mpeg",file:r&&r.file};
+      }
+      for(const[id,r]of Object.entries(remote.surahs)){
+        if(out[id]||(del[id]&&del[id]>=r.updated))continue;
+        syncBadge("busy",`Downloading ${NAMES[r.num-1]}…`);
+        const blob=await downloadAudio(r);
+        const rec={id,num:r.num,introN:r.introN,known:r.known,blob,B:r.B,B0:r.B0||r.B,added:r.added,updated:r.updated,type:r.type};
+        await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(r.num);if(tt)mergeText(ns,tt);LIB.push(ns);out[id]=Object.assign({},r);changedLocal=true;
+      }
+      // 3) upload recordings that are only on this device
+      for(const s of LIB){if(!out[s.id].file)out[s.id].file=await uploadAudio(s);}
+      // 4) memorised ticks (newest per surah wins)
+      const mem=Object.assign({},remote.mem||{});
+      const nums=new Set([...LIB.map(s=>s.num),...Object.keys(mem).map(Number)]);
+      nums.forEach(num=>{const lu=memU(num),r=mem[num];
+        if(r&&r.u>lu){ls.set("hifz-mem-"+num,r.v);ls.set("hifz-memu-"+num,r.u);if(CUR&&CUR.num===num){loadMem();renderVerses();updateMemo();}changedLocal=true;}
+        else if(lu&&(!r||lu>r.u))mem[num]={v:ls.get("hifz-mem-"+num,[]),u:lu};});
+      const lib={app:"hifz",version:1,surahs:out,deleted:del,mem,savedAt:Date.now()};
+      const same=JSON.stringify({s:remote.surahs,d:remote.deleted,m:remote.mem})===JSON.stringify({s:out,d:del,m:mem});
+      if(!same&&!(await pushLib(lib)))continue;
+      ls.set("hifz-deleted",{});
+      if(changedLocal){if(!LIB.length)showEmpty(true);else if(!CUR||!LIB.includes(CUR))selectSurah((LIB.find(x=>x.id===S.cur)||LIB[0]).id);else renderPicker();}
+      SY.last=Date.now();ls.set("hifz-sync-last",SY.last);SY.err="";syncBadge("ok");break;
+    }
+  }catch(e){SY.err=e.message==="auth"?"The token was refused. Check that it can read and write this repository.":"Sync failed ("+e.message+"). It will try again later.";syncBadge("error");}
+  SY.busy=false;if(SY.again){SY.again=false;scheduleSync(500);}
+}
+function ago(t){if(!t)return"never";const s=(Date.now()-t)/1000;return s<60?"just now":s<3600?Math.round(s/60)+" min ago":s<86400?Math.round(s/3600)+" h ago":new Date(t).toLocaleDateString();}
+function syncBadge(state,msg){
+  const b=$("syncBtn");if(!b)return;b.dataset.state=SY.cfg?state:"off";
+  const txt=!SY.cfg?"Not connected":state==="busy"?(msg||"Syncing…"):state==="pending"?"Changes waiting to sync":state==="offline"?"Offline. Changes will sync when you're back online.":state==="error"?SY.err:`Synced ${ago(SY.last)}`;
+  b.setAttribute("aria-label","Online sync: "+txt);$("syncState").textContent=txt;$("syncState").className="sync-state "+(state==="error"?"err":"");
+  $("syncOn").hidden=!SY.cfg;$("syncSetup").hidden=!!SY.cfg;if(SY.cfg)$("syncRepo").textContent=SY.cfg.repo;
+}
+$("syncBtn").onclick=()=>{syncBadge(SY.cfg?(SY.err?"error":"ok"):"off");openSheet("syncDlg");};
+$("syncConnect").onclick=async()=>{
+  const repo=$("syncRepoIn").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/\/$/,""),token=$("syncToken").value.trim();
+  if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){$("syncMsg").textContent="Type the repository as owner/name, for example kaya/hifz-data.";return;}
+  if(token.length<20){$("syncMsg").textContent="Paste the access token you created on GitHub.";return;}
+  $("syncMsg").textContent="Checking access…";SY.cfg={repo,token};
+  try{const r=await gh("");if(!r.ok)throw new Error(r.status);const j=await r.json();
+    if(!j.private){$("syncMsg").textContent="That repository is public. Make it private first, so your recordings aren't shared.";SY.cfg=null;return;}
+    if(j.permissions&&!j.permissions.push){$("syncMsg").textContent="The token can read but not write. Give it “Contents: Read and write”.";SY.cfg=null;return;}
+    ls.set("hifz-sync",SY.cfg);$("syncToken").value="";$("syncMsg").textContent="";syncBadge("busy");syncNow();
+  }catch(e){SY.cfg=null;$("syncMsg").textContent="Couldn't open that repository with this token. Check the name and that the token has access to it.";}
+};
+$("syncNowBtn").onclick=()=>syncNow();
+$("syncOff").onclick=()=>{const b=$("syncOff");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to disconnect";setTimeout(()=>{delete b.dataset.arm;b.textContent="Disconnect this phone";},3500);return;}
+  ls.del("hifz-sync");SY.cfg=null;delete b.dataset.arm;b.textContent="Disconnect this phone";syncBadge("off");};
+addEventListener("online",()=>scheduleSync(500));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&SY.cfg&&Date.now()-SY.last>20000)scheduleSync(300);});
+setInterval(()=>{if(SY.cfg&&!SY.busy&&$("syncBtn").dataset.state==="ok")syncBadge("ok");},30000);
 
 // ---------- boot ----------
 async function boot(){
   applyTheme();applyText();
   const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
   for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
-  if(!LIB.length)return showEmpty(true);
-  S._last=S.cur;selectSurah(S.cur);
+  syncBadge(SY.cfg?"ok":"off");
+  if(!LIB.length){showEmpty(true);if(SY.cfg)setTimeout(syncNow,800);return;}
+  S._last=S.cur;selectSurah(S.cur);if(SY.cfg)setTimeout(syncNow,800);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
