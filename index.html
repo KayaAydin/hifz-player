@@ -496,6 +496,30 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .plan-days i.done b,.plan-days i.done span{color:var(--on-accent)}
 .gl-row .btn.secondary{background:var(--surface)}
 .arr{unicode-bidi:isolate;direction:rtl;font-family:var(--f-ar);font-size:1.18em;line-height:1.3}
+.term{display:inline;padding:0;margin:0;background:none;border:0;font:inherit;color:inherit;text-decoration:underline dotted var(--brass);text-decoration-thickness:1.5px;text-underline-offset:3px;cursor:help}
+.st-tip{position:absolute;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:3;background:var(--ink);color:var(--bg);border-radius:16px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.3);display:flex;flex-direction:column;gap:4px;max-width:640px;margin:0 auto}
+.st-tip b{font-size:16px}.st-tip p{margin:0;font-size:14.5px;line-height:1.5}.st-tip span{font-size:11px;opacity:.6}
+.st-tip[hidden]{display:none}
+.st-ozet p{margin:0}.st-ozet .st-bag{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--muted);font-size:14px}
+.st-parts{display:flex;flex-direction:column;gap:0;padding:4px 14px}
+.st-part{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.st-part:first-child{border-top:0}
+.st-part .a{order:2;flex:none;max-width:58%;font:26px/1.5 var(--f-ar);direction:rtl;text-align:right;margin-left:auto;color:var(--accent)}
+.st-part .t{order:1;flex:1;font-size:14.5px;line-height:1.45}
+.st-root{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px}
+.st-root .ka{font-size:12.5px;color:var(--muted)}
+.st-fam{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.st-fam .fl{font:700 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.st-fw{display:inline-flex;align-items:baseline;gap:6px;padding:3px 10px;border-radius:99px;background:var(--sunk)}
+.st-fw .a{font:20px/1.4 var(--f-ar);color:var(--brass)}.st-fw .t{font-size:12px;color:var(--muted)}
+.st-wnote{font-size:13px;color:var(--muted);line-height:1.5;border-top:1px dashed var(--line);padding-top:6px}
+.st-kv{grid-template-columns:62px 1fr}
+.st-pt{display:flex;flex-direction:column;gap:4px}
+.st-pt b{font-size:15.5px}.st-pt p{margin:0}
+.st-pt .tag{align-self:flex-start;font:700 10.5px var(--f-ui);letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:99px;background:var(--sunk);color:var(--muted)}
+.st-pt.t-belagat .tag{background:var(--brass-soft);color:var(--brass)}
+.st-pt.t-kural .tag{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.st-pt.t-karsilastirma .tag{background:color-mix(in srgb,#5b6fb5 16%,transparent);color:#5b6fb5}
 </style>
 </head>
 <body>
@@ -659,6 +683,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
     <button class="navb" id="stNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
   </div>
   <div class="st-body" id="stBody"></div>
+  <div class="st-tip" id="stTip" hidden><b></b><p></p><span>Kapatmak için dokunun</span></div>
 </div>
 
 <!-- timing fixer -->
@@ -2005,19 +2030,113 @@ function closeStudy(){$("study").hidden=true;document.documentElement.classList.
   const li=document.querySelector(`.v[data-v="${ST.v}"]`);if(li)li.scrollIntoView({block:"center"});}
 // Turkish text with Arabic inside: isolate each Arabic run so punctuation and numbers stay in the right order
 const AR_RUN=/[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+(?:[\s\u00A0]+[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+)*/g;
-function rich(e,txt){txt=String(txt);let last=0,m;AR_RUN.lastIndex=0;
-  while((m=AR_RUN.exec(txt))){if(m.index>last)e.appendChild(document.createTextNode(txt.slice(last,m.index)));const sp=document.createElement("span");sp.className="arr";sp.dir="rtl";sp.textContent=m[0];e.appendChild(sp);last=m.index+m[0].length;}
-  if(last<txt.length)e.appendChild(document.createTextNode(txt.slice(last)));return e;}
+// ---------- grammar terms: tap a dotted word for a plain explanation ----------
+const GLOSS=[
+["mübtedâ","Cümlenin konusu; hakkında bir şey söylenen isim. «Allah Rahmân'dır» cümlesinde «Allah»."],
+["haber","Konu (mübtedâ) hakkında söylenen bilgi. «Allah Rahmân'dır» cümlesinde «Rahmân'dır»."],
+["nâib-i fâil","Edilgen cümlede, işi yapan söylenmediği için onun yerine geçen kelime. «Kapı açıldı»da «kapı»."],
+["fâil","İşi yapan, özne. «Rabbin geldi»de «Rabbin»."],
+["mef‘ûl-i mutlak","Fiili kendi masdarıyla pekiştirme: «dağıtıldı, darmadağın dağıtıldı» gibi."],
+["mef‘ûlün bih","İşten doğrudan etkilenen, nesne. «Kitabı okudu»da «kitabı»."],
+["mef‘ûl","İşten etkilenen kelime, nesne."],
+["temyîz","Belirsiz kalan bir şeyi açıklayan isim: «yirmi kitap»taki «kitap»."],
+["sıfat-ı müşebbehe","Kalıcı bir nitelik bildiren sıfat: kerîm (cömert), hasen (güzel)."],
+["sıfat","Bir ismi niteleyen kelime: «apaçık sapıklık»taki «apaçık»."],
+["muzâfun ileyh","İsim tamlamasında tamlayan, yani ikinci kelime: «Allah'ın kulu»nda «Allah». Hep esrelidir."],
+["muzâf","İsim tamlamasında birinci kelime: «Allah'ın kulu»nda «kul»."],
+["câr-mecrûr","Bir edat ile onun etkilediği isim birlikte: «bihî» (O'na), «fî dalâlin» (sapıklık içinde)."],
+["harf-i cer","İsme -e, -de, -den, ile gibi anlamlar katan edat: bi, li, fî, min, ilâ, alâ… Sonraki ismi esreli yapar."],
+["müteallak","Bir câr-mecrûrun anlamca bağlandığı fiil ya da isim. «O'na iman ettik»te «O'na», «iman ettik»e bağlıdır."],
+["merfû","Ötreli (-u) olan; genelde özne, konu ya da haber böyledir."],
+["mansûb","Üstünlü (-a) olan; genelde nesne, hâl ya da «inne»den sonraki isim."],
+["mecrûr","Esreli (-i) olan; edattan sonra gelen ya da tamlayan isim."],
+["meczûm","Muzâri fiilin sonunun sükûnlanması (cezimli olması); «lem», emir «li» gibi edatlardan sonra olur."],
+["i‘râb","Kelimenin cümledeki görevine göre son harekesinin değişmesi; geniş anlamda cümle tahlili."],
+["mâzî","Geçmiş zaman fiili: «yaptı»."],
+["muzâri","Şimdiki, geniş ya da gelecek zaman fiili: «yapıyor, yapar, yapacak»."],
+["nehiy","Olumsuz emir: «yapma»."],
+["meçhul","Edilgen fiil; işi yapan söylenmez: «yapıldı»."],
+["ma‘lûm","Etken fiil; işi yapan bellidir: «yaptı»."],
+["masdar","Fiilin isim hâli: «gelmek, geliş»."],
+["ism-i fâil","«Yapan» anlamında isim: kâtib (yazan), mubîn (apaçık gösteren)."],
+["ism-i mef‘ûl","«Yapılan» anlamında isim: mektûb (yazılmış)."],
+["ism-i tafdîl","Üstünlük bildiren kalıp: ekber (daha/en büyük)."],
+["mübâlağa","Çokluk ve yoğunluk bildiren kalıp: Rahmân, gaffâr (çok bağışlayan)."],
+["sülâsî mücerred","Yalnız üç kök harften oluşan temel fiil: kâle (dedi), alime (bildi)."],
+["mezîd","Kök harflere ek harf eklenerek anlamı genişletilmiş fiil."],
+["bâb","Fiil kalıbı. Kök harflere eklenen harflerle anlam incelir: iman etmek (IV), tevekkül etmek (V) gibi."],
+["if‘âl","IV. bâb (ef‘ale): çoğunlukla «yaptırmak, bir duruma sokmak». Âmene: güvene sokmak, iman etmek."],
+["tef‘îl","II. bâb (fa‘‘ale): çokluk, yoğunluk ya da yaptırma. Fecera (yardı) → feccera (fışkırttı)."],
+["mufâ‘ale","III. bâb (fâ‘ale): karşılıklı ya da birine yönelik yapma: kâtele (biriyle savaştı)."],
+["tefa‘‘ul","V. bâb (tefa‘‘ale): bir şeyi kendi üzerine alma, adım adım olma: tevekkele (işini birine bıraktı)."],
+["tefâ‘ul","VI. bâb (tefâ‘ale): birlikte, karşılıklı yapma: tehâddûn (birbirinizi teşvik etmek)."],
+["infi‘âl","VII. bâb (infa‘ale): kendiliğinden olma, edilgenlik: infecera (yarıldı, fışkırdı)."],
+["ifti‘âl","VIII. bâb (ifte‘ale): kendisi için ya da çabayla yapma: ibtelâ (sınadı)."],
+["istif‘âl","X. bâb (istef‘ale): isteme ya da öyle sayma: istağfera (bağışlanma istedi)."],
+["vezin","Kelimenin kalıbı: fa‘ala, fâ‘il, mif‘âl gibi. Aynı kalıp benzer anlam taşır."],
+["müfred","Tekil."],["tesniye","İkil, iki tane."],
+["cem‘-i teksîr","Kırık çoğul: kelimenin içi değişerek yapılan çoğul. Leyl (gece) → leyâl (geceler)."],
+["cemi","Çoğul."],
+["müzekker","Eril (gramerde erkek)."],["müennes","Dişil (gramerde dişi); çoğu zaman ة ile biter."],
+["mârife","Belirli isim: el- takısı alan, özel isim ya da zamir."],["nekre","Belirsiz isim; genelde tenvinli: «bir sapıklık»."],
+["tenvîn","Kelime sonundaki «-n» sesi (iki üstün, iki esre, iki ötre); çoğu zaman belirsizlik bildirir."],
+["zamir","Bir ismin yerine geçen kelime: o, sen, biz (hüve, ente, nahnü)."],
+["istifhâm","Soru."],
+["cevâb-ı kasem","Yeminin ne için edildiğini söyleyen cümle; bazen söylenmez, bağlamdan anlaşılır."],
+["kasem","Yemin, «andolsun». Kasem vâvı: başına geldiği şeye yemin ettiren «ve»."],
+["ma‘tûf","«Ve» gibi bir bağlaçla öncekine bağlanan kelime."],["atıf","«Ve, sonra, fe» gibi bağlaçlarla kelime ya da cümleleri bağlama."],
+["bedel","Önceki kelimeyi açıklayan ve onun yerine geçebilen kelime: «İrem'e, o sütunlu şehre» gibi."],
+["mahzûf","Söylenmemiş ama anlaşılan, gizli kelime."],
+["takdîr","Gizli kelimeyi açıkça yazarak cümleyi tamamlama: «andolsun» kelimesi gizli, takdiri «yemin ederim» gibi."],
+["takdîm-tehîr","Normalde sonra gelecek kelimeyi öne alma. Vurgu ya da «yalnızca» anlamı (hasr) için yapılır."],
+["hasr","«Yalnızca, sadece» anlamı veren daraltma. «Yalnız O'na tevekkül ettik» gibi."],
+["te’kîd","Pekiştirme, kesinlik katma."],
+["pekiştirme lâmı","Kelimenin başına gelip «elbette, mutlaka» anlamı katan le."],
+["belâgat","Sözü yerinde, etkili ve en uygun biçimde söyleme ilmi."],
+["teşbih","Benzetme."],["istiâre","Benzetmenin bir yanı söylenmeden yapılan mecaz: «Rabbin kırbaç yağdırdı» gibi."],
+["kinâye","Dolaylı anlatım; asıl anlam da kastedilebilir."],["mecaz","Kelimeyi gerçek anlamının dışında, bir ilgiyle kullanma."],
+["iltifât","Konuşmanın yönünü aniden değiştirme: «o»dan «sen»e geçmek gibi; dikkat çeker."],
+["tecnîs","Sesçe benzeyen kelimeleri yan yana getirme sanatı."],["secî","Âyet sonlarındaki ahenkli, kafiyeli bitişler."],
+["temsil","Soyut bir gerçeği somut bir sahneyle anlatma."],
+["tıbâk","Zıt anlamlı kelimeleri bir arada kullanma: çift–tek, gece–gündüz."],["mukabele","Zıt anlamlı ifadeleri karşılıklı sıralama."],
+["nidâ","Seslenme: «Ey…»."],
+["şart","Koşul cümlesi: «Eğer… ise». Sonucuna cevap (cezâ) denir."],
+["istisnâ","Hariç tutma: «…dan başka, ancak»."],
+["inne","Cümleye «şüphesiz, kesinlikle» anlamı katan edat; kendinden sonraki ismi üstünlü yapar."]];
+const noTr=c=>({"â":"a","î":"i","û":"u","Â":"a","Î":"i","Û":"u","‘":"'","’":"'","ʿ":"'","ʾ":"'"}[c]||c.toLocaleLowerCase("tr")[0]||c);
+const normT=s=>Array.from(s,noTr).join("");
+const GL={};GLOSS.forEach(([k,d])=>{GL[normT(k)]={k,d};});
+const GL_RE=new RegExp("(?<![a-zçğıöşü'])("+Object.keys(GL).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/'/g,"'?")).join("|")+")","g");
+const GL_SUF=/^(?:'?(?:[dt][ıiuü]r|[dt][ae]n?|l[ae]r[a-zçğıöşü]*|y?l[ae]|s[ıiuü]n?|n[ıiuü]n?|y?[ıiuü]n[ıiuü]n|y?[ıiuüae]n?|ki|ken))?(?![a-zçğıöşü])/;
+function termify(parent,txt,seen){
+  // only text parts (no Arabic) come here; keep string length equal so indices match
+  const nt=Array.from(txt,noTr).join("");if(nt.length!==txt.length){parent.appendChild(document.createTextNode(txt));return;}
+  let last=0,m;GL_RE.lastIndex=0;
+  while((m=GL_RE.exec(nt))){const key=m[1].replace(/'/g,""),hit=GL[m[1]]||GL[key]||Object.values(GL).find(g=>normT(g.k).replace(/'/g,"")===key);
+    if(!hit||seen.has(hit.k))continue;seen.add(hit.k);
+    // extend over Turkish suffixes ("mübtedâdır", "haberi")
+    const sm=GL_SUF.exec(nt.slice(m.index+m[1].length));if(!sm){seen.delete(hit.k);GL_RE.lastIndex=m.index+1;continue;}
+    const end=m.index+m[1].length+sm[0].length;
+    if(m.index>last)parent.appendChild(document.createTextNode(txt.slice(last,m.index)));
+    const b=document.createElement("button");b.type="button";b.className="term";b.textContent=txt.slice(m.index,end);b.onclick=e=>{e.stopPropagation();showTerm(hit);};parent.appendChild(b);last=end;GL_RE.lastIndex=end;}
+  if(last<txt.length)parent.appendChild(document.createTextNode(txt.slice(last)));
+}
+function showTerm(h){const t=$("stTip");t.querySelector("b").textContent=h.k;t.querySelector("p").textContent=h.d;t.hidden=false;}
+function rich(e,txt,seen){txt=String(txt);seen=seen||new Set();let last=0,m;AR_RUN.lastIndex=0;
+  while((m=AR_RUN.exec(txt))){if(m.index>last)termify(e,txt.slice(last,m.index),seen);const sp=document.createElement("span");sp.className="arr";sp.dir="rtl";sp.textContent=m[0];e.appendChild(sp);last=m.index+m[0].length;AR_RUN.lastIndex=last;}
+  if(last<txt.length)termify(e,txt.slice(last),seen);return e;}
 function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
-function elr(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)rich(e,txt);return e;}
+function elr(tag,cls,txt,seen){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)rich(e,txt,seen);return e;}
+const TUR={belagat:"Belâgat",kural:"Kural",karsilastirma:"Karşılaştırma",ilginc:"İlginç"};
 function renderStudy(){
-  const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;
+  const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;$("stTip").hidden=true;
   $("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent="Kelime tahlili";
   $("stPrev").disabled=v<=1;$("stNext").disabled=v>=COUNTS[CUR.num-1];
-  // verse card
+  const H=t=>body.appendChild(el("div","st-h",t));
+  // verse
   const vc=el("div","st-verse");
   if(x&&x.words&&x.words.length){const ch=el("div","st-chips");x.words.forEach((w,i)=>{const b=el("button",null,w.ar);b.type="button";b.onclick=()=>{const c=$("stw"+i);if(c){c.scrollIntoView({block:"start",behavior:"smooth"});c.classList.add("hl");setTimeout(()=>c.classList.remove("hl"),1500);}};ch.appendChild(b);});vc.appendChild(ch);}
-  else{const a=el("div","st-chips");const b=el("button",null,verseText(CUR,v)||"");a.appendChild(b);vc.appendChild(a);}
+  else{const a=el("div","st-chips");a.appendChild(el("button",null,verseText(CUR,v)||""));vc.appendChild(a);}
   const m=mealFor(CUR,v);vc.appendChild(el("div","st-meal",m?m.t:(x&&x.meal)||""));
   const row=el("div","st-row");
   const lb=el("button","btn small","▶ Dinle");lb.type="button";lb.onclick=()=>{unlock();pause();try{ST.audio.currentTime=0;}catch(e){}ST.audio.playbackRate=+S.speed;ST.audio.play().catch(()=>{});};
@@ -2025,20 +2144,35 @@ function renderStudy(){
   row.append(lb,mb);vc.appendChild(row);body.appendChild(vc);
   const[a,b]=itemSpan(CUR,nIntro(CUR)+v-1);clipURL(CUR,a,b).then(u=>{if(u&&ST.v===v){ST.audio.src=u;}});
   if(!x){body.appendChild(el("div","st-none","Bu âyet için tahlil henüz yok."));return;}
+  // general meaning + context
+  if(x.ozet||x.baglam){H("Genel anlam");const c=el("div","st-card st-ozet");if(x.ozet)c.appendChild(elr("p",null,x.ozet));if(x.baglam){const p=elr("p","st-bag",x.baglam);c.appendChild(p);}body.appendChild(c);}
+  // phrase by phrase
+  if(x.parcalar&&x.parcalar.length){H("Parça parça anlam");const c=el("div","st-card st-parts");
+    x.parcalar.forEach(p=>{const r=el("div","st-part");r.append(el("span","a",p.ar),elr("span","t",p.tr));c.appendChild(r);});body.appendChild(c);}
   // words
-  body.appendChild(el("div","st-h","Kelimeler"));
-  x.words.forEach((w,i)=>{const c=el("div","st-w");c.id="stw"+i;
-    const h=el("div","st-wh");const tc=el("div","txtcol");tc.appendChild(el("b",null,w.tr||""));if(w.kok){const r=el("span","root",w.kok);tc.appendChild(r);}
+  H("Kelime kelime");
+  x.words.forEach((w,i)=>{const c=el("div","st-w");c.id="stw"+i;const seen=new Set();
+    const h=el("div","st-wh");const tc=el("div","txtcol");tc.appendChild(el("b",null,w.tr||""));
+    if(w.kok){const r=el("div","st-root");r.appendChild(el("span","root",w.kok));if(w.kokAnlam)r.appendChild(el("span","ka",w.kokAnlam));tc.appendChild(r);}
     h.append(tc,el("span","ar",w.ar));c.appendChild(h);
-    const dl=el("dl","st-kv");[["Sarf",w.sarf],["Nahiv",w.nahiv],["Not",w.not]].forEach(([k,t])=>{if(t){dl.append(el("dt",null,k),elr("dd",null,t));}});c.appendChild(dl);body.appendChild(c);});
-  const sec=(title,items,cls)=>{if(!items||(Array.isArray(items)&&!items.length))return;body.appendChild(el("div","st-h",title));const c=el("div","st-card"+(cls?" "+cls:""));
+    const dl=el("dl","st-kv");[["Yapısı",w.sarf],["Görevi",w.nahiv]].forEach(([k,t])=>{if(t){dl.append(el("dt",null,k),elr("dd",null,t,seen));}});if(dl.childNodes.length)c.appendChild(dl);
+    if(w.aile&&w.aile.length){const fa=el("div","st-fam");fa.appendChild(el("span","fl","Aynı kökten"));
+      w.aile.forEach(f=>{const ch=el("span","st-fw");ch.append(el("span","a",f.ar),el("span","t",f.tr+(f.ref?" · "+f.ref:"")));fa.appendChild(ch);});c.appendChild(fa);}
+    if(w.not)c.appendChild(elr("div","st-wnote",w.not,seen));
+    body.appendChild(c);});
+  // insights (v2) or old lists (v1)
+  if(x.noktalar&&x.noktalar.length){H("İncelikler");
+    x.noktalar.forEach(n=>{const c=el("div","st-card st-pt t-"+(n.tur||"ilginc"));c.appendChild(el("span","tag",TUR[n.tur]||"Not"));c.appendChild(el("b",null,n.baslik||""));c.appendChild(elr("p",null,n.metin||""));body.appendChild(c);});}
+  const sec=(title,items,cls)=>{if(!items||(Array.isArray(items)&&!items.length))return;H(title);const c=el("div","st-card"+(cls?" "+cls:""));
     if(Array.isArray(items)){const ul=el("ul");items.forEach(t=>ul.appendChild(elr("li",null,t)));c.appendChild(ul);}else rich(c,items);body.appendChild(c);};
   sec("Cümle tahlili (i‘rab)",x.irab);
-  if(x.baska&&x.baska.length){body.appendChild(el("div","st-h","Başka âyetlerde"));const c=el("div","st-card");
+  if(x.baska&&x.baska.length){H("Başka âyetlerde");const c=el("div","st-card");
     x.baska.forEach(r=>{const it=el("div","st-ref");it.append(el("span","r",r.ref||""),el("div","a",r.ar||""),elr("div",null,r.tr||""));if(r.not)it.appendChild(elr("div","n",r.not));c.appendChild(it);});body.appendChild(c);}
-  sec("Belâgat",x.belagat);sec("Kurallar ve kalıplar",x.kural);sec("Karşılaştırmalar",x.karsilastirma);sec("İlginç bilgiler",x.ilginc);sec("Ezber ipucu",x.ezber,"st-ez");
-  body.appendChild(el("p","st-src",`Hazırlayan: ${d.by||"Claude (yapay zekâ)"}. Yapay zekâ ile hazırlandığı için hata olabilir; önemli noktaları bir hocaya danışarak kontrol edin.`));
+  sec("Belâgat",x.belagat);sec("Kurallar ve kalıplar",x.kural);sec("Karşılaştırmalar",x.karsilastirma);sec("İlginç bilgiler",x.ilginc);
+  if(x.ezber){H("Ezber ipucu");body.appendChild(elr("div","st-card st-ez",x.ezber));}
+  const src=el("p","st-src",`Hazırlayan: ${d.by||"Claude (yapay zekâ)"}. Yapay zekâ ile hazırlandığı için hata olabilir; önemli noktaları bir hocaya danışarak kontrol edin. Altı noktalı terimlere dokununca kısa açıklaması çıkar.`);body.appendChild(src);
 }
+$("stTip").onclick=()=>{$("stTip").hidden=true;};
 $("studyBtn").onclick=()=>openStudy(P.cur!=null&&P.cur>=nIntro(CUR)?P.cur-nIntro(CUR)+1:range()[0]);
 $("stClose").onclick=closeStudy;
 $("stPrev").onclick=()=>{ST.v--;renderStudy();};$("stNext").onclick=()=>{ST.v++;renderStudy();};
