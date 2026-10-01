@@ -408,6 +408,94 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .pl-preview{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
 .pl-preview li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:10px;background:var(--sunk);font-size:14px}
 .pl-preview li span{color:var(--muted)}
+
+/* ---- v10: goals, calendar, word study ---- */
+.plan-days{display:flex;gap:5px}
+.plan-days i{flex:1;min-width:0;height:44px;border-radius:10px;background:var(--sunk);display:flex;flex-direction:column;align-items:center;justify-content:center;font:600 11px/1.15 var(--f-ui);font-style:normal;color:var(--muted)}
+.plan-days i b{font-size:14px;color:var(--ink)}
+.plan-days i.plan{box-shadow:inset 0 0 0 1.5px var(--line)}
+.goal-list{display:flex;flex-direction:column;gap:8px}
+.goal-list:empty{display:none}
+.gl-row{display:flex;flex-direction:column;gap:8px;padding:11px 12px;border-radius:14px;background:var(--sunk)}
+.gl-row.missed{background:color-mix(in srgb,var(--brass) 14%,var(--sunk))}
+.gl-row.done{opacity:.72}
+.gl-top{display:flex;align-items:center;gap:10px}
+.gl-top .txtcol{flex:1}
+.gl-top b{font-size:16px}
+.gl-top span{font-size:12.5px;color:var(--muted)}
+.gl-ck{flex:none;width:40px;height:40px;border-radius:12px;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--muted);background:var(--surface)}
+.gl-ck svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.gl-ck[aria-pressed="true"]{background:var(--ok,#23845f);border-color:transparent;color:#fff}
+.gl-act{display:flex;gap:6px;flex-wrap:wrap}
+.gl-act .btn{flex:1;min-width:0}
+.gl-empty{font-size:14px;color:var(--muted);padding:2px}
+.pl-start{display:flex;gap:8px;align-items:center}
+.pl-start .seg{flex:1}
+.pl-start .txtin{width:auto;flex:none;min-height:44px}
+.cal-h{display:flex;align-items:center;justify-content:space-between}
+.cal-h b{font-size:17px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-grid .wd{font:600 11px var(--f-ui);color:var(--muted);text-align:center;padding:2px 0;text-transform:uppercase;letter-spacing:.04em}
+.cal-d{aspect-ratio:1;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:600 14px var(--f-ui);color:var(--ink);background:transparent;position:relative}
+.cal-d.out{opacity:.3}
+.cal-d.plan{box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface)}
+.cal-d.done{background:var(--accent);color:var(--on-accent)}
+.cal-d.part{background:color-mix(in srgb,var(--accent) 35%,var(--sunk))}
+.cal-d.missed{background:color-mix(in srgb,var(--brass) 30%,var(--sunk))}
+.cal-d.today{outline:2px solid var(--brass);outline-offset:1px}
+.cal-d.sel{outline:2.5px solid var(--ink);outline-offset:1px}
+.cal-d small{font:500 9.5px var(--f-ui);opacity:.8}
+.cal-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.cal-legend span{display:inline-flex;align-items:center;gap:5px}
+.lg{width:12px;height:12px;border-radius:4px;display:inline-block}
+.lg.done{background:var(--accent)}.lg.part{background:color-mix(in srgb,var(--accent) 35%,var(--sunk))}.lg.missed{background:color-mix(in srgb,var(--brass) 30%,var(--sunk))}.lg.plan{box-shadow:inset 0 0 0 1.5px var(--line)}
+.cal-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cal-stats div{background:var(--sunk);border-radius:12px;padding:9px 10px;display:flex;flex-direction:column}
+.cal-stats b{font-size:20px}.cal-stats span{font-size:11.5px;color:var(--muted)}
+.cal-goals{display:flex;flex-direction:column;gap:6px}
+.cg-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px}
+.cg-row .txtcol{flex:1}.cg-row b{font-size:15px}.cg-row span{font-size:12.5px;color:var(--muted)}
+.cg-row .pick-mini{max-width:none}
+.study-open{position:relative;z-index:1;display:flex;align-items:center;gap:8px;margin-top:12px;padding:9px 12px;border-radius:12px;background:rgba(255,255,255,.14);color:inherit;font-size:13.5px;font-weight:600;width:100%}
+.study-open svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vst{flex:none;width:38px;height:38px;border-radius:12px;border:1.5px solid var(--line);display:grid;place-items:center;color:var(--muted);margin-top:4px}
+.vst svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.v .side{display:flex;flex-direction:column;gap:6px}
+.study{position:fixed;inset:0;z-index:95;background:var(--bg);display:flex;flex-direction:column}
+.st-top{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;border-bottom:1px solid var(--line);background:var(--surface)}
+.st-top .t{flex:1;min-width:0;text-align:center}
+.st-top b{display:block;font-size:16px}.st-top span{display:block;font-size:12px;color:var(--muted)}
+.st-body{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(30px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;max-width:760px;width:100%;margin:0 auto}
+.st-verse{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px;display:flex;flex-direction:column;gap:10px}
+.st-chips{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;justify-content:center}
+.st-chips button{font:30px/1.6 var(--f-ar);padding:2px 10px;border-radius:12px;background:var(--sunk);color:var(--ink);-webkit-text-stroke:var(--ar-stroke) currentColor}
+.st-meal{font-size:14.5px;color:var(--muted);line-height:1.5;text-align:center}
+.st-row{display:flex;gap:8px;justify-content:center}
+.st-h{font:700 12px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 2px -4px}
+.st-w{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 13px;display:flex;flex-direction:column;gap:7px;scroll-margin-top:12px}
+.st-w.hl{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft)}
+.st-wh{display:flex;align-items:center;gap:10px}
+.st-wh .ar{font:34px/1.4 var(--f-ar);color:var(--accent);-webkit-text-stroke:var(--ar-stroke) currentColor}
+.st-wh .txtcol{flex:1}
+.st-wh b{font-size:16px}
+.root{display:inline-block;font:600 13px var(--f-ui);padding:2px 8px;border-radius:99px;background:var(--brass-soft);color:var(--brass);direction:rtl;white-space:nowrap}
+.st-kv{display:grid;grid-template-columns:52px 1fr;gap:4px 10px;font-size:14px;line-height:1.5}
+.st-kv dt{font:700 11px/1.9 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.st-kv dd{margin:0}
+.st-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;font-size:14.5px;line-height:1.6}
+.st-card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.st-ref{display:flex;flex-direction:column;gap:3px;padding:8px 0;border-top:1px solid var(--line)}
+.st-ref:first-child{border-top:0;padding-top:0}
+.st-ref .a{font:24px/1.6 var(--f-ar);direction:rtl;text-align:right}
+.st-ref .r{font:700 12px var(--f-ui);color:var(--brass)}
+.st-ref .n{font-size:13.5px;color:var(--muted)}
+.st-ez{background:var(--brass-soft);border-color:transparent}
+.st-src{font-size:12px;color:var(--muted);line-height:1.5;padding:0 2px}
+.st-none{text-align:center;color:var(--muted);padding:30px 10px;line-height:1.6}
+.st-wh .root{align-self:flex-start}
+.plan-days i.done b,.plan-days i.done span{color:var(--on-accent)}
+.gl-row .btn.secondary{background:var(--surface)}
+.arr{unicode-bidi:isolate;direction:rtl;font-family:var(--f-ar);font-size:1.18em;line-height:1.3}
 </style>
 </head>
 <body>
@@ -450,19 +538,16 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
       <div class="surah-ar" id="sAr"></div>
     </div>
     <div class="memo"><div class="memo-bar"><i id="memoBar"></i></div><span class="memo-txt" id="memoTxt">0 / 0 memorised</span></div>
+    <button class="study-open" id="studyBtn" type="button" hidden><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>Kelime tahlili · sarf, nahiv, belâgat</button>
   </section>
 
-  <section class="card plan-card needs-surah" id="planCard" aria-label="Memorisation plan">
-    <div class="plan-none" id="planNone">
-      <div class="txtcol"><b>Memorisation plan</b><span class="hint">Set a daily or weekly goal for a surah or range.</span></div>
-      <button class="btn small" id="planNew" type="button">Set a plan</button>
+  <section class="card plan-card needs-surah" id="planCard" aria-label="Goals">
+    <div class="plan-h">
+      <div class="txtcol"><span class="lbl">Goals</span><b id="planHead">Today</b></div>
+      <div class="erow"><button class="iconbtn" id="calBtn" type="button" aria-label="Calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button><button class="btn small" id="planNew" type="button">+ Goal</button></div>
     </div>
-    <div id="planOn" hidden>
-      <div class="plan-h"><div class="txtcol"><span class="lbl" id="planKind">Weekly plan</span><b id="planTitle"></b></div><button class="btn small secondary" id="planEdit" type="button">Edit</button></div>
-      <div class="plan-days" id="planDays"></div>
-      <div class="plan-today"><div class="txtcol"><b id="planTodayT"></b><span class="hint" id="planTodayS"></span></div></div>
-      <div class="erow plan-actions"><button class="btn small" id="planListen" type="button">Listen to today</button><button class="btn small secondary" id="planDone" type="button">Mark done</button></div>
-    </div>
+    <div class="plan-days" id="planDays"></div>
+    <div class="goal-list" id="planList"></div>
   </section>
 
   <section class="card needs-surah" aria-label="What to play">
@@ -565,6 +650,17 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   </div>
 </div>
 
+<!-- word study -->
+<div class="study" id="study" hidden>
+  <div class="st-top">
+    <button class="navb" id="stClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="t"><b id="stTitle"></b><span id="stSub"></span></div>
+    <button class="navb" id="stPrev" type="button" aria-label="Previous verse"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <button class="navb" id="stNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </div>
+  <div class="st-body" id="stBody"></div>
+</div>
+
 <!-- timing fixer -->
 <div class="fix" id="fix" hidden>
   <div class="fix-top">
@@ -665,19 +761,35 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 <dialog class="sheet" id="planDlg">
   <div class="sheet-in">
     <div class="grab"></div>
-    <div class="sheet-h"><h2>Memorisation plan</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="sheet-h"><h2 id="plHead">New goal</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
     <div class="field"><label class="lbl" for="plSurah">Surah</label><select id="plSurah"></select></div>
     <div class="row2">
       <div class="field"><label class="lbl" for="plFrom">From verse</label><select id="plFrom"></select></div>
       <div class="field"><label class="lbl" for="plTo">To verse</label><select id="plTo"></select></div>
     </div>
-    <div class="field"><span class="lbl">Goal</span><div class="seg" id="plMode"><button type="button" data-v="week">Weekly</button><button type="button" data-v="day">Daily</button></div></div>
-    <div class="field" id="plWeekBox"><span class="lbl">Split the week by</span><div class="seg" id="plSplit"><button type="button" data-v="verses">Equal verses</button><button type="button" data-v="length">Equal length</button></div>
-      <p class="hint">The range is shared over 7 days. “Equal length” gives each day about the same listening time.</p></div>
+    <div class="field"><span class="lbl">Goal</span><div class="seg" id="plMode"><button type="button" data-v="week">Weekly</button><button type="button" data-v="day">Daily</button><button type="button" data-v="custom">Custom</button></div></div>
+    <div class="field" id="plCustomBox"><label class="lbl" for="plN">Finish in</label><select id="plN"></select></div>
+    <div class="field" id="plWeekBox"><span class="lbl">Split by</span><div class="seg" id="plSplit"><button type="button" data-v="verses">Equal verses</button><button type="button" data-v="length">Equal length</button></div>
+      <p class="hint" id="plSplitHint">The range is shared over the days. “Equal length” gives each day about the same listening time.</p></div>
     <div class="field" id="plDayBox"><label class="lbl" for="plPer">Verses per day</label><select id="plPer"></select></div>
-    <div class="field"><span class="lbl">Start</span><div class="seg" id="plStart"><button type="button" data-v="0">Today</button><button type="button" data-v="1">Tomorrow</button></div></div>
+    <div class="field"><span class="lbl">Start</span><div class="pl-start"><div class="seg" id="plStart"><button type="button" data-v="0">Today</button><button type="button" data-v="1">Tomorrow</button></div><input class="txtin" type="date" id="plDate" aria-label="Start date"></div></div>
     <div class="field"><span class="lbl">Days</span><ol class="pl-preview" id="plPreview"></ol></div>
-    <div class="erow"><button class="btn" id="plSave" type="button" style="flex:1">Save plan</button><button class="btn secondary" id="plDel" type="button">Delete plan</button></div>
+    <div class="erow"><button class="btn" id="plSave" type="button" style="flex:1">Save goal</button><button class="btn secondary" id="plDel" type="button">Delete goal</button></div>
+  </div>
+</dialog>
+
+<!-- calendar -->
+<dialog class="sheet" id="calDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Progress</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="cal-h"><button class="navb" id="calPrev" type="button" aria-label="Previous month"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><b id="calMonth"></b><button class="navb" id="calNext" type="button" aria-label="Next month"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend"><span><i class="lg done"></i>Done</span><span><i class="lg part"></i>Partly</span><span><i class="lg missed"></i>Missed</span><span><i class="lg plan"></i>Planned</span></div>
+    <div id="calStats" class="cal-stats"></div>
+    <div id="calDay" class="goal-list"></div>
+    <div class="field"><span class="lbl">Your goals</span><div id="calGoals" class="cal-goals"></div></div>
+    <button class="btn secondary" id="calNew" type="button">+ New goal</button>
   </div>
 </dialog>
 
@@ -976,7 +1088,7 @@ function renderVerses(){
   const n=COUNTS[s.num-1];
   for(let v=1;v<=n;v++){
     const li=document.createElement("li");li.className="v";li.dataset.v=v;li.dataset.item=nIntro(s)+v-1;
-    li.innerHTML=`<span class="num"><svg><use href="#star"/></svg><span>${v}</span></span><div class="body"><div class="txt ar"></div><p class="meal"></p><div class="times"></div></div><button class="mem" type="button" aria-label="Memorised verse ${v}" aria-pressed="false"><svg><use href="#i-check"/></svg></button>`;
+    li.innerHTML=`<span class="num"><svg><use href="#star"/></svg><span>${v}</span></span><div class="body"><div class="txt ar"></div><p class="meal"></p><div class="times"></div></div><div class="side"><button class="mem" type="button" aria-label="Memorised verse ${v}" aria-pressed="false"><svg><use href="#i-check"/></svg></button><button class="vst" type="button" aria-label="Word study, verse ${v}"${STUDY[s.num]?"":" hidden"}><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg></button></div>`;
     const t=li.querySelector(".txt"),vt=verseText(s,v);
     if(vt)t.textContent=vt;else{t.textContent=`Verse ${v}`;t.classList.add("plain");}
     const m=mealFor(s,v),me=li.querySelector(".meal");
@@ -1302,7 +1414,7 @@ function selectSurah(id){
   const s=LIB.find(x=>x.id===id)||LIB[0];stop();CUR=s;S.cur=s.id;P.cur=null;
   if(S._last!==s.id){S.scope="surah";S.from=1;S.to=COUNTS[s.num-1];S._last=s.id;}
   save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();if($("car").hidden)scrollTo(0,0);else renderCar();
-  setTimeout(()=>decodeSurah(s),50);ensureText(s);
+  setTimeout(()=>decodeSurah(s),50);ensureText(s);refreshStudy(s);
 }
 function changed(reset){save();syncUI();if(reset&&P.key!==listKey()){const was=P.playing;stop();if(was)play();}}
 $("from").onchange=e=>{S.from=+e.target.value;if(S.to<S.from)S.to=S.from;changed(true);};
@@ -1324,6 +1436,7 @@ $("themeBtn").onclick=()=>{const cur=document.documentElement.dataset.theme||(ma
 $("verses").addEventListener("click",e=>{
   const li=e.target.closest(".v");if(!li)return;
   if(e.target.closest(".mem")){toggleMem(+li.dataset.v);return;}
+  if(e.target.closest(".vst")){openStudy(+li.dataset.v);return;}
   const item=+li.dataset.item;unlock();
   if(S.hide&&!li.classList.contains("intro")){li.classList.add("peek");setTimeout(()=>li.classList.remove("peek"),4000);}
   if(!startAtItem(item)&&li.dataset.v){const v=+li.dataset.v;S.scope="verse";S.from=v;S.to=v;changed(false);stop();play();}
@@ -1603,10 +1716,10 @@ async function syncNow(){
         if(r&&r.u>lu){ls.set("hifz-mem-"+num,r.v);ls.set("hifz-memu-"+num,r.u);if(CUR&&CUR.num===num){loadMem();renderVerses();updateMemo();}changedLocal=true;}
         else if(lu&&(!r||lu>r.u))mem[num]={v:ls.get("hifz-mem-"+num,[]),u:lu};});
       // 5) memorisation plan (newest wins)
-      let plan=remote.plan||null;const lp=ls.get("hifz-plan",null);
-      if(plan&&(!lp||plan.u>lp.u)){ls.set("hifz-plan",plan);PLAN=plan;renderPlan();}else if(lp&&(!plan||lp.u>plan.u))plan=lp;
-      const lib={app:"hifz",version:1,surahs:out,deleted:del,mem,plan,savedAt:Date.now()};
-      const same=JSON.stringify({s:remote.surahs,d:remote.deleted,m:remote.mem,p:remote.plan||null})===JSON.stringify({s:out,d:del,m:mem,p:plan});
+      let goals=remote.goals||null;
+      if(goals&&goals.u>GOALS.u){GOALS=Object.assign({list:[],del:{}},goals);ls.set("hifz-goals",GOALS);renderPlan();}else if(GOALS.u&&(!goals||GOALS.u>goals.u))goals=GOALS;
+      const lib={app:"hifz",version:1,surahs:out,deleted:del,mem,goals,savedAt:Date.now()};
+      const same=JSON.stringify({s:remote.surahs,d:remote.deleted,m:remote.mem,g:remote.goals||null})===JSON.stringify({s:out,d:del,m:mem,g:goals});
       if(!same&&!(await pushLib(lib)))continue;
       ls.set("hifz-deleted",{});
       if(changedLocal){if(!LIB.length)showEmpty(true);else if(!CUR||!LIB.includes(CUR))selectSurah((LIB.find(x=>x.id===S.cur)||LIB[0]).id);else renderPicker();}
@@ -1654,115 +1767,200 @@ function editReciter(s){REC_S=s;fillReciterList();$("recTitle").textContent=`Rec
 $("recForm").addEventListener("submit",e=>{e.preventDefault();const s=REC_S;if(!s)return;const v=$("recName").value.trim()||"Your recording";
   s.reciter=v;if(v!=="Your recording")ls.set("hifz-lastReciter",v);touch(s);saveLocal(s);scheduleSync();$("recDlg").close();renderPicker();if(s===CUR)renderHeader();});
 
-// ---------- memorisation plan ----------
-let PLAN=ls.get("hifz-plan",null);
-const planOn=()=>!!(PLAN&&!PLAN.deleted&&PLAN.num);
+// ---------- goals (memorisation plans) ----------
+// Each goal stores its own day-by-day schedule, so a day can be moved without touching the others.
 const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const parseD=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d);};
 const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d;};
 const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 const dayDiff=(a,b)=>Math.round((b-a)/864e5);
+const TODAY=()=>dkey(today0());
 const fmtD=d=>d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+const fmtK=k=>fmtD(parseD(k));
+const sName=num=>{const s=libBy(num)[0];return s?dispName(s):NAMES[num-1];};
 function verseWeights(num,a,b){const s=libBy(num)[0],w=[];for(let v=a;v<=b;v++){let x=1;if(s){const[p,q]=itemSpan(s,nIntro(s)+v-1);x=Math.max(.3,(q-p)||1);}w.push(x);}return w;}
-function planDays(p){
+function splitRanges(p){
   const n=p.b-p.a+1,out=[];if(n<1)return out;
   if(p.mode==="day"){const per=Math.max(1,+p.per||1);for(let v=p.a;v<=p.b;v+=per)out.push([v,Math.min(p.b,v+per-1)]);return out;}
-  const D=Math.min(7,n);
+  const D=Math.min(p.mode==="custom"?Math.max(1,+p.ndays||2):7,n);
   if(p.split==="length"){const w=verseWeights(p.num,p.a,p.b),tot=w.reduce((x,y)=>x+y,0);let acc=0,start=p.a,k=1;
     for(let i=0;i<n&&k<D;i++){acc+=w[i];const v=p.a+i,remV=p.b-v,remD=D-k;
       if(remV>=remD&&(acc>=tot*k/D-1e-9||remV===remD)){out.push([start,v]);start=v+1;k++;}}
     out.push([start,p.b]);return out;}
   const base=Math.floor(n/D),extra=n%D;let v=p.a;for(let k=0;k<D;k++){const len=base+(k<extra?1:0);out.push([v,v+len-1]);v+=len;}return out;
 }
-const planIdx=()=>dayDiff(parseD(PLAN.start),today0());
-function dayDone(i){const d=planDays(PLAN)[i];if(!d)return false;if(PLAN.done&&PLAN.done[i])return true;
-  const m=new Set(ls.get("hifz-mem-"+PLAN.num,[]));for(let v=d[0];v<=d[1];v++)if(!m.has(v))return false;return true;}
+const planDays=splitRanges; // kept for tests
+function buildDays(p,start){const st=parseD(start);return splitRanges(p).map(([a,b],j)=>({d:dkey(addD(st,j)),a,b,done:0}));}
+// storage: {u, list:[goal], del:{id:ts}}
+function loadGoals(){
+  let G=ls.get("hifz-goals",null);
+  if(!G){G={u:0,list:[],del:{}};const old=ls.get("hifz-plan",null);
+    if(old&&!old.deleted&&old.num){const g={id:"g"+Date.now().toString(36),num:old.num,a:old.a,b:old.b,mode:old.mode,split:old.split||"verses",per:old.per||3,ndays:7,created:Date.now()};
+      g.days=buildDays(g,old.start);Object.entries(old.done||{}).forEach(([i,t])=>{if(g.days[i])g.days[i].done=t;});G.list.push(g);G.u=Date.now();}}
+  G.del=G.del||{};return G;}
+let GOALS=loadGoals();
+function saveGoals(){GOALS.u=Date.now();ls.set("hifz-goals",GOALS);scheduleSync(1500);renderPlan();if($("calDlg").open)renderCal();if(!$("car").hidden)renderGoalChip();}
+const goalById=id=>GOALS.list.find(g=>g.id===id);
+function memSet(num){return new Set(ls.get("hifz-mem-"+num,[]));}
+function entryDone(g,e){if(e.done)return true;const m=memSet(g.num);for(let v=e.a;v<=e.b;v++)if(!m.has(v))return false;return true;}
+function entriesOn(k){const r=[];GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d===k)r.push({g,e,i});}));return r;}
+function missedEntries(){const t=TODAY(),r=[];GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d<t&&!entryDone(g,e))r.push({g,e,i});}));return r.sort((x,y)=>x.e.d<y.e.d?-1:1);}
+function nextEntry(){const t=TODAY();let best=null;GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d>t&&(!best||e.d<best.e.d))best={g,e,i};}));return best;}
+function dayState(k){const E=entriesOn(k);if(!E.length)return"";const dn=E.filter(x=>entryDone(x.g,x.e)).length;
+  if(dn===E.length)return"done";if(k<TODAY())return dn?"part":"missed";return dn?"part":"plan";}
+// move entry i (and the rest of that goal after it) so it lands on date k
+function moveEntry(g,i,k){const delta=dayDiff(parseD(g.days[i].d),parseD(k));if(!delta)return;for(let j=i;j<g.days.length;j++)g.days[j].d=dkey(addD(parseD(g.days[j].d),delta));saveGoals();}
+function toggleDone(g,i){const e=g.days[i];e.done=e.done?0:Date.now();
+  if(!e.done&&entryDone(g,e))status("Still counted as done","All verses of this day are ticked as memorised.");saveGoals();}
 function spanSecs(num,a,b){const s=libBy(num)[0];if(!s)return 0;return itemSpan(s,nIntro(s)+b-1)[1]-itemSpan(s,nIntro(s)+a-1)[0];}
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.round(t%60)).padStart(2,"0")}`;
-// goal tiles: today, yesterday, 2 days ago, last 3 days (combined)
-function goalTiles(){
-  if(!planOn())return[];const D=planDays(PLAN),i=planIdx();
-  const T=[["d2","2 days ago",[i-2]],["y","Yesterday",[i-1]],["t","Today",[i]],["3","Last 3 days",[i-2,i-1,i]]];
-  return T.map(([k,lab,idx])=>{const ok=idx.filter(j=>j>=0&&j<D.length);let r=ok.length?[D[ok[0]][0],D[ok[ok.length-1]][1]]:null,sub=ok.length?"Day "+ok.map(j=>j+1).join(" + "):"";
-    if(k==="t"&&!r){if(i<0){r=D[0];lab="Day 1";sub="Starts "+fmtD(parseD(PLAN.start));}else{r=[PLAN.a,PLAN.b];lab="Whole plan";sub="Plan finished: review";}}
-    return{k,lab,r,sub,idx:ok};});
-}
 function playRange(num,a,b){
   const recs=libBy(num);if(!recs.length){status("Recording missing",`Add a recording of ${NAMES[num-1]} first.`,true);return;}
   const s=(CUR&&CUR.num===num)?CUR:pickNum(num);if(s!==CUR)selectSurah(s.id);
   const n=COUNTS[num-1];S.scope=a===1&&b===n?"surah":a===b?"verse":"range";S.from=a;S.to=b;save();syncUI();renderGoalChip();stop();unlock();play();
 }
+const SV={ck:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'};
+function goalRow({g,e,i},ctx){
+  const el=document.createElement("div");const dn=entryDone(g,e),t=TODAY(),missed=e.d<t&&!dn;
+  el.className="gl-row"+(missed?" missed":"")+(dn?" done":"");
+  const nv=e.b-e.a+1,sec=spanSecs(g.num,e.a,e.b);
+  const when=e.d===t?"Today":e.d===dkey(addD(today0(),1))?"Tomorrow":e.d===dkey(addD(today0(),-1))?"Yesterday":fmtK(e.d);
+  el.innerHTML=`<div class="gl-top"><div class="txtcol"><b></b><span></span></div><button class="gl-ck" type="button" aria-label="Done" aria-pressed="${dn}">${SV.ck}</button></div><div class="gl-act"></div>`;
+  el.querySelector("b").textContent=`${sName(g.num)} · ${e.a===e.b?"verse "+e.a:"verses "+e.a+"–"+e.b}`;
+  el.querySelector("span").textContent=`${missed?"Missed · ":""}${when} · day ${i+1} of ${g.days.length} · ${nv} verse${nv>1?"s":""}${sec?" · "+mmss(sec):""}`;
+  el.querySelector(".gl-ck").onclick=()=>toggleDone(g,i);
+  const act=el.querySelector(".gl-act"),btn=(txt,cls,fn)=>{const b=document.createElement("button");b.type="button";b.className="btn small "+cls;b.textContent=txt;b.onclick=fn;act.appendChild(b);};
+  btn("▶ Listen","",()=>{if($("calDlg").open)$("calDlg").close();playRange(g.num,e.a,e.b);});
+  if(!dn){if(e.d<t)btn("Move to today","secondary",()=>moveEntry(g,i,t));
+    else btn(e.d===t?"Move to tomorrow":"Move a day later","secondary",()=>moveEntry(g,i,dkey(addD(parseD(e.d),1))));}
+  return el;
+}
 function renderPlan(){
-  if(!$("planCard"))return;const on=planOn();$("planNone").hidden=on;$("planOn").hidden=!on;if(!on)return;
-  const D=planDays(PLAN),i=planIdx(),st=parseD(PLAN.start);
-  $("planKind").textContent=PLAN.mode==="week"?`Weekly plan · from ${fmtD(st)}`:`Daily plan · ${PLAN.per} verse${PLAN.per>1?"s":""} a day · ${D.length} days`;
-  const s0=libBy(PLAN.num)[0];$("planTitle").textContent=`${s0?dispName(s0):NAMES[PLAN.num-1]} · verses ${PLAN.a}–${PLAN.b}`;
-  const box=$("planDays");box.innerHTML="";const w0=Math.max(0,Math.min(i-3,D.length-7));
-  for(let j=w0;j<Math.min(D.length,w0+7);j++){const el=document.createElement("i");const dn=dayDone(j);
-    el.className=(dn?"done ":"")+(j===i?"today ":"")+(!dn&&j<i?"missed":"");el.textContent=addD(st,j).toLocaleDateString(undefined,{weekday:"short"});
-    el.title=`Day ${j+1}: verses ${D[j][0]}–${D[j][1]}`;box.appendChild(el);}
-  const t=goalTiles().find(x=>x.k==="t"),inPlan=i>=0&&i<D.length;
-  $("planTodayT").textContent=inPlan?`Today · verses ${t.r[0]}–${t.r[1]}`:i<0?`Day 1 · verses ${t.r[0]}–${t.r[1]}`:"Plan finished";
-  const nv=t.r[1]-t.r[0]+1,sec=spanSecs(PLAN.num,t.r[0],t.r[1]);
-  $("planTodayS").textContent=inPlan?`Day ${i+1} of ${D.length} · ${nv} verse${nv>1?"s":""}${sec?` · about ${mmss(sec)} each time`:""}${dayDone(i)?" · done":""}`
-    :i<0?`Starts ${fmtD(st)}`:`Well done. Listen to the whole range to keep it fresh, or set a new plan.`;
-  $("planListen").textContent=inPlan?"Listen to today":i<0?"Listen to day 1":"Review the whole plan";
-  $("planDone").hidden=!inPlan;$("planDone").textContent=dayDone(i)?"Done ✓":"Mark done";$("planDone").classList.toggle("secondary",!dayDone(i));
+  if(!$("planCard"))return;const t=TODAY(),T=today0();
+  const box=$("planDays");box.innerHTML="";
+  for(let j=-3;j<=3;j++){const k=dkey(addD(T,j)),st=dayState(k),el=document.createElement("i");
+    el.className=(st?st+" ":"")+(j===0?"today":"");el.innerHTML=`<span></span><b>${addD(T,j).getDate()}</b>`;el.querySelector("span").textContent=addD(T,j).toLocaleDateString(undefined,{weekday:"short"});
+    el.onclick=()=>openCal(k);box.appendChild(el);}
+  box.hidden=!GOALS.list.length;
+  const list=$("planList");list.innerHTML="";const today=entriesOn(t),missed=missedEntries();
+  $("planHead").textContent=!GOALS.list.length?"No goals yet":today.length?`Today · ${today.filter(x=>entryDone(x.g,x.e)).length} of ${today.length} done`:"Nothing planned today";
+  today.forEach(x=>list.appendChild(goalRow(x)));
+  missed.slice(-3).forEach(x=>list.appendChild(goalRow(x)));
+  if(!today.length){const nx=nextEntry(),p=document.createElement("div");p.className="gl-empty";
+    p.textContent=!GOALS.list.length?"Set a daily, weekly or custom goal for a surah or a range of verses.":nx?`Next: ${fmtK(nx.e.d)} · ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:"All goals finished. Well done!";list.appendChild(p);}
   renderGoalChip();
 }
-function savePlan(p){p.u=Date.now();PLAN=p;ls.set("hifz-plan",p);scheduleSync(1500);renderPlan();}
-$("planListen").onclick=()=>{const t=goalTiles().find(x=>x.k==="t");if(t&&t.r)playRange(PLAN.num,t.r[0],t.r[1]);};
-$("planDone").onclick=()=>{const i=planIdx(),p=Object.assign({},PLAN,{done:Object.assign({},PLAN.done||{})});if(p.done[i])delete p.done[i];else p.done[i]=Date.now();savePlan(p);};
-// plan sheet
+$("planNew").onclick=()=>openPlan(null);
+$("calBtn").onclick=()=>openCal(TODAY());
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")renderPlan();});
+
+// ---------- calendar ----------
+const CAL={m:null,sel:null};
+function openCal(k){CAL.sel=k;const d=parseD(k);CAL.m=new Date(d.getFullYear(),d.getMonth(),1);renderCal();if(!$("calDlg").open)openSheet("calDlg");}
+function renderCal(){
+  const m=CAL.m,g=$("calGrid");g.innerHTML="";$("calMonth").textContent=m.toLocaleDateString(undefined,{month:"long",year:"numeric"});
+  const wd0=new Date(2024,0,1);for(let i=0;i<7;i++){const s=document.createElement("span");s.className="wd";s.textContent=addD(wd0,i).toLocaleDateString(undefined,{weekday:"narrow"});g.appendChild(s);}
+  const first=(m.getDay()+6)%7,start=addD(m,-first),t=TODAY();
+  for(let c=0;c<42;c++){const d=addD(start,c),k=dkey(d);if(c>=35&&d.getMonth()!==m.getMonth())break;
+    const st=dayState(k),b=document.createElement("button");b.type="button";
+    b.className="cal-d "+(st||"")+(d.getMonth()!==m.getMonth()?" out":"")+(k===t?" today":"")+(k===CAL.sel?" sel":"");
+    const E=entriesOn(k);b.innerHTML=`${d.getDate()}${E.length?`<small>${E.map(x=>x.e.a+"–"+x.e.b).join(",").slice(0,8)}</small>`:""}`;
+    b.onclick=()=>{CAL.sel=k;renderCal();};g.appendChild(b);}
+  // month stats
+  let planned=0,done=0,streak=0;const mk=dkey(m).slice(0,7);
+  GOALS.list.forEach(G=>G.days.forEach(e=>{if(e.d.slice(0,7)===mk&&e.d<=t){planned++;if(entryDone(G,e))done++;}}));
+  for(let j=0;j<400;j++){const k=dkey(addD(today0(),-j)),st=dayState(k);if(st==="done")streak++;else if(st===""||(j===0&&st!=="done"))continue;else break;}
+  $("calStats").innerHTML=`<div><b>${done}/${planned}</b><span>goals done this month</span></div><div><b>${planned?Math.round(done/planned*100):0}%</b><span>on track</span></div><div><b>${streak}</b><span>day streak</span></div>`;
+  const dd=$("calDay");dd.innerHTML="";const E=entriesOn(CAL.sel);
+  const h=document.createElement("div");h.className="st-h";h.textContent=fmtK(CAL.sel);dd.appendChild(h);
+  if(E.length)E.forEach(x=>dd.appendChild(goalRow(x)));else{const p=document.createElement("div");p.className="gl-empty";p.textContent="No goal on this day.";dd.appendChild(p);}
+  const gl=$("calGoals");gl.innerHTML="";
+  if(!GOALS.list.length)gl.innerHTML='<div class="gl-empty">No goals yet.</div>';
+  [...GOALS.list].sort((a,b)=>a.days[0].d<b.days[0].d?-1:1).forEach(G=>{const n=G.days.length,dn=G.days.filter(e=>entryDone(G,e)).length;
+    const r=document.createElement("div");r.className="cg-row";r.innerHTML=`<div class="txtcol"><b></b><span></span><div class="pick-mini"><i style="width:${dn/n*100}%"></i></div></div><button class="btn small secondary" type="button">Edit</button>`;
+    r.querySelector("b").textContent=`${sName(G.num)} · verses ${G.a}–${G.b}`;
+    r.querySelector("span").textContent=`${G.mode==="week"?"Weekly":G.mode==="day"?`${G.per} a day`:`${n} days`} · ${fmtK(G.days[0].d)} – ${fmtK(G.days[n-1].d)} · ${dn}/${n} done`;
+    r.querySelector("button").onclick=()=>openPlan(G);gl.appendChild(r);});
+}
+$("calPrev").onclick=()=>{CAL.m=new Date(CAL.m.getFullYear(),CAL.m.getMonth()-1,1);renderCal();};
+$("calNext").onclick=()=>{CAL.m=new Date(CAL.m.getFullYear(),CAL.m.getMonth()+1,1);renderCal();};
+$("calNew").onclick=()=>openPlan(null);
+
+// ---------- goal editor ----------
 const PD={};
 function plNums(){return[...new Set(LIB.map(s=>s.num))].sort((a,b)=>a-b);}
-function openPlan(){
-  const ed=planOn();Object.assign(PD,ed?PLAN:{num:CUR.num,a:1,b:COUNTS[CUR.num-1],mode:"week",split:"verses",per:3},{start0:ed?PLAN.start:null,off:ed?"keep":"0"});
-  const su=$("plSurah");su.innerHTML="";plNums().forEach(n=>su.add(new Option(`${n} · ${dispName(libBy(n)[0])}`,n)));su.value=PD.num;
-  const sg=$("plStart");sg.innerHTML=(ed?`<button type="button" data-v="keep">Keep (${fmtD(parseD(PLAN.start))})</button>`:"")+`<button type="button" data-v="0">Today</button><button type="button" data-v="1">Tomorrow</button>`;
-  sg.querySelectorAll("button").forEach(b=>b.onclick=()=>{PD.off=b.dataset.v;plRender();});
-  $("plDel").hidden=!ed;$("plDel").textContent="Delete plan";delete $("plDel").dataset.arm;plFill();plRender();openSheet("planDlg");
+function openPlan(G){
+  PD.id=G?G.id:null;
+  if(G)Object.assign(PD,{num:G.num,a:G.a,b:G.b,mode:G.mode,split:G.split||"verses",per:G.per||3,ndays:G.ndays||3,start:G.days[0].d});
+  else{const last=[...GOALS.list].sort((a,b)=>a.days[a.days.length-1].d<b.days[b.days.length-1].d?1:-1)[0];
+    // a new goal starts after the last one ends (so you can line up upcoming goals); otherwise today
+    const st=last&&last.days[last.days.length-1].d>=TODAY()?dkey(addD(parseD(last.days[last.days.length-1].d),1)):TODAY();
+    let a=1;if(last&&last.num===CUR.num&&last.b<COUNTS[CUR.num-1])a=last.b+1;
+    Object.assign(PD,{num:CUR.num,a,b:COUNTS[CUR.num-1],mode:"week",split:"verses",per:3,ndays:3,start:st});}
+  $("plHead").textContent=G?"Edit goal":"New goal";
+  const su=$("plSurah");su.innerHTML="";plNums().forEach(n=>su.add(new Option(`${n} · ${sName(n)}`,n)));su.value=PD.num;
+  const nn=$("plN");nn.innerHTML="";for(let k=2;k<=30;k++)nn.add(new Option(`${k} days`,k));
+  $("plDel").hidden=!G;$("plDel").textContent="Delete goal";delete $("plDel").dataset.arm;
+  if($("calDlg").open)$("calDlg").close();plFill();plRender();openSheet("planDlg");
 }
 function plFill(){const n=COUNTS[PD.num-1];PD.a=Math.min(Math.max(1,PD.a),n);PD.b=Math.min(Math.max(PD.a,PD.b),n);
   for(const id of["plFrom","plTo"]){const el=$(id);el.innerHTML="";for(let i=1;i<=n;i++)el.add(new Option(i,i));}
   const pe=$("plPer");pe.innerHTML="";for(const k of[1,2,3,4,5,6,7,8,10,12,15,20])pe.add(new Option(`${k} verse${k>1?"s":""}`,k));}
-function plStart(){return PD.off==="keep"?PD.start0:dkey(addD(today0(),+PD.off));}
 function plRender(){
-  $("plFrom").value=PD.a;$("plTo").value=PD.b;$("plPer").value=PD.per;setSeg("plMode",PD.mode);setSeg("plSplit",PD.split);setSeg("plStart",PD.off);
-  $("plWeekBox").hidden=PD.mode!=="week";$("plDayBox").hidden=PD.mode!=="day";
-  const D=planDays(PD),st=parseD(plStart()),ol=$("plPreview");ol.innerHTML="";
-  D.forEach(([a,b],j)=>{const li=document.createElement("li");const n=b-a+1,sec=spanSecs(PD.num,a,b);li.innerHTML="<b></b><span></span>";
-    li.querySelector("b").textContent=`${fmtD(addD(st,j))} · verses ${a}–${b}`;li.querySelector("span").textContent=`${n} v${sec?" · "+mmss(sec):""}`;ol.appendChild(li);});
+  $("plFrom").value=PD.a;$("plTo").value=PD.b;$("plPer").value=PD.per;$("plN").value=PD.ndays;$("plDate").value=PD.start;
+  setSeg("plMode",PD.mode);setSeg("plSplit",PD.split);
+  const t=TODAY(),tm=dkey(addD(today0(),1));setSeg("plStart",PD.start===t?"0":PD.start===tm?"1":"x");
+  $("plWeekBox").hidden=PD.mode==="day";$("plDayBox").hidden=PD.mode!=="day";$("plCustomBox").hidden=PD.mode!=="custom";
+  const ol=$("plPreview");ol.innerHTML="";
+  buildDays(PD,PD.start).forEach(e=>{const li=document.createElement("li");const n=e.b-e.a+1,sec=spanSecs(PD.num,e.a,e.b);li.innerHTML="<b></b><span></span>";
+    li.querySelector("b").textContent=`${fmtK(e.d)} · verses ${e.a}–${e.b}`;li.querySelector("span").textContent=`${n} v${sec?" · "+mmss(sec):""}`;ol.appendChild(li);});
 }
 $("plSurah").onchange=e=>{PD.num=+e.target.value;PD.a=1;PD.b=COUNTS[PD.num-1];plFill();plRender();};
 $("plFrom").onchange=e=>{PD.a=+e.target.value;if(PD.b<PD.a)PD.b=PD.a;plRender();};
 $("plTo").onchange=e=>{PD.b=+e.target.value;if(PD.a>PD.b)PD.a=PD.b;plRender();};
 $("plPer").onchange=e=>{PD.per=+e.target.value;plRender();};
+$("plN").onchange=e=>{PD.ndays=+e.target.value;plRender();};
+$("plDate").onchange=e=>{if(e.target.value){PD.start=e.target.value;plRender();}};
 document.querySelectorAll("#plMode button").forEach(b=>b.onclick=()=>{PD.mode=b.dataset.v;plRender();});
 document.querySelectorAll("#plSplit button").forEach(b=>b.onclick=()=>{PD.split=b.dataset.v;plRender();});
+document.querySelectorAll("#plStart button").forEach(b=>b.onclick=()=>{PD.start=dkey(addD(today0(),+b.dataset.v));plRender();});
 $("plSave").onclick=()=>{
-  const p={num:PD.num,a:PD.a,b:PD.b,mode:PD.mode,split:PD.split,per:PD.per,start:plStart(),done:{}};
-  if(planOn()&&["num","a","b","mode","split","per","start"].every(k=>PLAN[k]===p[k]))p.done=PLAN.done||{};
-  savePlan(p);$("planDlg").close();
+  const g={id:PD.id||"g"+Date.now().toString(36),num:PD.num,a:PD.a,b:PD.b,mode:PD.mode,split:PD.split,per:PD.per,ndays:PD.ndays,created:Date.now()};
+  g.days=buildDays(g,PD.start);
+  const old=PD.id&&goalById(PD.id);
+  if(old){g.created=old.created;g.days.forEach(e=>{const o=old.days.find(x=>x.a===e.a&&x.b===e.b);if(o){e.done=o.done;}});
+    // keep days that were moved: if the plan's ranges are unchanged and the start is unchanged, keep the old dates
+    if(old.days.length===g.days.length&&old.days[0].d===PD.start&&old.days.every((x,j)=>x.a===g.days[j].a&&x.b===g.days[j].b))g.days=old.days;
+    GOALS.list=GOALS.list.map(x=>x.id===g.id?g:x);}
+  else GOALS.list.push(g);
+  saveGoals();$("planDlg").close();
 };
-$("plDel").onclick=()=>{const b=$("plDel");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to delete";setTimeout(()=>{delete b.dataset.arm;b.textContent="Delete plan";},3500);return;}
-  savePlan({deleted:true});$("planDlg").close();};
-$("planNew").onclick=openPlan;$("planEdit").onclick=openPlan;
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")renderPlan();});
+$("plDel").onclick=()=>{const b=$("plDel");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to delete";setTimeout(()=>{delete b.dataset.arm;b.textContent="Delete goal";},3500);return;}
+  GOALS.list=GOALS.list.filter(x=>x.id!==PD.id);GOALS.del[PD.id]=Date.now();saveGoals();$("planDlg").close();};
 
 // ---------- car: daily goal ----------
-function curGoal(){if(!planOn()||!CUR||CUR.num!==PLAN.num)return null;const[a,b]=range();return goalTiles().find(t=>t.r&&t.r[0]===a&&t.r[1]===b)||null;}
+// tiles: 2 days ago, yesterday, today, last 3 days (combined); uses the goal of the surah you are on when there are several
+function goalTiles(){
+  if(!GOALS.list.length)return[];const T=today0(),keys=[-2,-1,0].map(j=>dkey(addD(T,j)));
+  const all=keys.flatMap(k=>entriesOn(k));if(!all.length){const nx=nextEntry();return nx?[{k:"n",lab:"Next goal",num:nx.g.num,r:[nx.e.a,nx.e.b],sub:fmtK(nx.e.d),E:[nx]}]:[];}
+  const num=(all.find(x=>CUR&&x.g.num===CUR.num)||all.find(x=>x.e.d===keys[2])||all[all.length-1]).g.num;
+  const pick=k=>entriesOn(k).filter(x=>x.g.num===num);
+  const tile=(k,lab,ks)=>{const E=ks.flatMap(pick);if(!E.length)return{k,lab,num,r:null,sub:"",E};
+    return{k,lab,num,r:[Math.min(...E.map(x=>x.e.a)),Math.max(...E.map(x=>x.e.b))],sub:E.map(x=>"day "+(x.i+1)).join(" + "),E};};
+  return[tile("d2","2 days ago",[keys[0]]),tile("y","Yesterday",[keys[1]]),tile("t","Today",[keys[2]]),tile("3","Last 3 days",keys)];
+}
+function curGoal(){if(!CUR)return null;const[a,b]=range();return goalTiles().find(t=>t.r&&t.num===CUR.num&&t.r[0]===a&&t.r[1]===b)||null;}
 function renderGoalChip(){const el=$("carGoalTxt");if(!el)return;const g=curGoal();
-  el.textContent=g?({d2:"2 days ago",y:"Yesterday",t:g.lab,"3":"3 days"}[g.k]):"Goal";$("carGoal").classList.toggle("on",!!g);}
+  el.textContent=g?({d2:"2 days ago",y:"Yesterday",t:"Today","3":"3 days",n:"Next"}[g.k]):"Goal";$("carGoal").classList.toggle("on",!!g);}
 function renderCarGoalP(){
-  const g=$("cgGrid");g.innerHTML="";
-  if(!planOn()){$("cgTitle").textContent="Daily goal";g.innerHTML=`<div class="cg-empty">No memorisation plan yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a plan</button></div>`;
-    $("cgSetup").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;openPlan();};return;}
-  $("cgTitle").textContent=`Daily goal · ${libBy(PLAN.num)[0]?dispName(libBy(PLAN.num)[0]):NAMES[PLAN.num-1]}`;const cur=curGoal();
-  goalTiles().forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
+  const g=$("cgGrid");g.innerHTML="";const T=goalTiles();
+  if(!T.length){$("cgTitle").textContent="Daily goal";g.innerHTML=`<div class="cg-empty">No goals yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a goal</button></div>`;
+    $("cgSetup").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;openPlan(null);};return;}
+  $("cgTitle").textContent=`Daily goal · ${sName(T[0].num)}`;const cur=curGoal();
+  T.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
     b.innerHTML="<b></b><span></span><small></small>";b.querySelector("b").textContent=t.lab;b.querySelector("span").textContent=t.r?`Verses ${t.r[0]}–${t.r[1]}`:"—";
-    b.querySelector("small").textContent=t.r?(t.sub+(t.idx.length&&t.idx.every(dayDone)?" · done":"")):"Not in your plan";
-    b.onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;playRange(PLAN.num,t.r[0],t.r[1]);};g.appendChild(b);});
+    b.querySelector("small").textContent=t.r?(t.sub+(t.E.length&&t.E.every(x=>entryDone(x.g,x.e))?" · done":"")):"No goal that day";
+    b.onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;playRange(t.num,t.r[0],t.r[1]);};g.appendChild(b);});
 }
 $("carGoal").onclick=e=>{e.stopPropagation();renderCarGoalP();$("carGoalP").hidden=false;};
 $("carGoalClose").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;};
@@ -1790,6 +1988,64 @@ document.querySelectorAll("#carSetP .cs-step button").forEach(b=>b.onclick=e=>{e
 $("carSetClose").onclick=e=>{e.stopPropagation();closeCarSet();};
 ["carSetP","carGoalP","carPick"].forEach(id=>$(id).addEventListener("click",e=>e.stopPropagation()));
 
+// ---------- word study (kelime tahlili) ----------
+// Notes per surah live in study/<num>.json next to the app; saved on the phone after the first load.
+const STUDY={};
+async function loadStudy(num){
+  if(STUDY[num])return STUDY[num];
+  let d=null;
+  try{const r=await fetch(`study/${num}.json`,{cache:"no-cache"});if(r.ok){const j=await r.json();if(j&&Array.isArray(j.verses)){d=j;idb.putText({num:"s"+num,data:j});}}}catch(e){}
+  if(!d){const c=await idb.getText("s"+num);d=c?c.data:null;}
+  if(d)STUDY[num]=d;return d;
+}
+function refreshStudy(s){loadStudy(s.num).then(d=>{if(s!==CUR)return;$("studyBtn").hidden=!d;document.querySelectorAll(".vst").forEach(b=>b.hidden=!d);});}
+const ST={v:1,audio:new Audio(),url:null};ST.audio.setAttribute("playsinline","");ST.audio.preload="auto";
+function openStudy(v){if(!STUDY[CUR.num])return;ST.v=Math.max(1,Math.min(COUNTS[CUR.num-1],v||1));pause();$("study").hidden=false;document.documentElement.classList.add("lock");renderStudy();}
+function closeStudy(){$("study").hidden=true;document.documentElement.classList.remove("lock");try{ST.audio.pause();}catch(e){}
+  const li=document.querySelector(`.v[data-v="${ST.v}"]`);if(li)li.scrollIntoView({block:"center"});}
+// Turkish text with Arabic inside: isolate each Arabic run so punctuation and numbers stay in the right order
+const AR_RUN=/[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+(?:[\s\u00A0]+[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+)*/g;
+function rich(e,txt){txt=String(txt);let last=0,m;AR_RUN.lastIndex=0;
+  while((m=AR_RUN.exec(txt))){if(m.index>last)e.appendChild(document.createTextNode(txt.slice(last,m.index)));const sp=document.createElement("span");sp.className="arr";sp.dir="rtl";sp.textContent=m[0];e.appendChild(sp);last=m.index+m[0].length;}
+  if(last<txt.length)e.appendChild(document.createTextNode(txt.slice(last)));return e;}
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+function elr(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)rich(e,txt);return e;}
+function renderStudy(){
+  const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;
+  $("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent="Kelime tahlili";
+  $("stPrev").disabled=v<=1;$("stNext").disabled=v>=COUNTS[CUR.num-1];
+  // verse card
+  const vc=el("div","st-verse");
+  if(x&&x.words&&x.words.length){const ch=el("div","st-chips");x.words.forEach((w,i)=>{const b=el("button",null,w.ar);b.type="button";b.onclick=()=>{const c=$("stw"+i);if(c){c.scrollIntoView({block:"start",behavior:"smooth"});c.classList.add("hl");setTimeout(()=>c.classList.remove("hl"),1500);}};ch.appendChild(b);});vc.appendChild(ch);}
+  else{const a=el("div","st-chips");const b=el("button",null,verseText(CUR,v)||"");a.appendChild(b);vc.appendChild(a);}
+  const m=mealFor(CUR,v);vc.appendChild(el("div","st-meal",m?m.t:(x&&x.meal)||""));
+  const row=el("div","st-row");
+  const lb=el("button","btn small","▶ Dinle");lb.type="button";lb.onclick=()=>{unlock();pause();try{ST.audio.currentTime=0;}catch(e){}ST.audio.playbackRate=+S.speed;ST.audio.play().catch(()=>{});};
+  const mb=el("button","btn small secondary",MEM.has(v)?"✓ Ezberlendi":"Ezberledim");mb.type="button";mb.onclick=()=>{toggleMem(v);mb.textContent=MEM.has(v)?"✓ Ezberlendi":"Ezberledim";};
+  row.append(lb,mb);vc.appendChild(row);body.appendChild(vc);
+  const[a,b]=itemSpan(CUR,nIntro(CUR)+v-1);clipURL(CUR,a,b).then(u=>{if(u&&ST.v===v){ST.audio.src=u;}});
+  if(!x){body.appendChild(el("div","st-none","Bu âyet için tahlil henüz yok."));return;}
+  // words
+  body.appendChild(el("div","st-h","Kelimeler"));
+  x.words.forEach((w,i)=>{const c=el("div","st-w");c.id="stw"+i;
+    const h=el("div","st-wh");const tc=el("div","txtcol");tc.appendChild(el("b",null,w.tr||""));if(w.kok){const r=el("span","root",w.kok);tc.appendChild(r);}
+    h.append(tc,el("span","ar",w.ar));c.appendChild(h);
+    const dl=el("dl","st-kv");[["Sarf",w.sarf],["Nahiv",w.nahiv],["Not",w.not]].forEach(([k,t])=>{if(t){dl.append(el("dt",null,k),elr("dd",null,t));}});c.appendChild(dl);body.appendChild(c);});
+  const sec=(title,items,cls)=>{if(!items||(Array.isArray(items)&&!items.length))return;body.appendChild(el("div","st-h",title));const c=el("div","st-card"+(cls?" "+cls:""));
+    if(Array.isArray(items)){const ul=el("ul");items.forEach(t=>ul.appendChild(elr("li",null,t)));c.appendChild(ul);}else rich(c,items);body.appendChild(c);};
+  sec("Cümle tahlili (i‘rab)",x.irab);
+  if(x.baska&&x.baska.length){body.appendChild(el("div","st-h","Başka âyetlerde"));const c=el("div","st-card");
+    x.baska.forEach(r=>{const it=el("div","st-ref");it.append(el("span","r",r.ref||""),el("div","a",r.ar||""),elr("div",null,r.tr||""));if(r.not)it.appendChild(elr("div","n",r.not));c.appendChild(it);});body.appendChild(c);}
+  sec("Belâgat",x.belagat);sec("Kurallar ve kalıplar",x.kural);sec("Karşılaştırmalar",x.karsilastirma);sec("İlginç bilgiler",x.ilginc);sec("Ezber ipucu",x.ezber,"st-ez");
+  body.appendChild(el("p","st-src",`Hazırlayan: ${d.by||"Claude (yapay zekâ)"}. Yapay zekâ ile hazırlandığı için hata olabilir; önemli noktaları bir hocaya danışarak kontrol edin.`));
+}
+$("studyBtn").onclick=()=>openStudy(P.cur!=null&&P.cur>=nIntro(CUR)?P.cur-nIntro(CUR)+1:range()[0]);
+$("stClose").onclick=closeStudy;
+$("stPrev").onclick=()=>{ST.v--;renderStudy();};$("stNext").onclick=()=>{ST.v++;renderStudy();};
+(()=>{let x0=null,y0=null;const b=$("stBody");b.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  b.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
+    if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*2){const n=COUNTS[CUR.num-1];const nv=ST.v+(dx<0?1:-1);if(nv>=1&&nv<=n){ST.v=nv;renderStudy();}}},{passive:true});})();
+
 // ---------- boot ----------
 async function boot(){
   applyTheme();applyText();
@@ -1801,7 +2057,7 @@ async function boot(){
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,S,P,ENG,planDays,get PLAN(){return PLAN;},get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,S,P,ENG,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
