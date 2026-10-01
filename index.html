@@ -196,7 +196,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .val{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:42px;text-align:right}
 
 /* ---- car mode ---- */
-.car{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100lvh;z-index:100;background:#050908;color:#f6efdd;
+.car{position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:#050908;color:#f6efdd;
   display:flex;flex-direction:column;
   padding:calc(56px + env(safe-area-inset-top,0px)) calc(8px + env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px));
   --c-mute:#8f9c96; --c-btn:#141f1c; --c-acc:#e2c07a; --c-edge:rgba(246,239,221,.22)}
@@ -215,9 +215,11 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 .car-stage{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:8px 46px;overflow:hidden;cursor:pointer;user-select:none;-webkit-user-select:none}
 .car-ar{font-family:var(--f-ar);direction:rtl;text-align:center;line-height:1.75;-webkit-text-stroke:var(--ar-stroke) currentColor}
 .car-meal{text-align:center;color:var(--c-mute);line-height:1.45}
-.car-edge{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:120px;display:grid;place-items:center;color:var(--c-edge)}
+.car-edge{position:absolute;top:0;bottom:0;width:15%;min-width:56px;max-width:120px;display:flex;align-items:center;color:var(--c-edge);background:none}
+.car-edge.left{justify-content:flex-start}.car-edge.right{justify-content:flex-end}
+.car-edge:active{background:linear-gradient(90deg,var(--c-btn),transparent)}.car-edge.right:active{background:linear-gradient(270deg,var(--c-btn),transparent)}
 .car-edge svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.car-edge.left{left:-4px}.car-edge.right{right:-4px}
+.car-edge.left{left:-8px}.car-edge.right{right:-8px}
 .car-pp{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;display:grid;place-items:center;
   background:rgba(0,0,0,.35);color:#fff;pointer-events:none;opacity:0;transition:opacity .35s}
 .car.light .car-pp{background:rgba(0,0,0,.28)}
@@ -311,7 +313,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:30px}
 
 /* ---- car: bottom corner buttons, no page movement ---- */
 .car{touch-action:none;overscroll-behavior:none}
-.car-pick-list{touch-action:pan-y}
+.car-pick-list{touch-action:pan-x pan-y;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .car-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex:none;padding-top:4px;opacity:.85}
 .car-cluster{display:flex;gap:8px}
 .pick-edit{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--line)}
@@ -346,10 +348,71 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 @media (min-width:800px){.fab{right:calc(50% - 380px)}}
 @media (max-width:400px){.surah-ar{font-size:38px}.surah-name{font-size:23px}.seg button{font-size:13px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* ---- v9: car panels, goal, settings, picker, plan ---- */
+.cchip{width:auto!important;padding:0 12px;gap:6px;display:inline-flex!important;align-items:center;font:600 14px var(--f-ui)}
+.cchip.on{background:var(--c-acc);color:#1a1307}
+.cp-cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.7fr 1.2fr;gap:12px}
+.cp-col{display:flex;flex-direction:column;min-height:0;gap:8px}
+.cp-h{font:700 12px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--c-mute)}
+.cp-col .car-pick-list{grid-template-columns:1fr}
+.cp-pill{min-height:64px;padding:10px 16px;border-radius:16px;background:var(--c-btn);color:inherit;font:700 22px var(--f-ui);text-align:left}
+.cp-pill small{display:block;font:500 13px var(--f-ui);color:var(--c-mute);margin-top:2px}
+.cp-pill.cur{outline:3px solid var(--c-acc)}
+.car:not(.land) .cp-cols{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
+.car:not(.land) .cp-juz,.car:not(.land) #cpRec{display:flex;overflow-x:auto;gap:8px}
+.car:not(.land) .cp-juz .cp-pill,.car:not(.land) #cpRec .cp-pill{flex:none;min-height:52px}
+.cg-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:center}
+.car:not(.land) .cg-grid{grid-template-columns:1fr 1fr}
+.cg-item{min-height:130px;border-radius:20px;background:var(--c-btn);color:inherit;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:14px;text-align:center}
+.cg-item b{font:700 24px var(--f-ui)}
+.cg-item span{font:600 18px var(--f-ui);color:var(--c-acc)}
+.cg-item small{font:500 13px var(--f-ui);color:var(--c-mute)}
+.cg-item.cur{outline:3px solid var(--c-acc)}
+.cg-item:disabled{opacity:.35}
+.cg-empty{grid-column:1/-1;text-align:center;font:500 18px/1.5 var(--f-ui);color:var(--c-mute)}
+.cg-empty .cbtn{display:inline-flex;width:auto;padding:0 18px;height:52px;margin-top:12px;font:700 18px var(--f-ui)}
+.cs-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:12px 22px;align-content:start}
+.car.land .cs-f{gap:5px}.car.land .cs-col{gap:10px}.car.land .cs-chips button{min-height:46px}
+.car:not(.land) .cs-grid{grid-template-columns:1fr}
+.cs-col{display:flex;flex-direction:column;gap:14px}
+.cs-f{display:flex;flex-direction:column;gap:7px}
+.cs-chips{display:flex;gap:6px}
+.cs-chips button{flex:1 1 0;min-width:0;min-height:50px;padding:0 4px;border-radius:14px;background:var(--c-btn);color:inherit;font:600 17px var(--f-ui);white-space:nowrap}
+.cs-chips button[aria-pressed="true"]{background:var(--c-acc);color:#1a1307}
+.cs-range{display:flex;gap:10px;margin-top:4px}
+.cs-range[hidden]{display:none}
+.cs-step{flex:1;display:flex;align-items:center;gap:6px;background:var(--c-btn);border-radius:14px;padding:4px 6px}
+.cs-step span{font:600 13px var(--f-ui);color:var(--c-mute);padding-left:6px}
+.cs-step b{flex:1;text-align:center;font:700 24px var(--f-ui)}
+.cs-step button{width:44px;height:42px;border-radius:12px;font:600 26px/1 var(--f-ui);color:inherit;background:rgba(127,127,127,.18)}
+.pk-recrow{display:flex;gap:8px;align-items:center}
+.pk-recrow .pick-edit{width:42px;height:42px}
+.pk-info{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.pk-info .txtcol{flex:1;min-width:0}
+.pk-info b{font-size:17px}
+.pk-info .pick-ar{font:30px/1 var(--f-ar);color:var(--accent)}
+.pk-info .pick-mini{margin-top:6px}
+.txtcol{display:flex;flex-direction:column;gap:2px;min-width:0}
+.plan-none{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.plan-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.plan-h b{font-size:16px}
+.plan-days{display:flex;gap:5px}
+.plan-days i{flex:1;height:30px;border-radius:9px;background:var(--sunk);display:grid;place-items:center;font:600 11px var(--f-ui);font-style:normal;color:var(--muted)}
+.plan-days i.done{background:var(--accent);color:var(--on-accent)}
+.plan-days i.today{outline:2px solid var(--brass);outline-offset:1px;color:var(--ink)}
+.plan-days i.missed{background:color-mix(in srgb,var(--brass) 22%,var(--sunk))}
+.plan-today b{font-size:18px}
+.plan-actions .btn{flex:1}
+.car:not(.land) .cs-chips button{font-size:15px}
+.pl-preview{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}
+.pl-preview li{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:10px;background:var(--sunk);font-size:14px}
+.pl-preview li span{color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="sb" aria-hidden="true"></div>
+<div id="vp" aria-hidden="true" style="position:fixed;top:0;left:0;right:0;bottom:0;visibility:hidden;pointer-events:none;z-index:-1"></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="star" viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="2"/><rect x="8" y="8" width="24" height="24" rx="2" transform="rotate(45 20 20)"/><circle cx="20" cy="20" r="10.5"/></symbol>
@@ -387,6 +450,19 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
       <div class="surah-ar" id="sAr"></div>
     </div>
     <div class="memo"><div class="memo-bar"><i id="memoBar"></i></div><span class="memo-txt" id="memoTxt">0 / 0 memorised</span></div>
+  </section>
+
+  <section class="card plan-card needs-surah" id="planCard" aria-label="Memorisation plan">
+    <div class="plan-none" id="planNone">
+      <div class="txtcol"><b>Memorisation plan</b><span class="hint">Set a daily or weekly goal for a surah or range.</span></div>
+      <button class="btn small" id="planNew" type="button">Set a plan</button>
+    </div>
+    <div id="planOn" hidden>
+      <div class="plan-h"><div class="txtcol"><span class="lbl" id="planKind">Weekly plan</span><b id="planTitle"></b></div><button class="btn small secondary" id="planEdit" type="button">Edit</button></div>
+      <div class="plan-days" id="planDays"></div>
+      <div class="plan-today"><div class="txtcol"><b id="planTodayT"></b><span class="hint" id="planTodayS"></span></div></div>
+      <div class="erow plan-actions"><button class="btn small" id="planListen" type="button">Listen to today</button><button class="btn small secondary" id="planDone" type="button">Mark done</button></div>
+    </div>
   </section>
 
   <section class="card needs-surah" aria-label="What to play">
@@ -448,6 +524,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
     <div class="car-cluster">
       <button class="cbtn" id="carLoop" type="button" aria-label="Loop" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M17 2l3 3-3 3"/><path d="M4 11V9a4 4 0 0 1 4-4h12"/><path d="M7 22l-3-3 3-3"/><path d="M20 13v2a4 4 0 0 1-4 4H4"/></svg></button>
       <button class="cbtn" id="carMem" type="button" aria-label="Mark as memorised"><svg><use href="#i-check"/></svg></button>
+      <button class="cbtn cchip" id="carGoal" type="button" aria-label="Daily goal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/></svg><span id="carGoalTxt">Goal</span></button>
     </div>
     <div class="car-cluster">
       <button class="cbtn" id="carTheme" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg></button>
@@ -457,7 +534,34 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   <div class="car-bar"><i id="carProg"></i></div>
   <div class="car-pick" id="carPick" hidden>
     <div class="car-pick-h"><b>Switch surah</b><button class="cbtn" id="carPickClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-    <div class="car-pick-list" id="carPickList"></div>
+    <div class="cp-cols">
+      <div class="cp-col"><span class="cp-h">Juz</span><div class="car-pick-list cp-juz" id="cpJuz"></div></div>
+      <div class="cp-col wide"><span class="cp-h">Surah</span><div class="car-pick-list" id="carPickList"></div></div>
+      <div class="cp-col"><span class="cp-h">Reciter</span><div class="car-pick-list" id="cpRec"></div></div>
+    </div>
+  </div>
+  <div class="car-pick car-goal" id="carGoalP" hidden>
+    <div class="car-pick-h"><b id="cgTitle">Daily goal</b><button class="cbtn" id="carGoalClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="cg-grid" id="cgGrid"></div>
+  </div>
+  <div class="car-pick car-set" id="carSetP" hidden>
+    <div class="car-pick-h"><b>Settings</b><button class="cbtn" id="carSetClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="cs-grid car-pick-list">
+      <div class="cs-col">
+        <div class="cs-f"><span class="cp-h">Repeat each verse</span><div class="cs-chips" data-k="vrep"><button data-v="1">1×</button><button data-v="2">2×</button><button data-v="3">3×</button><button data-v="5">5×</button><button data-v="7">7×</button><button data-v="10">10×</button></div></div>
+        <div class="cs-f"><span class="cp-h">Repeat selection</span><div class="cs-chips" data-k="rrep"><button data-v="1">Once</button><button data-v="2">2×</button><button data-v="3">3×</button><button data-v="5">5×</button><button data-v="10">10×</button><button data-v="0">Loop</button></div></div>
+        <div class="cs-f"><span class="cp-h">Pause after verse</span><div class="cs-chips" data-k="gap"><button data-v="0">None</button><button data-v="1">1 s</button><button data-v="2">2 s</button><button data-v="3">3 s</button><button data-v="5">5 s</button><button data-v="-1" aria-label="Time to recite back">Recite</button></div></div>
+      </div>
+      <div class="cs-col">
+        <div class="cs-f"><span class="cp-h">Range</span><div class="cs-chips" data-k="scope"><button data-v="surah">Whole surah</button><button data-v="range">Range</button></div>
+          <div class="cs-range" id="csRange">
+            <div class="cs-step"><span>From</span><button data-d="from:-1" aria-label="From minus">−</button><b id="csFrom">1</b><button data-d="from:1" aria-label="From plus">+</button></div>
+            <div class="cs-step"><span>To</span><button data-d="to:-1" aria-label="To minus">−</button><b id="csTo">1</b><button data-d="to:1" aria-label="To plus">+</button></div>
+          </div></div>
+        <div class="cs-f"><span class="cp-h">Order</span><div class="cs-chips" data-k="order"><button data-v="seq">In order</button><button data-v="build">Build up</button></div></div>
+        <div class="cs-f"><span class="cp-h">Meal</span><div class="cs-chips" data-k="mealOn"><button data-v="1">On</button><button data-v="0">Off</button></div></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -503,9 +607,15 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 <dialog class="sheet" id="pickDlg">
   <div class="sheet-in">
     <div class="grab"></div>
-    <div class="sheet-h"><h2>Your surahs</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
-    <button class="btn" id="pickAdd" type="button">+ Add a surah recording</button>
-    <div id="pickList" class="pick-list"></div>
+    <div class="sheet-h"><h2>Choose surah</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="pkJuz">Juz</label><select id="pkJuz"></select></div>
+      <div class="field"><label class="lbl" for="pkSurah">Surah</label><select id="pkSurah"></select></div>
+    </div>
+    <div class="field"><label class="lbl" for="pkRec">Reciter</label>
+      <div class="pk-recrow"><select id="pkRec"></select><button class="pick-edit" id="pkRecEdit" type="button" aria-label="Rename reciter"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button></div></div>
+    <div id="pickList" class="pk-info"></div>
+    <div class="erow"><button class="btn" id="pickGo" type="button" style="flex:1">Done</button><button class="btn secondary" id="pickAdd" type="button">+ Add recording</button></div>
     <div class="offline">
       <b>Arabic text and meal</b>
       <p class="hint">Texts come from herkul.app. A surah's text is saved on your phone the first time it opens. Save Juz 29–30 now to have them ready offline.</p>
@@ -549,6 +659,26 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
     <div class="field"><label class="lbl" for="recName">Reciter's name</label><input class="txtin" id="recName" list="reciterList" autocomplete="off"></div>
     <button class="btn" type="submit">Save</button>
   </form>
+</dialog>
+
+<!-- memorisation plan -->
+<dialog class="sheet" id="planDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Memorisation plan</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="field"><label class="lbl" for="plSurah">Surah</label><select id="plSurah"></select></div>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="plFrom">From verse</label><select id="plFrom"></select></div>
+      <div class="field"><label class="lbl" for="plTo">To verse</label><select id="plTo"></select></div>
+    </div>
+    <div class="field"><span class="lbl">Goal</span><div class="seg" id="plMode"><button type="button" data-v="week">Weekly</button><button type="button" data-v="day">Daily</button></div></div>
+    <div class="field" id="plWeekBox"><span class="lbl">Split the week by</span><div class="seg" id="plSplit"><button type="button" data-v="verses">Equal verses</button><button type="button" data-v="length">Equal length</button></div>
+      <p class="hint">The range is shared over 7 days. “Equal length” gives each day about the same listening time.</p></div>
+    <div class="field" id="plDayBox"><label class="lbl" for="plPer">Verses per day</label><select id="plPer"></select></div>
+    <div class="field"><span class="lbl">Start</span><div class="seg" id="plStart"><button type="button" data-v="0">Today</button><button type="button" data-v="1">Tomorrow</button></div></div>
+    <div class="field"><span class="lbl">Days</span><ol class="pl-preview" id="plPreview"></ol></div>
+    <div class="erow"><button class="btn" id="plSave" type="button" style="flex:1">Save plan</button><button class="btn secondary" id="plDel" type="button">Delete plan</button></div>
+  </div>
 </dialog>
 
 <!-- practice settings -->
@@ -738,7 +868,7 @@ function toggleMem(v){
 }
 function updateMemo(){
   const n=COUNTS[CUR.num-1],k=MEM.size;
-  $("memoBar").style.width=(k/n*100)+"%";$("memoTxt").textContent=k===n?`All ${n} memorised`:`${k} / ${n} memorised`;
+  $("memoBar").style.width=(k/n*100)+"%";$("memoTxt").textContent=k===n?`All ${n} memorised`:`${k} / ${n} memorised`;renderPlan();
 }
 
 // ---------- rendering ----------
@@ -792,25 +922,33 @@ function fillMeal(){
 }
 
 // ---------- surah picker ----------
+const libBy=num=>LIB.filter(s=>s.num===num).sort((a,b)=>a.added-b.added);
+function recLabel(s){const dup=libBy(s.num).filter(x=>x.reciter===s.reciter);return dup.length>1?`${s.reciter} (${dup.indexOf(s)+1})`:s.reciter;}
+const PK={juz:null};
 function renderPicker(){
-  const box=$("pickList");if(!box)return;box.innerHTML="";
-  const groups={};LIB.forEach(s=>{const j=surahJuz(s);(groups[j]=groups[j]||[]).push(s);});
-  Object.keys(groups).map(Number).sort((a,b)=>a-b).forEach(j=>{
-    const g=document.createElement("div");g.className="pick-juz";g.innerHTML=`<h3>Juz ${j}</h3><ul></ul>`;
-    groups[j].sort((a,b)=>a.num-b.num).forEach(s=>{
-      const n=COUNTS[s.num-1],k=ls.get("hifz-mem-"+s.num,[]).length;
-      const li=document.createElement("li");li.className="pick-row"+(s===CUR?" cur":"");
-      li.innerHTML=`<span class="pick-num"><svg><use href="#star"/></svg><span>${s.num}</span></span><div class="pick-mid"><b></b><span></span><div class="pick-mini"><i style="width:${k/n*100}%"></i></div></div><span class="pick-ar"></span><button class="pick-edit" type="button" aria-label="Change reciter"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button>`;
-      li.querySelector(".pick-edit").onclick=ev=>{ev.stopPropagation();editReciter(s);};
-      li.querySelector("b").textContent=dispName(s);li.querySelector(".pick-mid span").textContent=`${n} verses · ${k} memorised · ${s.reciter}`;
-      li.querySelector(".pick-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
-      li.onclick=()=>{$("pickDlg").close();selectSurah(s.id);};g.querySelector("ul").appendChild(li);
-    });
-    box.appendChild(g);
-  });
-  if(CUR){$("spName").textContent=`${CUR.num} · ${dispName(CUR)}`;$("spSub").textContent=`Juz ${surahJuz(CUR)} · ${LIB.length} surah${LIB.length>1?"s":""} added`;}
+  if(CUR){$("spName").textContent=`${CUR.num} · ${dispName(CUR)}`;$("spSub").textContent=`Juz ${surahJuz(CUR)} · ${CUR.reciter}`;}
   else{$("spName").textContent="Hifz";$("spSub").textContent="Add a surah to begin";}
+  const jz=$("pkJuz");if(!jz)return;
+  const juzs=[...new Set(LIB.map(surahJuz))].sort((a,b)=>a-b);
+  if(PK.juz==null||(PK.juz!=="all"&&!juzs.includes(PK.juz)))PK.juz=CUR?surahJuz(CUR):"all";
+  jz.innerHTML="";jz.add(new Option("All juz","all"));juzs.forEach(j=>jz.add(new Option(`Juz ${j}`,j)));jz.value=String(PK.juz);
+  const nums=[...new Set(LIB.filter(s=>PK.juz==="all"||surahJuz(s)===PK.juz).map(s=>s.num))].sort((a,b)=>a-b);
+  const su=$("pkSurah");su.innerHTML="";const inJ=CUR&&nums.includes(CUR.num);
+  if(!inJ)su.add(new Option("Choose…",""));
+  nums.forEach(n=>su.add(new Option(`${n} · ${dispName(libBy(n)[0])}`,n)));su.value=inJ?String(CUR.num):"";
+  const rc=$("pkRec");rc.innerHTML="";const recs=CUR?libBy(CUR.num):[];recs.forEach(s=>rc.add(new Option(recLabel(s),s.id)));if(CUR)rc.value=CUR.id;
+  const box=$("pickList");box.innerHTML="";box.hidden=!CUR;if(!CUR)return;
+  const n=COUNTS[CUR.num-1],k=ls.get("hifz-mem-"+CUR.num,[]).length;
+  box.innerHTML=`<div class="txtcol"><b></b><span class="hint"></span><div class="pick-mini"><i style="width:${k/n*100}%"></i></div></div><span class="pick-ar"></span>`;
+  box.querySelector("b").textContent=`${CUR.num} · ${dispName(CUR)}`;box.querySelector(".hint").textContent=`${n} verses · ${k} memorised · Juz ${surahJuz(CUR)}`;
+  box.querySelector(".pick-ar").textContent=CUR.arName?CUR.arName.replace("سورة ",""):"";
 }
+function pickNum(num){const recs=libBy(num);if(!recs.length)return null;return recs.find(x=>CUR&&x.reciter===CUR.reciter)||recs[0];}
+$("pkJuz").onchange=e=>{PK.juz=e.target.value==="all"?"all":+e.target.value;renderPicker();};
+$("pkSurah").onchange=e=>{if(!e.target.value)return;const s=pickNum(+e.target.value);if(s)selectSurah(s.id);};
+$("pkRec").onchange=e=>selectSurah(e.target.value);
+$("pkRecEdit").onclick=()=>{if(CUR)editReciter(CUR);};
+$("pickGo").onclick=()=>$("pickDlg").close();
 async function saveTexts(from,to){
   const msg=$("dlMsg");let ok=0,fail=0;const nums=[];for(let n=from;n<=to;n++)nums.push(n);
   $("dl2930").disabled=$("dlAll").disabled=true;
@@ -1053,7 +1191,7 @@ function renderCar(){
   $("carSub").textContent=$("nowS").textContent;
   $("carAr").textContent=isIntro?(CUR.intro[item].ar||CUR.intro[item].en):(verseText(CUR,v)||`Verse ${v}`);
   const m=isIntro?null:mealFor(CUR,v);$("carMeal").textContent=m?m.t:"";$("carMeal").hidden=!m;
-  $("carMem").hidden=isIntro;renderCarMem();carPP();fitCar();
+  $("carMem").hidden=isIntro;renderCarMem();renderGoalChip();carPP();fitCar();
 }
 function renderCarMem(){if($("car").hidden)return;const item=carItem(),v=item-nIntro(CUR)+1;$("carMem").classList.toggle("on",MEM.has(v));}
 let ppTimer=null;
@@ -1062,10 +1200,7 @@ function carPP(flash){const el=$("carPP");clearTimeout(ppTimer);
   if(flash){el.classList.add("show");ppTimer=setTimeout(()=>el.classList.remove("show"),700);}else el.classList.remove("show");}
 // iPhone Home Screen apps can report a too-small height after the keyboard closes; use the real screen size there.
 const standalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
-function viewSize(){let W=innerWidth,H=innerHeight;
-  if(standalone()&&screen.width&&screen.height){const port=W<=H||Math.abs(screen.width-W)<2;const sw=Math.min(screen.width,screen.height),sh=Math.max(screen.width,screen.height);
-    if(W<H||port){W=sw;H=sh;}else{W=sh;H=sw;}}
-  return[W,H];}
+function viewSize(){const r=$("vp").getBoundingClientRect();return[Math.round(r.width)||innerWidth,Math.round(r.height)||innerHeight];}
 function unstick(){const y=scrollY;scrollTo(0,y+1);scrollTo(0,y);}
 document.addEventListener("focusout",e=>{if(e.target.matches("input,textarea,select"))setTimeout(unstick,80);});
 if(window.visualViewport)visualViewport.addEventListener("resize",()=>{if(!document.activeElement||!document.activeElement.matches("input,textarea"))setTimeout(unstick,80);});
@@ -1092,7 +1227,7 @@ function openCar(){
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
-  $("car").hidden=true;$("carPick").hidden=true;document.documentElement.classList.remove("lock");try{WL&&WL.release();}catch(e){}WL=null;
+  $("car").hidden=true;$("carPick").hidden=true;$("carGoalP").hidden=true;if(!$("carSetP").hidden)closeCarSet();document.documentElement.classList.remove("lock");try{WL&&WL.release();}catch(e){}WL=null;
   try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
@@ -1103,17 +1238,27 @@ function renderCarLoop(){const b=$("carLoop");if(!b)return;const once=S.rrep==="
   b.setAttribute("aria-label",S.rrep==="0"?"Loop is on":"Loop is off");}
 $("carLoop").onclick=()=>{S.rrep=S.rrep==="0"?"1":"0";save();applyLoop();renderCarLoop();$("rrep").value=S.rrep;practiceSummary();
   $("carSub").textContent=S.rrep==="0"?"Loop on: the selection repeats until you stop it":"Loop off";};
+const CP={juz:null,num:null};
+function cpBtn(cls,cur,html,fn){const b=document.createElement("button");b.type="button";b.className=cls+(cur?" cur":"");b.innerHTML=html;b.onclick=e=>{e.stopPropagation();fn();};return b;}
+function cpGo(s){$("carPick").hidden=true;unlock();if(s!==CUR)selectSurah(s.id);play();}
 function renderCarPick(){
+  const juzs=[...new Set(LIB.map(surahJuz))].sort((a,b)=>a-b);
+  if(CP.juz==null)CP.juz=surahJuz(CUR);if(CP.num==null)CP.num=CUR.num;
+  const jb=$("cpJuz");jb.innerHTML="";
+  jb.appendChild(cpBtn("cp-pill",CP.juz==="all","All",()=>{CP.juz="all";renderCarPick();}));
+  juzs.forEach(j=>jb.appendChild(cpBtn("cp-pill",CP.juz===j,`Juz ${j}`,()=>{CP.juz=j;renderCarPick();})));
   const box=$("carPickList");box.innerHTML="";
-  [...LIB].sort((a,b)=>a.num-b.num).forEach(s=>{const b=document.createElement("button");b.type="button";b.className="cp-item"+(s===CUR?" cur":"");
-    b.innerHTML=`<span class="cp-num">${s.num}</span><span class="cp-name"></span><span class="cp-ar"></span>`;
-    b.querySelector(".cp-name").innerHTML="";const nm=document.createElement("span");nm.textContent=dispName(s);const sm=document.createElement("small");sm.textContent=`${COUNTS[s.num-1]} verses · Juz ${surahJuz(s)}`;
-    b.querySelector(".cp-name").append(nm,sm);b.querySelector(".cp-ar").textContent=s.arName?s.arName.replace("سورة ",""):"";
-    b.onclick=()=>{$("carPick").hidden=true;unlock();if(s!==CUR){selectSurah(s.id);}play();};box.appendChild(b);});
+  const nums=[...new Set(LIB.filter(s=>CP.juz==="all"||surahJuz(s)===CP.juz).map(s=>s.num))].sort((a,b)=>a-b);
+  nums.forEach(n=>{const s0=libBy(n)[0];
+    const b=cpBtn("cp-item",n===CP.num,`<span class="cp-num">${n}</span><span class="cp-name"><span></span><small></small></span><span class="cp-ar"></span>`,()=>{CP.num=n;const r=libBy(n);if(r.length===1)cpGo(r[0]);else renderCarPick();});
+    b.querySelector(".cp-name span").textContent=dispName(s0);b.querySelector(".cp-name small").textContent=`${COUNTS[n-1]} verses`;b.querySelector(".cp-ar").textContent=s0.arName?s0.arName.replace("سورة ",""):"";box.appendChild(b);});
+  const rb=$("cpRec");rb.innerHTML="";
+  libBy(CP.num).forEach(s=>{const b=cpBtn("cp-pill",s===CUR,"<span></span>",()=>cpGo(s));b.querySelector("span").textContent=recLabel(s);rb.appendChild(b);});
+  const cur=box.querySelector(".cur");if(cur)cur.scrollIntoView({block:"nearest"});
 }
 $("car").addEventListener("touchmove",e=>{if(!e.target.closest(".car-pick-list"))e.preventDefault();},{passive:false});
-$("carSet").onclick=()=>openSheet("practiceDlg");
-$("carSurah").onclick=e=>{e.stopPropagation();renderCarPick();$("carPick").hidden=false;};
+$("carSet").onclick=e=>{e.stopPropagation();openCarSet();};
+$("carSurah").onclick=e=>{e.stopPropagation();CP.juz=surahJuz(CUR);CP.num=CUR.num;$("carPick").hidden=false;renderCarPick();};
 $("carPickClose").onclick=()=>{$("carPick").hidden=true;};
 $("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
 $("carMem").onclick=()=>{const v=carItem()-nIntro(CUR)+1;if(v>=1)toggleMem(v);};
@@ -1123,7 +1268,7 @@ $("carRot").onclick=()=>{S.carRot=!S.carRot;save();carLayout();};
   st.addEventListener("touchstart",e=>{if(e.target.closest(".car-edge"))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;swiped=false;},{passive:true});
   st.addEventListener("touchend",e=>{if(x0==null)return;let dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
     if(S.carRot){const t=dx;dx=dy;dy=-t;}
-    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){swiped=true;jump(dx<0?1:-1);}},{passive:true});
+    if(Math.abs(dx)>28&&Math.abs(dx)>Math.abs(dy)*1.2){swiped=true;jump(dx<0?1:-1);}},{passive:true});
   $("carStage").addEventListener("click",()=>{if(swiped){swiped=false;return;}P.playing?pause():play();carPP(true);});
 })();
 addEventListener("resize",()=>{if(!$("car").hidden)carLayout();});
@@ -1457,8 +1602,11 @@ async function syncNow(){
       nums.forEach(num=>{const lu=memU(num),r=mem[num];
         if(r&&r.u>lu){ls.set("hifz-mem-"+num,r.v);ls.set("hifz-memu-"+num,r.u);if(CUR&&CUR.num===num){loadMem();renderVerses();updateMemo();}changedLocal=true;}
         else if(lu&&(!r||lu>r.u))mem[num]={v:ls.get("hifz-mem-"+num,[]),u:lu};});
-      const lib={app:"hifz",version:1,surahs:out,deleted:del,mem,savedAt:Date.now()};
-      const same=JSON.stringify({s:remote.surahs,d:remote.deleted,m:remote.mem})===JSON.stringify({s:out,d:del,m:mem});
+      // 5) memorisation plan (newest wins)
+      let plan=remote.plan||null;const lp=ls.get("hifz-plan",null);
+      if(plan&&(!lp||plan.u>lp.u)){ls.set("hifz-plan",plan);PLAN=plan;renderPlan();}else if(lp&&(!plan||lp.u>plan.u))plan=lp;
+      const lib={app:"hifz",version:1,surahs:out,deleted:del,mem,plan,savedAt:Date.now()};
+      const same=JSON.stringify({s:remote.surahs,d:remote.deleted,m:remote.mem,p:remote.plan||null})===JSON.stringify({s:out,d:del,m:mem,p:plan});
       if(!same&&!(await pushLib(lib)))continue;
       ls.set("hifz-deleted",{});
       if(changedLocal){if(!LIB.length)showEmpty(true);else if(!CUR||!LIB.includes(CUR))selectSurah((LIB.find(x=>x.id===S.cur)||LIB[0]).id);else renderPicker();}
@@ -1506,18 +1654,154 @@ function editReciter(s){REC_S=s;fillReciterList();$("recTitle").textContent=`Rec
 $("recForm").addEventListener("submit",e=>{e.preventDefault();const s=REC_S;if(!s)return;const v=$("recName").value.trim()||"Your recording";
   s.reciter=v;if(v!=="Your recording")ls.set("hifz-lastReciter",v);touch(s);saveLocal(s);scheduleSync();$("recDlg").close();renderPicker();if(s===CUR)renderHeader();});
 
+// ---------- memorisation plan ----------
+let PLAN=ls.get("hifz-plan",null);
+const planOn=()=>!!(PLAN&&!PLAN.deleted&&PLAN.num);
+const dkey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const parseD=k=>{const[y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d);};
+const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d;};
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const dayDiff=(a,b)=>Math.round((b-a)/864e5);
+const fmtD=d=>d.toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short"});
+function verseWeights(num,a,b){const s=libBy(num)[0],w=[];for(let v=a;v<=b;v++){let x=1;if(s){const[p,q]=itemSpan(s,nIntro(s)+v-1);x=Math.max(.3,(q-p)||1);}w.push(x);}return w;}
+function planDays(p){
+  const n=p.b-p.a+1,out=[];if(n<1)return out;
+  if(p.mode==="day"){const per=Math.max(1,+p.per||1);for(let v=p.a;v<=p.b;v+=per)out.push([v,Math.min(p.b,v+per-1)]);return out;}
+  const D=Math.min(7,n);
+  if(p.split==="length"){const w=verseWeights(p.num,p.a,p.b),tot=w.reduce((x,y)=>x+y,0);let acc=0,start=p.a,k=1;
+    for(let i=0;i<n&&k<D;i++){acc+=w[i];const v=p.a+i,remV=p.b-v,remD=D-k;
+      if(remV>=remD&&(acc>=tot*k/D-1e-9||remV===remD)){out.push([start,v]);start=v+1;k++;}}
+    out.push([start,p.b]);return out;}
+  const base=Math.floor(n/D),extra=n%D;let v=p.a;for(let k=0;k<D;k++){const len=base+(k<extra?1:0);out.push([v,v+len-1]);v+=len;}return out;
+}
+const planIdx=()=>dayDiff(parseD(PLAN.start),today0());
+function dayDone(i){const d=planDays(PLAN)[i];if(!d)return false;if(PLAN.done&&PLAN.done[i])return true;
+  const m=new Set(ls.get("hifz-mem-"+PLAN.num,[]));for(let v=d[0];v<=d[1];v++)if(!m.has(v))return false;return true;}
+function spanSecs(num,a,b){const s=libBy(num)[0];if(!s)return 0;return itemSpan(s,nIntro(s)+b-1)[1]-itemSpan(s,nIntro(s)+a-1)[0];}
+const mmss=t=>`${Math.floor(t/60)}:${String(Math.round(t%60)).padStart(2,"0")}`;
+// goal tiles: today, yesterday, 2 days ago, last 3 days (combined)
+function goalTiles(){
+  if(!planOn())return[];const D=planDays(PLAN),i=planIdx();
+  const T=[["d2","2 days ago",[i-2]],["y","Yesterday",[i-1]],["t","Today",[i]],["3","Last 3 days",[i-2,i-1,i]]];
+  return T.map(([k,lab,idx])=>{const ok=idx.filter(j=>j>=0&&j<D.length);let r=ok.length?[D[ok[0]][0],D[ok[ok.length-1]][1]]:null,sub=ok.length?"Day "+ok.map(j=>j+1).join(" + "):"";
+    if(k==="t"&&!r){if(i<0){r=D[0];lab="Day 1";sub="Starts "+fmtD(parseD(PLAN.start));}else{r=[PLAN.a,PLAN.b];lab="Whole plan";sub="Plan finished: review";}}
+    return{k,lab,r,sub,idx:ok};});
+}
+function playRange(num,a,b){
+  const recs=libBy(num);if(!recs.length){status("Recording missing",`Add a recording of ${NAMES[num-1]} first.`,true);return;}
+  const s=(CUR&&CUR.num===num)?CUR:pickNum(num);if(s!==CUR)selectSurah(s.id);
+  const n=COUNTS[num-1];S.scope=a===1&&b===n?"surah":a===b?"verse":"range";S.from=a;S.to=b;save();syncUI();renderGoalChip();stop();unlock();play();
+}
+function renderPlan(){
+  if(!$("planCard"))return;const on=planOn();$("planNone").hidden=on;$("planOn").hidden=!on;if(!on)return;
+  const D=planDays(PLAN),i=planIdx(),st=parseD(PLAN.start);
+  $("planKind").textContent=PLAN.mode==="week"?`Weekly plan · from ${fmtD(st)}`:`Daily plan · ${PLAN.per} verse${PLAN.per>1?"s":""} a day · ${D.length} days`;
+  const s0=libBy(PLAN.num)[0];$("planTitle").textContent=`${s0?dispName(s0):NAMES[PLAN.num-1]} · verses ${PLAN.a}–${PLAN.b}`;
+  const box=$("planDays");box.innerHTML="";const w0=Math.max(0,Math.min(i-3,D.length-7));
+  for(let j=w0;j<Math.min(D.length,w0+7);j++){const el=document.createElement("i");const dn=dayDone(j);
+    el.className=(dn?"done ":"")+(j===i?"today ":"")+(!dn&&j<i?"missed":"");el.textContent=addD(st,j).toLocaleDateString(undefined,{weekday:"short"});
+    el.title=`Day ${j+1}: verses ${D[j][0]}–${D[j][1]}`;box.appendChild(el);}
+  const t=goalTiles().find(x=>x.k==="t"),inPlan=i>=0&&i<D.length;
+  $("planTodayT").textContent=inPlan?`Today · verses ${t.r[0]}–${t.r[1]}`:i<0?`Day 1 · verses ${t.r[0]}–${t.r[1]}`:"Plan finished";
+  const nv=t.r[1]-t.r[0]+1,sec=spanSecs(PLAN.num,t.r[0],t.r[1]);
+  $("planTodayS").textContent=inPlan?`Day ${i+1} of ${D.length} · ${nv} verse${nv>1?"s":""}${sec?` · about ${mmss(sec)} each time`:""}${dayDone(i)?" · done":""}`
+    :i<0?`Starts ${fmtD(st)}`:`Well done. Listen to the whole range to keep it fresh, or set a new plan.`;
+  $("planListen").textContent=inPlan?"Listen to today":i<0?"Listen to day 1":"Review the whole plan";
+  $("planDone").hidden=!inPlan;$("planDone").textContent=dayDone(i)?"Done ✓":"Mark done";$("planDone").classList.toggle("secondary",!dayDone(i));
+  renderGoalChip();
+}
+function savePlan(p){p.u=Date.now();PLAN=p;ls.set("hifz-plan",p);scheduleSync(1500);renderPlan();}
+$("planListen").onclick=()=>{const t=goalTiles().find(x=>x.k==="t");if(t&&t.r)playRange(PLAN.num,t.r[0],t.r[1]);};
+$("planDone").onclick=()=>{const i=planIdx(),p=Object.assign({},PLAN,{done:Object.assign({},PLAN.done||{})});if(p.done[i])delete p.done[i];else p.done[i]=Date.now();savePlan(p);};
+// plan sheet
+const PD={};
+function plNums(){return[...new Set(LIB.map(s=>s.num))].sort((a,b)=>a-b);}
+function openPlan(){
+  const ed=planOn();Object.assign(PD,ed?PLAN:{num:CUR.num,a:1,b:COUNTS[CUR.num-1],mode:"week",split:"verses",per:3},{start0:ed?PLAN.start:null,off:ed?"keep":"0"});
+  const su=$("plSurah");su.innerHTML="";plNums().forEach(n=>su.add(new Option(`${n} · ${dispName(libBy(n)[0])}`,n)));su.value=PD.num;
+  const sg=$("plStart");sg.innerHTML=(ed?`<button type="button" data-v="keep">Keep (${fmtD(parseD(PLAN.start))})</button>`:"")+`<button type="button" data-v="0">Today</button><button type="button" data-v="1">Tomorrow</button>`;
+  sg.querySelectorAll("button").forEach(b=>b.onclick=()=>{PD.off=b.dataset.v;plRender();});
+  $("plDel").hidden=!ed;$("plDel").textContent="Delete plan";delete $("plDel").dataset.arm;plFill();plRender();openSheet("planDlg");
+}
+function plFill(){const n=COUNTS[PD.num-1];PD.a=Math.min(Math.max(1,PD.a),n);PD.b=Math.min(Math.max(PD.a,PD.b),n);
+  for(const id of["plFrom","plTo"]){const el=$(id);el.innerHTML="";for(let i=1;i<=n;i++)el.add(new Option(i,i));}
+  const pe=$("plPer");pe.innerHTML="";for(const k of[1,2,3,4,5,6,7,8,10,12,15,20])pe.add(new Option(`${k} verse${k>1?"s":""}`,k));}
+function plStart(){return PD.off==="keep"?PD.start0:dkey(addD(today0(),+PD.off));}
+function plRender(){
+  $("plFrom").value=PD.a;$("plTo").value=PD.b;$("plPer").value=PD.per;setSeg("plMode",PD.mode);setSeg("plSplit",PD.split);setSeg("plStart",PD.off);
+  $("plWeekBox").hidden=PD.mode!=="week";$("plDayBox").hidden=PD.mode!=="day";
+  const D=planDays(PD),st=parseD(plStart()),ol=$("plPreview");ol.innerHTML="";
+  D.forEach(([a,b],j)=>{const li=document.createElement("li");const n=b-a+1,sec=spanSecs(PD.num,a,b);li.innerHTML="<b></b><span></span>";
+    li.querySelector("b").textContent=`${fmtD(addD(st,j))} · verses ${a}–${b}`;li.querySelector("span").textContent=`${n} v${sec?" · "+mmss(sec):""}`;ol.appendChild(li);});
+}
+$("plSurah").onchange=e=>{PD.num=+e.target.value;PD.a=1;PD.b=COUNTS[PD.num-1];plFill();plRender();};
+$("plFrom").onchange=e=>{PD.a=+e.target.value;if(PD.b<PD.a)PD.b=PD.a;plRender();};
+$("plTo").onchange=e=>{PD.b=+e.target.value;if(PD.a>PD.b)PD.a=PD.b;plRender();};
+$("plPer").onchange=e=>{PD.per=+e.target.value;plRender();};
+document.querySelectorAll("#plMode button").forEach(b=>b.onclick=()=>{PD.mode=b.dataset.v;plRender();});
+document.querySelectorAll("#plSplit button").forEach(b=>b.onclick=()=>{PD.split=b.dataset.v;plRender();});
+$("plSave").onclick=()=>{
+  const p={num:PD.num,a:PD.a,b:PD.b,mode:PD.mode,split:PD.split,per:PD.per,start:plStart(),done:{}};
+  if(planOn()&&["num","a","b","mode","split","per","start"].every(k=>PLAN[k]===p[k]))p.done=PLAN.done||{};
+  savePlan(p);$("planDlg").close();
+};
+$("plDel").onclick=()=>{const b=$("plDel");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to delete";setTimeout(()=>{delete b.dataset.arm;b.textContent="Delete plan";},3500);return;}
+  savePlan({deleted:true});$("planDlg").close();};
+$("planNew").onclick=openPlan;$("planEdit").onclick=openPlan;
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")renderPlan();});
+
+// ---------- car: daily goal ----------
+function curGoal(){if(!planOn()||!CUR||CUR.num!==PLAN.num)return null;const[a,b]=range();return goalTiles().find(t=>t.r&&t.r[0]===a&&t.r[1]===b)||null;}
+function renderGoalChip(){const el=$("carGoalTxt");if(!el)return;const g=curGoal();
+  el.textContent=g?({d2:"2 days ago",y:"Yesterday",t:g.lab,"3":"3 days"}[g.k]):"Goal";$("carGoal").classList.toggle("on",!!g);}
+function renderCarGoalP(){
+  const g=$("cgGrid");g.innerHTML="";
+  if(!planOn()){$("cgTitle").textContent="Daily goal";g.innerHTML=`<div class="cg-empty">No memorisation plan yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a plan</button></div>`;
+    $("cgSetup").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;openPlan();};return;}
+  $("cgTitle").textContent=`Daily goal · ${libBy(PLAN.num)[0]?dispName(libBy(PLAN.num)[0]):NAMES[PLAN.num-1]}`;const cur=curGoal();
+  goalTiles().forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
+    b.innerHTML="<b></b><span></span><small></small>";b.querySelector("b").textContent=t.lab;b.querySelector("span").textContent=t.r?`Verses ${t.r[0]}–${t.r[1]}`:"—";
+    b.querySelector("small").textContent=t.r?(t.sub+(t.idx.length&&t.idx.every(dayDone)?" · done":"")):"Not in your plan";
+    b.onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;playRange(PLAN.num,t.r[0],t.r[1]);};g.appendChild(b);});
+}
+$("carGoal").onclick=e=>{e.stopPropagation();renderCarGoalP();$("carGoalP").hidden=false;};
+$("carGoalClose").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;};
+
+// ---------- car: settings panel (follows the car screen's rotation) ----------
+let CS0="";
+function openCarSet(){CS0=listKey()+"#"+renKey();renderCarSet();$("carSetP").hidden=false;}
+function closeCarSet(){$("carSetP").hidden=true;if(P.playing&&listKey()+"#"+renKey()!==CS0){stop();play();}renderCar();}
+function renderCarSet(){
+  document.querySelectorAll("#carSetP .cs-chips").forEach(g=>{const k=g.dataset.k;let v=k==="mealOn"?(S.meal==="off"?"0":"1"):String(S[k]);if(k==="scope"&&v==="verse")v="range";
+    g.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));});
+  const[a,b]=range();$("csRange").hidden=S.scope==="surah";$("csFrom").textContent=a;$("csTo").textContent=b;
+  $("carSetP").querySelector('[data-k="mealOn"]').parentElement.hidden=!CUR.meal;
+}
+document.querySelectorAll("#carSetP .cs-chips button").forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.parentElement.dataset.k,v=b.dataset.v;
+  if(k==="mealOn"){if(v==="0"){if(S.meal!=="off")S._meal=S.meal;S.meal="off";}else{const keys=CUR.meal?Object.keys(CUR.meal):[];S.meal=keys.includes(S._meal)?S._meal:(["sy","au","hamdi","diyanet"].find(x=>keys.includes(x))||"off");}
+    $("meal").value=S.meal;renderVerses();if(P.cur!=null)highlight(P.cur);}
+  else if(k==="scope"){if(v==="range"){const[a,c]=range();S.from=a;S.to=c;}S.scope=v;}
+  else{S[k]=v;if(k==="rrep"){applyLoop();renderCarLoop();}}
+  save();syncUI();renderCarSet();});
+document.querySelectorAll("#carSetP .cs-step button").forEach(b=>b.onclick=e=>{e.stopPropagation();const[k,d]=b.dataset.d.split(":"),n=COUNTS[CUR.num-1];
+  const[a,c]=range();S.from=a;S.to=c;S.scope="range";
+  if(k==="from"){S.from=Math.min(n,Math.max(1,S.from+ +d));if(S.to<S.from)S.to=S.from;}else{S.to=Math.min(n,Math.max(1,S.to+ +d));if(S.from>S.to)S.from=S.to;}
+  save();syncUI();renderCarSet();});
+$("carSetClose").onclick=e=>{e.stopPropagation();closeCarSet();};
+["carSetP","carGoalP","carPick"].forEach(id=>$(id).addEventListener("click",e=>e.stopPropagation()));
+
 // ---------- boot ----------
 async function boot(){
   applyTheme();applyText();
   const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
   for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
-  syncBadge(SY.cfg?"ok":"off");
+  syncBadge(SY.cfg?"ok":"off");renderPlan();
   if(!LIB.length){showEmpty(true);if(SY.cfg)setTimeout(syncNow,800);return;}
   S._last=S.cur;selectSurah(S.cur);if(SY.cfg)setTimeout(syncNow,800);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,S,P,ENG,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,S,P,ENG,planDays,get PLAN(){return PLAN;},get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
