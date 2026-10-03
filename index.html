@@ -520,6 +520,32 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .st-pt.t-belagat .tag{background:var(--brass-soft);color:var(--brass)}
 .st-pt.t-kural .tag{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
 .st-pt.t-karsilastirma .tag{background:color-mix(in srgb,#5b6fb5 16%,transparent);color:#5b6fb5}
+
+/* ---- v12: goals window, move sheet, study scroll ---- */
+.plan-open{width:100%;text-align:left;color:inherit;background:none;padding:0;align-items:center!important}
+.plan-more{display:inline-flex;align-items:center;gap:2px;font-size:14px;font-weight:600;color:var(--accent)}
+.plan-more svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.gw{z-index:94}
+.gw .st-top .btn{flex:none}
+.gw-nav{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:8px}
+.gw-nav .navb{height:44px}
+.gw-day{flex:1;text-align:center;display:flex;flex-direction:column}
+.gw-day b{font-size:18px}.gw-day span{font-size:12.5px;color:var(--muted)}
+.gw-cal{display:flex;flex-direction:column;gap:10px}
+.mv-opt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px 16px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.mv-opt b{font-size:15.5px}.mv-opt span{font-size:13px;color:var(--muted);line-height:1.45}
+.mv-opt.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.mv-opt.on b::after{content:"  · recommended";font-weight:500;font-size:12px;color:var(--accent)}
+.st-scroll{position:absolute;right:12px;bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:2;display:flex;flex-direction:column;gap:8px}
+.st-scroll button{width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.14);display:grid;place-items:center;color:var(--ink);opacity:.92}
+.st-scroll button svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.st-scroll button:disabled{opacity:.3}
+.st-goal{display:inline-flex;align-self:center;gap:6px;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--brass-soft);color:var(--brass)}
+.cg-item.next{opacity:.85}
+.car .cg-grid{grid-template-columns:repeat(5,1fr)}
+.car:not(.land) .cg-grid{grid-template-columns:1fr 1fr}
+.car .cg-item{min-height:120px;padding:10px}
+.car .cg-item b{font-size:19px}.car .cg-item span{font-size:30px;font-weight:800;white-space:nowrap}.car .cg-item small{font-size:12px;line-height:1.3}
 </style>
 </head>
 <body>
@@ -566,10 +592,10 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   </section>
 
   <section class="card plan-card needs-surah" id="planCard" aria-label="Goals">
-    <div class="plan-h">
+    <button class="plan-h plan-open" id="planOpen" type="button">
       <div class="txtcol"><span class="lbl">Goals</span><b id="planHead">Today</b></div>
-      <div class="erow"><button class="iconbtn" id="calBtn" type="button" aria-label="Calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button><button class="btn small" id="planNew" type="button">+ Goal</button></div>
-    </div>
+      <span class="plan-more">Open<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+    </button>
     <div class="plan-days" id="planDays"></div>
     <div class="goal-list" id="planList"></div>
   </section>
@@ -674,6 +700,34 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   </div>
 </div>
 
+<!-- goals window -->
+<div class="study gw" id="goalsW" hidden>
+  <div class="st-top">
+    <button class="navb" id="gwClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="t"><b>Goals</b><span id="gwSub"></span></div>
+    <button class="btn small" id="calNew" type="button">+ Goal</button>
+  </div>
+  <div class="st-body" id="gwBody">
+    <div class="gw-nav">
+      <button class="navb" id="gwPrev" type="button" aria-label="Previous day"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="gw-day"><b id="gwDay"></b><span id="gwDayS"></span></div>
+      <button class="navb" id="gwNext" type="button" aria-label="Next day"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </div>
+    <div class="seg" id="gwQuick"><button type="button" data-d="-1">Yesterday</button><button type="button" data-d="0">Today</button><button type="button" data-d="1">Tomorrow</button></div>
+    <div id="calDay" class="goal-list"></div>
+    <div id="gwMissed" class="goal-list"></div>
+    <div class="st-h">Calendar</div>
+    <div class="st-card gw-cal">
+      <div class="cal-h"><button class="navb" id="calPrev" type="button" aria-label="Previous month"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><b id="calMonth"></b><button class="navb" id="calNext" type="button" aria-label="Next month"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-legend"><span><i class="lg done"></i>Done</span><span><i class="lg part"></i>Partly</span><span><i class="lg missed"></i>Missed</span><span><i class="lg plan"></i>Planned</span></div>
+    </div>
+    <div id="calStats" class="cal-stats"></div>
+    <div class="st-h">Your goals</div>
+    <div id="calGoals" class="cal-goals"></div>
+  </div>
+</div>
+
 <!-- word study -->
 <div class="study" id="study" hidden>
   <div class="st-top">
@@ -683,6 +737,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
     <button class="navb" id="stNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
   </div>
   <div class="st-body" id="stBody"></div>
+  <div class="st-scroll"><button type="button" id="stUp" aria-label="Scroll up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" id="stDown" aria-label="Scroll down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
   <div class="st-tip" id="stTip" hidden><b></b><p></p><span>Kapatmak için dokunun</span></div>
 </div>
 
@@ -803,18 +858,14 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   </div>
 </dialog>
 
-<!-- calendar -->
-<dialog class="sheet" id="calDlg">
+<!-- move a goal -->
+<dialog class="sheet" id="moveDlg">
   <div class="sheet-in">
     <div class="grab"></div>
-    <div class="sheet-h"><h2>Progress</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
-    <div class="cal-h"><button class="navb" id="calPrev" type="button" aria-label="Previous month"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><b id="calMonth"></b><button class="navb" id="calNext" type="button" aria-label="Next month"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="cal-legend"><span><i class="lg done"></i>Done</span><span><i class="lg part"></i>Partly</span><span><i class="lg missed"></i>Missed</span><span><i class="lg plan"></i>Planned</span></div>
-    <div id="calStats" class="cal-stats"></div>
-    <div id="calDay" class="goal-list"></div>
-    <div class="field"><span class="lbl">Your goals</span><div id="calGoals" class="cal-goals"></div></div>
-    <button class="btn secondary" id="calNew" type="button">+ New goal</button>
+    <div class="sheet-h"><h2 id="mvTitle">Move goal</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <p class="hint" id="mvText"></p>
+    <button class="mv-opt on" id="mvPush" type="button"><b>Push all coming goals one day later</b><span id="mvPushS"></span></button>
+    <button class="mv-opt" id="mvJoin" type="button"><b>Put it together with that day's goal</b><span id="mvJoinS"></span></button>
   </div>
 </dialog>
 
@@ -1824,7 +1875,7 @@ function loadGoals(){
       g.days=buildDays(g,old.start);Object.entries(old.done||{}).forEach(([i,t])=>{if(g.days[i])g.days[i].done=t;});G.list.push(g);G.u=Date.now();}}
   G.del=G.del||{};return G;}
 let GOALS=loadGoals();
-function saveGoals(){GOALS.u=Date.now();ls.set("hifz-goals",GOALS);scheduleSync(1500);renderPlan();if($("calDlg").open)renderCal();if(!$("car").hidden)renderGoalChip();}
+function saveGoals(){GOALS.u=Date.now();ls.set("hifz-goals",GOALS);scheduleSync(1500);renderPlan();if(!$("car").hidden)renderGoalChip();}
 const goalById=id=>GOALS.list.find(g=>g.id===id);
 function memSet(num){return new Set(ls.get("hifz-mem-"+num,[]));}
 function entryDone(g,e){if(e.done)return true;const m=memSet(g.num);for(let v=e.a;v<=e.b;v++)if(!m.has(v))return false;return true;}
@@ -1833,8 +1884,20 @@ function missedEntries(){const t=TODAY(),r=[];GOALS.list.forEach(g=>g.days.forEa
 function nextEntry(){const t=TODAY();let best=null;GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d>t&&(!best||e.d<best.e.d))best={g,e,i};}));return best;}
 function dayState(k){const E=entriesOn(k);if(!E.length)return"";const dn=E.filter(x=>entryDone(x.g,x.e)).length;
   if(dn===E.length)return"done";if(k<TODAY())return dn?"part":"missed";return dn?"part":"plan";}
-// move entry i (and the rest of that goal after it) so it lands on date k
-function moveEntry(g,i,k){const delta=dayDiff(parseD(g.days[i].d),parseD(k));if(!delta)return;for(let j=i;j<g.days.length;j++)g.days[j].d=dkey(addD(parseD(g.days[j].d),delta));saveGoals();}
+// Move entry i of goal g to date k. "push": everything planned from k on moves one day later (default).
+// "join": only this entry moves, so day k has both goals.
+function moveEntry(g,i,k,mode){const E=g.days[i];if(!E||k===E.d)return;
+  if(mode!=="join")GOALS.list.forEach(G=>G.days.forEach(e=>{if(e!==E&&e.d>=k)e.d=dkey(addD(parseD(e.d),1));}));
+  E.d=k;GOALS.list.forEach(G=>G.days.sort((x,y)=>x.d<y.d?-1:x.d>y.d?1:x.a-y.a));saveGoals();}
+const MV={};
+function askMove(g,i,k){MV.g=g;MV.i=i;MV.k=k;const e=g.days[i],others=entriesOn(k).filter(x=>x.e!==e);
+  $("mvTitle").textContent=`Move to ${k===TODAY()?"today":k===dkey(addD(today0(),1))?"tomorrow":fmtK(k)}`;
+  $("mvText").textContent=`${sName(g.num)} · verses ${e.a}–${e.b} → ${fmtK(k)}`;
+  $("mvPushS").textContent=others.length?`Everything planned from ${fmtK(k)} moves one day later, so each day keeps its own goal.`:`Goals planned from ${fmtK(k)} on move one day later.`;
+  $("mvJoinS").textContent=others.length?`${fmtK(k)} will have both: ${others.map(x=>sName(x.g.num)+" "+x.e.a+"–"+x.e.b).join(", ")} and this one. The rest stays where it is.`:`Nothing else is planned that day; only this goal moves.`;
+  openSheet("moveDlg");}
+$("mvPush").onclick=()=>{$("moveDlg").close();moveEntry(MV.g,MV.i,MV.k,"push");};
+$("mvJoin").onclick=()=>{$("moveDlg").close();moveEntry(MV.g,MV.i,MV.k,"join");};
 function toggleDone(g,i){const e=g.days[i];e.done=e.done?0:Date.now();
   if(!e.done&&entryDone(g,e))status("Still counted as done","All verses of this day are ticked as memorised.");saveGoals();}
 function spanSecs(num,a,b){const s=libBy(num)[0];if(!s)return 0;return itemSpan(s,nIntro(s)+b-1)[1]-itemSpan(s,nIntro(s)+a-1)[0];}
@@ -1845,7 +1908,7 @@ function playRange(num,a,b){
   const n=COUNTS[num-1];S.scope=a===1&&b===n?"surah":a===b?"verse":"range";S.from=a;S.to=b;save();syncUI();renderGoalChip();stop();unlock();play();
 }
 const SV={ck:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>'};
-function goalRow({g,e,i},ctx){
+function goalRow({g,e,i}){
   const el=document.createElement("div");const dn=entryDone(g,e),t=TODAY(),missed=e.d<t&&!dn;
   el.className="gl-row"+(missed?" missed":"")+(dn?" done":"");
   const nv=e.b-e.a+1,sec=spanSecs(g.num,e.a,e.b);
@@ -1854,34 +1917,55 @@ function goalRow({g,e,i},ctx){
   el.querySelector("b").textContent=`${sName(g.num)} · ${e.a===e.b?"verse "+e.a:"verses "+e.a+"–"+e.b}`;
   el.querySelector("span").textContent=`${missed?"Missed · ":""}${when} · day ${i+1} of ${g.days.length} · ${nv} verse${nv>1?"s":""}${sec?" · "+mmss(sec):""}`;
   el.querySelector(".gl-ck").onclick=()=>toggleDone(g,i);
-  const act=el.querySelector(".gl-act"),btn=(txt,cls,fn)=>{const b=document.createElement("button");b.type="button";b.className="btn small "+cls;b.textContent=txt;b.onclick=fn;act.appendChild(b);};
-  btn("▶ Listen","",()=>{if($("calDlg").open)$("calDlg").close();playRange(g.num,e.a,e.b);});
-  if(!dn){if(e.d<t)btn("Move to today","secondary",()=>moveEntry(g,i,t));
-    else btn(e.d===t?"Move to tomorrow":"Move a day later","secondary",()=>moveEntry(g,i,dkey(addD(parseD(e.d),1))));}
+  const act=el.querySelector(".gl-act"),btn=(txt,cls,fn)=>{const b=document.createElement("button");b.type="button";b.className="btn small "+cls;b.textContent=txt;b.onclick=()=>fn(b);act.appendChild(b);return b;};
+  btn("▶ Listen","",()=>{closeGoals();playRange(g.num,e.a,e.b);});
+  btn("Kelime tahlili","secondary",b=>studyGoal(g,e,b));
+  if(!dn){if(e.d<t)btn("Move to today","secondary",()=>askMove(g,i,t));
+    else btn(e.d===t?"Move to tomorrow":"A day later","secondary",()=>askMove(g,i,dkey(addD(parseD(e.d),1))));}
   return el;
+}
+async function studyGoal(g,e,b){
+  const s=(CUR&&CUR.num===g.num)?CUR:pickNum(g.num);if(!s){b.textContent="Add this surah first";return;}
+  const d=await loadStudy(g.num);if(!d){b.textContent="No word study yet";b.disabled=true;return;}
+  if(s!==CUR)selectSurah(s.id);openStudy(e.a,[e.a,e.b]);
 }
 function renderPlan(){
   if(!$("planCard"))return;const t=TODAY(),T=today0();
   const box=$("planDays");box.innerHTML="";
   for(let j=-3;j<=3;j++){const k=dkey(addD(T,j)),st=dayState(k),el=document.createElement("i");
     el.className=(st?st+" ":"")+(j===0?"today":"");el.innerHTML=`<span></span><b>${addD(T,j).getDate()}</b>`;el.querySelector("span").textContent=addD(T,j).toLocaleDateString(undefined,{weekday:"short"});
-    el.onclick=()=>openCal(k);box.appendChild(el);}
+    el.onclick=()=>openGoals(k);box.appendChild(el);}
   box.hidden=!GOALS.list.length;
   const list=$("planList");list.innerHTML="";const today=entriesOn(t),missed=missedEntries();
   $("planHead").textContent=!GOALS.list.length?"No goals yet":today.length?`Today · ${today.filter(x=>entryDone(x.g,x.e)).length} of ${today.length} done`:"Nothing planned today";
   today.forEach(x=>list.appendChild(goalRow(x)));
-  missed.slice(-3).forEach(x=>list.appendChild(goalRow(x)));
+  missed.slice(-2).forEach(x=>list.appendChild(goalRow(x)));
   if(!today.length){const nx=nextEntry(),p=document.createElement("div");p.className="gl-empty";
-    p.textContent=!GOALS.list.length?"Set a daily, weekly or custom goal for a surah or a range of verses.":nx?`Next: ${fmtK(nx.e.d)} · ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:"All goals finished. Well done!";list.appendChild(p);}
-  renderGoalChip();
+    p.textContent=!GOALS.list.length?"Set a daily, weekly or custom goal for a surah or a range of verses.":nx?`Next: ${fmtK(nx.e.d)} · ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:"All goals finished. Well done!";list.appendChild(p);
+    if(!GOALS.list.length){const b=document.createElement("button");b.type="button";b.className="btn small";b.textContent="+ Set a goal";b.onclick=()=>openPlan(null);list.appendChild(b);}}
+  renderGoalChip();if(!$("goalsW").hidden)renderGW();
 }
-$("planNew").onclick=()=>openPlan(null);
-$("calBtn").onclick=()=>openCal(TODAY());
+$("planOpen").onclick=()=>openGoals(TODAY());
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")renderPlan();});
 
-// ---------- calendar ----------
+// ---------- goals window: one day at a time, calendar, all goals ----------
 const CAL={m:null,sel:null};
-function openCal(k){CAL.sel=k;const d=parseD(k);CAL.m=new Date(d.getFullYear(),d.getMonth(),1);renderCal();if(!$("calDlg").open)openSheet("calDlg");}
+const lockOn=()=>document.documentElement.classList.toggle("lock",!$("goalsW").hidden||!$("study").hidden);
+function openGoals(k){CAL.sel=k||TODAY();const d=parseD(CAL.sel);CAL.m=new Date(d.getFullYear(),d.getMonth(),1);$("goalsW").hidden=false;lockOn();renderGW();$("gwBody").scrollTop=0;}
+function closeGoals(){if($("goalsW").hidden)return;$("goalsW").hidden=true;lockOn();}
+function selDay(k){CAL.sel=k;const d=parseD(k);if(d.getMonth()!==CAL.m.getMonth()||d.getFullYear()!==CAL.m.getFullYear())CAL.m=new Date(d.getFullYear(),d.getMonth(),1);renderGW();}
+function renderGW(){
+  const k=CAL.sel,t=TODAY(),diff=dayDiff(today0(),parseD(k));
+  $("gwDay").textContent=parseD(k).toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long"});
+  $("gwDayS").textContent=diff===0?"Today":diff===1?"Tomorrow":diff===-1?"Yesterday":diff>0?`in ${diff} days`:`${-diff} days ago`;
+  document.querySelectorAll("#gwQuick button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.d===diff));
+  const dd=$("calDay");dd.innerHTML="";const E=entriesOn(k);
+  if(E.length)E.forEach(x=>dd.appendChild(goalRow(x)));
+  else{const p=document.createElement("div");p.className="gl-empty";const nx=nextEntry();p.textContent=GOALS.list.length?"No goal on this day."+(k===t&&nx?` Next: ${fmtK(nx.e.d)} · ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:""):"No goals yet. Tap “+ Goal” to set one.";dd.appendChild(p);}
+  const mm=$("gwMissed");mm.innerHTML="";const M=k===t?missedEntries():[];
+  if(M.length){mm.appendChild(Object.assign(document.createElement("div"),{className:"st-h",textContent:"Missed"}));M.forEach(x=>mm.appendChild(goalRow(x)));}
+  renderCal();
+}
 function renderCal(){
   const m=CAL.m,g=$("calGrid");g.innerHTML="";$("calMonth").textContent=m.toLocaleDateString(undefined,{month:"long",year:"numeric"});
   const wd0=new Date(2024,0,1);for(let i=0;i<7;i++){const s=document.createElement("span");s.className="wd";s.textContent=addD(wd0,i).toLocaleDateString(undefined,{weekday:"narrow"});g.appendChild(s);}
@@ -1890,15 +1974,12 @@ function renderCal(){
     const st=dayState(k),b=document.createElement("button");b.type="button";
     b.className="cal-d "+(st||"")+(d.getMonth()!==m.getMonth()?" out":"")+(k===t?" today":"")+(k===CAL.sel?" sel":"");
     const E=entriesOn(k);b.innerHTML=`${d.getDate()}${E.length?`<small>${E.map(x=>x.e.a+"–"+x.e.b).join(",").slice(0,8)}</small>`:""}`;
-    b.onclick=()=>{CAL.sel=k;renderCal();};g.appendChild(b);}
-  // month stats
+    b.onclick=()=>{selDay(k);$("gwBody").scrollTo({top:0,behavior:"smooth"});};g.appendChild(b);}
   let planned=0,done=0,streak=0;const mk=dkey(m).slice(0,7);
   GOALS.list.forEach(G=>G.days.forEach(e=>{if(e.d.slice(0,7)===mk&&e.d<=t){planned++;if(entryDone(G,e))done++;}}));
   for(let j=0;j<400;j++){const k=dkey(addD(today0(),-j)),st=dayState(k);if(st==="done")streak++;else if(st===""||(j===0&&st!=="done"))continue;else break;}
   $("calStats").innerHTML=`<div><b>${done}/${planned}</b><span>goals done this month</span></div><div><b>${planned?Math.round(done/planned*100):0}%</b><span>on track</span></div><div><b>${streak}</b><span>day streak</span></div>`;
-  const dd=$("calDay");dd.innerHTML="";const E=entriesOn(CAL.sel);
-  const h=document.createElement("div");h.className="st-h";h.textContent=fmtK(CAL.sel);dd.appendChild(h);
-  if(E.length)E.forEach(x=>dd.appendChild(goalRow(x)));else{const p=document.createElement("div");p.className="gl-empty";p.textContent="No goal on this day.";dd.appendChild(p);}
+  $("gwSub").textContent=GOALS.list.length?`${GOALS.list.length} goal${GOALS.list.length>1?"s":""} · ${streak} day streak`:"Set your first goal";
   const gl=$("calGoals");gl.innerHTML="";
   if(!GOALS.list.length)gl.innerHTML='<div class="gl-empty">No goals yet.</div>';
   [...GOALS.list].sort((a,b)=>a.days[0].d<b.days[0].d?-1:1).forEach(G=>{const n=G.days.length,dn=G.days.filter(e=>entryDone(G,e)).length;
@@ -1909,6 +1990,10 @@ function renderCal(){
 }
 $("calPrev").onclick=()=>{CAL.m=new Date(CAL.m.getFullYear(),CAL.m.getMonth()-1,1);renderCal();};
 $("calNext").onclick=()=>{CAL.m=new Date(CAL.m.getFullYear(),CAL.m.getMonth()+1,1);renderCal();};
+$("gwPrev").onclick=()=>selDay(dkey(addD(parseD(CAL.sel),-1)));
+$("gwNext").onclick=()=>selDay(dkey(addD(parseD(CAL.sel),1)));
+document.querySelectorAll("#gwQuick button").forEach(b=>b.onclick=()=>selDay(dkey(addD(today0(),+b.dataset.d))));
+$("gwClose").onclick=closeGoals;
 $("calNew").onclick=()=>openPlan(null);
 
 // ---------- goal editor ----------
@@ -1926,7 +2011,7 @@ function openPlan(G){
   const su=$("plSurah");su.innerHTML="";plNums().forEach(n=>su.add(new Option(`${n} · ${sName(n)}`,n)));su.value=PD.num;
   const nn=$("plN");nn.innerHTML="";for(let k=2;k<=30;k++)nn.add(new Option(`${k} days`,k));
   $("plDel").hidden=!G;$("plDel").textContent="Delete goal";delete $("plDel").dataset.arm;
-  if($("calDlg").open)$("calDlg").close();plFill();plRender();openSheet("planDlg");
+  plFill();plRender();openSheet("planDlg");
 }
 function plFill(){const n=COUNTS[PD.num-1];PD.a=Math.min(Math.max(1,PD.a),n);PD.b=Math.min(Math.max(PD.a,PD.b),n);
   for(const id of["plFrom","plTo"]){const el=$(id);el.innerHTML="";for(let i=1;i<=n;i++)el.add(new Option(i,i));}
@@ -1964,27 +2049,39 @@ $("plDel").onclick=()=>{const b=$("plDel");if(!b.dataset.arm){b.dataset.arm="1";
   GOALS.list=GOALS.list.filter(x=>x.id!==PD.id);GOALS.del[PD.id]=Date.now();saveGoals();$("planDlg").close();};
 
 // ---------- car: daily goal ----------
-// tiles: 2 days ago, yesterday, today, last 3 days (combined); uses the goal of the surah you are on when there are several
+// Built from the days that actually have a goal, so empty days are skipped:
+// current = today's goal or the most recent one; previous = the goal day before it; next = the coming one.
 function goalTiles(){
-  if(!GOALS.list.length)return[];const T=today0(),keys=[-2,-1,0].map(j=>dkey(addD(T,j)));
-  const all=keys.flatMap(k=>entriesOn(k));if(!all.length){const nx=nextEntry();return nx?[{k:"n",lab:"Next goal",num:nx.g.num,r:[nx.e.a,nx.e.b],sub:fmtK(nx.e.d),E:[nx]}]:[];}
-  const num=(all.find(x=>CUR&&x.g.num===CUR.num)||all.find(x=>x.e.d===keys[2])||all[all.length-1]).g.num;
-  const pick=k=>entriesOn(k).filter(x=>x.g.num===num);
-  const tile=(k,lab,ks)=>{const E=ks.flatMap(pick);if(!E.length)return{k,lab,num,r:null,sub:"",E};
-    return{k,lab,num,r:[Math.min(...E.map(x=>x.e.a)),Math.max(...E.map(x=>x.e.b))],sub:E.map(x=>"day "+(x.i+1)).join(" + "),E};};
-  return[tile("d2","2 days ago",[keys[0]]),tile("y","Yesterday",[keys[1]]),tile("t","Today",[keys[2]]),tile("3","Last 3 days",keys)];
+  if(!GOALS.list.length)return[];
+  const t=TODAY(),y=dkey(addD(today0(),-1)),tm=dkey(addD(today0(),1));
+  const dates=[...new Set(GOALS.list.flatMap(g=>g.days.map(e=>e.d)))].sort();
+  const past=dates.filter(d=>d<=t).reverse(),fut=dates.filter(d=>d>t);
+  const pool=[...past,...fut].flatMap(d=>entriesOn(d));if(!pool.length)return[];
+  const num=(pool.find(x=>CUR&&x.g.num===CUR.num)||pool[0]).g.num;
+  const on=d=>d?entriesOn(d).filter(x=>x.g.num===num):[];
+  const seq=past.filter(d=>on(d).length),nxt=fut.find(d=>on(d).length);
+  const short=d=>parseD(d).toLocaleDateString(undefined,{day:"numeric",month:"short"});
+  const mk=(k,lab,ds,need)=>{const D=ds.filter(Boolean);if(D.length<need)return{k,lab,num,r:null,E:[],sub:""};const E=D.flatMap(on);
+    return{k,lab,num,r:[Math.min(...E.map(x=>x.e.a)),Math.max(...E.map(x=>x.e.b))],E,sub:D.slice().reverse().map(short).join(" + ")};};
+  const[c,p,p2]=seq,consec=(a,b)=>a&&b&&dayDiff(parseD(b),parseD(a))===1;
+  return[
+    mk("c",c===t?"Today":"Current",[c],1),
+    mk("p",p===y&&c===t?"Yesterday":"Previous",[p],1),
+    mk("2",consec(c,p)?"Last 2 days":"Last 2 goals",[c,p],2),
+    mk("3",consec(c,p)&&consec(p,p2)?"Last 3 days":"Last 3 goals",[c,p,p2],3),
+    mk("n",nxt===tm?"Tomorrow":"Next",[nxt],1)];
 }
 function curGoal(){if(!CUR)return null;const[a,b]=range();return goalTiles().find(t=>t.r&&t.num===CUR.num&&t.r[0]===a&&t.r[1]===b)||null;}
 function renderGoalChip(){const el=$("carGoalTxt");if(!el)return;const g=curGoal();
-  el.textContent=g?({d2:"2 days ago",y:"Yesterday",t:"Today","3":"3 days",n:"Next"}[g.k]):"Goal";$("carGoal").classList.toggle("on",!!g);}
+  el.textContent=g?({"2":"2 days","3":"3 days"}[g.k]||g.lab):"Goal";$("carGoal").classList.toggle("on",!!g);}
 function renderCarGoalP(){
   const g=$("cgGrid");g.innerHTML="";const T=goalTiles();
-  if(!T.length){$("cgTitle").textContent="Daily goal";g.innerHTML=`<div class="cg-empty">No goals yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a goal</button></div>`;
+  if(!T.length){$("cgTitle").textContent="Goals";g.innerHTML=`<div class="cg-empty">No goals yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a goal</button></div>`;
     $("cgSetup").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;openPlan(null);};return;}
-  $("cgTitle").textContent=`Daily goal · ${sName(T[0].num)}`;const cur=curGoal();
-  T.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
-    b.innerHTML="<b></b><span></span><small></small>";b.querySelector("b").textContent=t.lab;b.querySelector("span").textContent=t.r?`Verses ${t.r[0]}–${t.r[1]}`:"—";
-    b.querySelector("small").textContent=t.r?(t.sub+(t.E.length&&t.E.every(x=>entryDone(x.g,x.e))?" · done":"")):"No goal that day";
+  $("cgTitle").textContent=`Goals · ${sName(T[0].num)}`;const cur=curGoal();
+  T.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(t.k==="n"?" next":"")+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
+    b.innerHTML="<b></b><span></span><small></small>";b.querySelector("b").textContent=t.lab;b.querySelector("span").textContent=t.r?(t.r[0]===t.r[1]?`${t.r[0]}`:`${t.r[0]}–${t.r[1]}`):"—";
+    b.querySelector("small").textContent=t.r?("verses · "+t.sub+(t.E.length&&t.E.every(x=>entryDone(x.g,x.e))?" · done":"")):"No goal yet";
     b.onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;playRange(t.num,t.r[0],t.r[1]);};g.appendChild(b);});
 }
 $("carGoal").onclick=e=>{e.stopPropagation();renderCarGoalP();$("carGoalP").hidden=false;};
@@ -2025,8 +2122,9 @@ async function loadStudy(num){
 }
 function refreshStudy(s){loadStudy(s.num).then(d=>{if(s!==CUR)return;$("studyBtn").hidden=!d;document.querySelectorAll(".vst").forEach(b=>b.hidden=!d);});}
 const ST={v:1,audio:new Audio(),url:null};ST.audio.setAttribute("playsinline","");ST.audio.preload="auto";
-function openStudy(v){if(!STUDY[CUR.num])return;ST.v=Math.max(1,Math.min(COUNTS[CUR.num-1],v||1));pause();$("study").hidden=false;document.documentElement.classList.add("lock");renderStudy();}
-function closeStudy(){$("study").hidden=true;document.documentElement.classList.remove("lock");try{ST.audio.pause();}catch(e){}
+function openStudy(v,rng){if(!STUDY[CUR.num])return;ST.rng=rng||null;ST.v=Math.max(1,Math.min(COUNTS[CUR.num-1],v||1));pause();$("study").hidden=false;lockOn();renderStudy();}
+const stBounds=()=>ST.rng||[1,COUNTS[CUR.num-1]];
+function closeStudy(){$("study").hidden=true;lockOn();try{ST.audio.pause();}catch(e){}if(!$("goalsW").hidden)return;
   const li=document.querySelector(`.v[data-v="${ST.v}"]`);if(li)li.scrollIntoView({block:"center"});}
 // Turkish text with Arabic inside: isolate each Arabic run so punctuation and numbers stay in the right order
 const AR_RUN=/[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+(?:[\s\u00A0]+[\u0600-\u06FF\u0750-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+)*/g;
@@ -2130,8 +2228,8 @@ function elr(tag,cls,txt,seen){const e=document.createElement(tag);if(cls)e.clas
 const TUR={belagat:"Belâgat",kural:"Kural",karsilastirma:"Karşılaştırma",ilginc:"İlginç"};
 function renderStudy(){
   const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;$("stTip").hidden=true;
-  $("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent="Kelime tahlili";
-  $("stPrev").disabled=v<=1;$("stNext").disabled=v>=COUNTS[CUR.num-1];
+  const[B0,B1]=stBounds();$("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent=ST.rng?`Hedef: âyet ${B0}–${B1} · ${v-B0+1}/${B1-B0+1}`:"Kelime tahlili";
+  $("stPrev").disabled=v<=B0;$("stNext").disabled=v>=B1;setTimeout(stArrows,0);
   const H=t=>body.appendChild(el("div","st-h",t));
   // verse
   const vc=el("div","st-verse");
@@ -2176,9 +2274,13 @@ $("stTip").onclick=()=>{$("stTip").hidden=true;};
 $("studyBtn").onclick=()=>openStudy(P.cur!=null&&P.cur>=nIntro(CUR)?P.cur-nIntro(CUR)+1:range()[0]);
 $("stClose").onclick=closeStudy;
 $("stPrev").onclick=()=>{ST.v--;renderStudy();};$("stNext").onclick=()=>{ST.v++;renderStudy();};
+function stArrows(){const b=$("stBody");$("stUp").disabled=b.scrollTop<8;$("stDown").disabled=b.scrollTop+b.clientHeight>=b.scrollHeight-8;}
+$("stUp").onclick=()=>{const b=$("stBody");b.scrollBy({top:-b.clientHeight*.8,behavior:"smooth"});};
+$("stDown").onclick=()=>{const b=$("stBody");b.scrollBy({top:b.clientHeight*.8,behavior:"smooth"});};
+$("stBody").addEventListener("scroll",stArrows,{passive:true});
 (()=>{let x0=null,y0=null;const b=$("stBody");b.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
   b.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
-    if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*2){const n=COUNTS[CUR.num-1];const nv=ST.v+(dx<0?1:-1);if(nv>=1&&nv<=n){ST.v=nv;renderStudy();}}},{passive:true});})();
+    if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*2){const[B0,B1]=stBounds();const nv=ST.v+(dx<0?1:-1);if(nv>=B0&&nv<=B1){ST.v=nv;renderStudy();}}},{passive:true});})();
 
 // ---------- boot ----------
 async function boot(){
