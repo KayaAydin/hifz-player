@@ -546,6 +546,11 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .car:not(.land) .cg-grid{grid-template-columns:1fr 1fr}
 .car .cg-item{min-height:120px;padding:10px}
 .car .cg-item b{font-size:19px}.car .cg-item span{font-size:30px;font-weight:800;white-space:nowrap}.car .cg-item small{font-size:12px;line-height:1.3}
+.st-jump{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;width:48px;height:48px;border-radius:50%;background:var(--surface);border:1px solid var(--line);box-shadow:0 4px 14px rgba(0,0,0,.16);display:grid;place-items:center;color:var(--ink);opacity:.94;transition:opacity .2s}
+.st-jump.up{right:14px}.st-jump.down{left:14px}
+.st-jump svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.st-jump:disabled{opacity:0;pointer-events:none}
+.st-body{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 </style>
 </head>
 <body>
@@ -737,7 +742,7 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
     <button class="navb" id="stNext" type="button" aria-label="Next verse"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
   </div>
   <div class="st-body" id="stBody"></div>
-  <div class="st-scroll"><button type="button" id="stUp" aria-label="Scroll up"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" id="stDown" aria-label="Scroll down"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+  <button type="button" class="st-jump up" id="stUp" aria-label="Go to top"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="st-jump down" id="stDown" aria-label="Go to bottom"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="st-tip" id="stTip" hidden><b></b><p></p><span>Kapatmak için dokunun</span></div>
 </div>
 
@@ -2229,7 +2234,7 @@ const TUR={belagat:"Belâgat",kural:"Kural",karsilastirma:"Karşılaştırma",il
 function renderStudy(){
   const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;$("stTip").hidden=true;
   const[B0,B1]=stBounds();$("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent=ST.rng?`Hedef: âyet ${B0}–${B1} · ${v-B0+1}/${B1-B0+1}`:"Kelime tahlili";
-  $("stPrev").disabled=v<=B0;$("stNext").disabled=v>=B1;setTimeout(stArrows,0);
+  $("stPrev").disabled=v<=B0;$("stNext").disabled=v>=B1;stTop();
   const H=t=>body.appendChild(el("div","st-h",t));
   // verse
   const vc=el("div","st-verse");
@@ -2246,7 +2251,7 @@ function renderStudy(){
   if(x.ozet||x.baglam){H("Genel anlam");const c=el("div","st-card st-ozet");if(x.ozet)c.appendChild(elr("p",null,x.ozet));if(x.baglam){const p=elr("p","st-bag",x.baglam);c.appendChild(p);}body.appendChild(c);}
   // phrase by phrase
   if(x.parcalar&&x.parcalar.length){H("Parça parça anlam");const c=el("div","st-card st-parts");
-    x.parcalar.forEach(p=>{const r=el("div","st-part");r.append(el("span","a",p.ar),elr("span","t",p.tr));c.appendChild(r);});body.appendChild(c);}
+    x.parcalar.forEach(p=>{const r=el("div","st-part");r.append(el("span","a",p.ar),el("span","t",p.tr));c.appendChild(r);});body.appendChild(c);}
   // words
   H("Kelime kelime");
   x.words.forEach((w,i)=>{const c=el("div","st-w");c.id="stw"+i;const seen=new Set();
@@ -2265,7 +2270,7 @@ function renderStudy(){
     if(Array.isArray(items)){const ul=el("ul");items.forEach(t=>ul.appendChild(elr("li",null,t)));c.appendChild(ul);}else rich(c,items);body.appendChild(c);};
   sec("Cümle tahlili (i‘rab)",x.irab);
   if(x.baska&&x.baska.length){H("Başka âyetlerde");const c=el("div","st-card");
-    x.baska.forEach(r=>{const it=el("div","st-ref");it.append(el("span","r",r.ref||""),el("div","a",r.ar||""),elr("div",null,r.tr||""));if(r.not)it.appendChild(elr("div","n",r.not));c.appendChild(it);});body.appendChild(c);}
+    x.baska.forEach(r=>{const it=el("div","st-ref");it.append(el("span","r",r.ref||""),el("div","a",r.ar||""),el("div",null,r.tr||""));if(r.not)it.appendChild(elr("div","n",r.not));c.appendChild(it);});body.appendChild(c);}
   sec("Belâgat",x.belagat);sec("Kurallar ve kalıplar",x.kural);sec("Karşılaştırmalar",x.karsilastirma);sec("İlginç bilgiler",x.ilginc);
   if(x.ezber){H("Ezber ipucu");body.appendChild(elr("div","st-card st-ez",x.ezber));}
   const src=el("p","st-src",`Hazırlayan: ${d.by||"Claude (yapay zekâ)"}. Yapay zekâ ile hazırlandığı için hata olabilir; önemli noktaları bir hocaya danışarak kontrol edin. Altı noktalı terimlere dokununca kısa açıklaması çıkar.`);body.appendChild(src);
@@ -2274,9 +2279,10 @@ $("stTip").onclick=()=>{$("stTip").hidden=true;};
 $("studyBtn").onclick=()=>openStudy(P.cur!=null&&P.cur>=nIntro(CUR)?P.cur-nIntro(CUR)+1:range()[0]);
 $("stClose").onclick=closeStudy;
 $("stPrev").onclick=()=>{ST.v--;renderStudy();};$("stNext").onclick=()=>{ST.v++;renderStudy();};
+function stTop(){const b=$("stBody");const go=()=>{b.style.overflow="hidden";b.scrollTop=0;b.style.overflow="";stArrows();};go();requestAnimationFrame(go);setTimeout(go,60);}
 function stArrows(){const b=$("stBody");$("stUp").disabled=b.scrollTop<8;$("stDown").disabled=b.scrollTop+b.clientHeight>=b.scrollHeight-8;}
-$("stUp").onclick=()=>{const b=$("stBody");b.scrollBy({top:-b.clientHeight*.8,behavior:"smooth"});};
-$("stDown").onclick=()=>{const b=$("stBody");b.scrollBy({top:b.clientHeight*.8,behavior:"smooth"});};
+$("stUp").onclick=()=>{const b=$("stBody");b.scrollTo({top:0,behavior:"smooth"});};
+$("stDown").onclick=()=>{const b=$("stBody");b.scrollTo({top:b.scrollHeight,behavior:"smooth"});};
 $("stBody").addEventListener("scroll",stArrows,{passive:true});
 (()=>{let x0=null,y0=null;const b=$("stBody");b.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
   b.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
