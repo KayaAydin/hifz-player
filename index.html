@@ -542,7 +542,8 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .st-scroll button:disabled{opacity:.3}
 .st-goal{display:inline-flex;align-self:center;gap:6px;font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--brass-soft);color:var(--brass)}
 .cg-item.next{opacity:.85}
-.car .cg-grid{grid-template-columns:repeat(5,1fr)}
+.car .cg-grid{grid-template-columns:repeat(3,1fr)}
+.car .cg-item.start{background:color-mix(in srgb,var(--c-acc) 18%,var(--c-btn))}
 .car:not(.land) .cg-grid{grid-template-columns:1fr 1fr}
 .car .cg-item{min-height:120px;padding:10px}
 .car .cg-item b{font-size:19px}.car .cg-item span{font-size:30px;font-weight:800;white-space:nowrap}.car .cg-item small{font-size:12px;line-height:1.3}
@@ -1880,10 +1881,12 @@ function loadGoals(){
       g.days=buildDays(g,old.start);Object.entries(old.done||{}).forEach(([i,t])=>{if(g.days[i])g.days[i].done=t;});G.list.push(g);G.u=Date.now();}}
   G.del=G.del||{};return G;}
 let GOALS=loadGoals();
+(()=>{let ch=false;GOALS.list.forEach(g=>g.days.forEach(e=>{if(e.done){const m=memSet(g.num);let miss=false;for(let v=e.a;v<=e.b;v++)if(!m.has(v)){m.add(v);miss=true;}
+  if(miss){ls.set("hifz-mem-"+g.num,[...m].sort((x,y)=>x-y));ls.set("hifz-memu-"+g.num,Date.now());ch=true;}}}));if(ch)setTimeout(()=>scheduleSync(3000),0);})();
 function saveGoals(){GOALS.u=Date.now();ls.set("hifz-goals",GOALS);scheduleSync(1500);renderPlan();if(!$("car").hidden)renderGoalChip();}
 const goalById=id=>GOALS.list.find(g=>g.id===id);
 function memSet(num){return new Set(ls.get("hifz-mem-"+num,[]));}
-function entryDone(g,e){if(e.done)return true;const m=memSet(g.num);for(let v=e.a;v<=e.b;v++)if(!m.has(v))return false;return true;}
+function entryDone(g,e){const m=memSet(g.num);for(let v=e.a;v<=e.b;v++)if(!m.has(v))return false;return true;}
 function entriesOn(k){const r=[];GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d===k)r.push({g,e,i});}));return r;}
 function missedEntries(){const t=TODAY(),r=[];GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d<t&&!entryDone(g,e))r.push({g,e,i});}));return r.sort((x,y)=>x.e.d<y.e.d?-1:1);}
 function nextEntry(){const t=TODAY();let best=null;GOALS.list.forEach(g=>g.days.forEach((e,i)=>{if(e.d>t&&(!best||e.d<best.e.d))best={g,e,i};}));return best;}
@@ -1903,8 +1906,16 @@ function askMove(g,i,k){MV.g=g;MV.i=i;MV.k=k;const e=g.days[i],others=entriesOn(
   openSheet("moveDlg");}
 $("mvPush").onclick=()=>{$("moveDlg").close();moveEntry(MV.g,MV.i,MV.k,"push");};
 $("mvJoin").onclick=()=>{$("moveDlg").close();moveEntry(MV.g,MV.i,MV.k,"join");};
-function toggleDone(g,i){const e=g.days[i];e.done=e.done?0:Date.now();
-  if(!e.done&&entryDone(g,e))status("Still counted as done","All verses of this day are ticked as memorised.");saveGoals();}
+// One source of truth: ticking a goal ticks all its verses (and unticking clears them), so the verse ticks
+// on the main page, the goal ticks, word study and car mode always agree.
+function setMemRange(num,a,b,on){
+  const m=memSet(num);for(let v=a;v<=b;v++)on?m.add(v):m.delete(v);
+  ls.set("hifz-mem-"+num,[...m].sort((x,y)=>x-y));ls.set("hifz-memu-"+num,Date.now());scheduleSync();
+  if(CUR&&CUR.num===num){loadMem();for(let v=a;v<=b;v++){const li=document.querySelector(`.v[data-v="${v}"]`);if(li){li.classList.toggle("memd",on);li.querySelector(".mem").setAttribute("aria-pressed",on);}}
+    if(S.skipMem)P.key="";renderCarMem();updateMemo();}
+  renderPlan();
+}
+function toggleDone(g,i){const e=g.days[i],on=!entryDone(g,e);e.done=on?Date.now():0;GOALS.u=Date.now();ls.set("hifz-goals",GOALS);setMemRange(g.num,e.a,e.b,on);}
 function spanSecs(num,a,b){const s=libBy(num)[0];if(!s)return 0;return itemSpan(s,nIntro(s)+b-1)[1]-itemSpan(s,nIntro(s)+a-1)[0];}
 const mmss=t=>`${Math.floor(t/60)}:${String(Math.round(t%60)).padStart(2,"0")}`;
 function playRange(num,a,b){
@@ -2074,17 +2085,18 @@ function goalTiles(){
     mk("p",p===y&&c===t?"Yesterday":"Previous",[p],1),
     mk("2",consec(c,p)?"Last 2 days":"Last 2 goals",[c,p],2),
     mk("3",consec(c,p)&&consec(p,p2)?"Last 3 days":"Last 3 goals",[c,p,p2],3),
+    (()=>{const t0=mk("c","",[c],1);return t0.r?{k:"s",lab:"From the start",num,r:[1,t0.r[1]],E:t0.E,sub:`up to ${c===t?"today's":"the current"} goal`}:{k:"s",lab:"From the start",num,r:null,E:[],sub:""};})(),
     mk("n",nxt===tm?"Tomorrow":"Next",[nxt],1)];
 }
 function curGoal(){if(!CUR)return null;const[a,b]=range();return goalTiles().find(t=>t.r&&t.num===CUR.num&&t.r[0]===a&&t.r[1]===b)||null;}
 function renderGoalChip(){const el=$("carGoalTxt");if(!el)return;const g=curGoal();
-  el.textContent=g?({"2":"2 days","3":"3 days"}[g.k]||g.lab):"Goal";$("carGoal").classList.toggle("on",!!g);}
+  el.textContent=g?({"2":"2 days","3":"3 days","s":"From start"}[g.k]||g.lab):"Goal";$("carGoal").classList.toggle("on",!!g);}
 function renderCarGoalP(){
   const g=$("cgGrid");g.innerHTML="";const T=goalTiles();
   if(!T.length){$("cgTitle").textContent="Goals";g.innerHTML=`<div class="cg-empty">No goals yet.<br>Set one to listen to each day's goal here.<br><button class="cbtn" id="cgSetup" type="button">Set a goal</button></div>`;
     $("cgSetup").onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;openPlan(null);};return;}
   $("cgTitle").textContent=`Goals · ${sName(T[0].num)}`;const cur=curGoal();
-  T.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(t.k==="n"?" next":"")+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
+  T.forEach(t=>{const b=document.createElement("button");b.type="button";b.className="cg-item"+(t.k==="n"?" next":t.k==="s"?" start":"")+(cur&&cur.k===t.k?" cur":"");b.disabled=!t.r;
     b.innerHTML="<b></b><span></span><small></small>";b.querySelector("b").textContent=t.lab;b.querySelector("span").textContent=t.r?(t.r[0]===t.r[1]?`${t.r[0]}`:`${t.r[0]}–${t.r[1]}`):"—";
     b.querySelector("small").textContent=t.r?("verses · "+t.sub+(t.E.length&&t.E.every(x=>entryDone(x.g,x.e))?" · done":"")):"No goal yet";
     b.onclick=e=>{e.stopPropagation();$("carGoalP").hidden=true;playRange(t.num,t.r[0],t.r[1]);};g.appendChild(b);});
