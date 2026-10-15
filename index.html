@@ -582,6 +582,9 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .vw{z-index:28}
 .vw .st-body{padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))}
 .vw .foot{display:flex;flex-direction:column;gap:8px;align-items:center;padding-top:6px}
+.st-nur .tag{background:color-mix(in srgb,#2f7a57 16%,transparent);color:#2f7a57}
+.st-q{font-style:italic;color:var(--muted);font-size:13.5px}
+.st-link{align-self:flex-start;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;padding:4px 0}
 </style>
 </head>
 <body>
@@ -2429,6 +2432,11 @@ function renderStudy(){
   // insights (v2) or old lists (v1)
   if(x.noktalar&&x.noktalar.length){H("İncelikler");
     x.noktalar.forEach(n=>{const c=el("div","st-card st-pt t-"+(n.tur||"ilginc"));c.appendChild(el("span","tag",TUR[n.tur]||"Not"));c.appendChild(el("b",null,n.baslik||""));c.appendChild(elr("p",null,n.metin||""));body.appendChild(c);});}
+  // Risale-i Nur and Fethullah Gülen: summaries of passages that speak about this verse, with a link to the page
+  if(x.nur&&x.nur.length){H("Risale-i Nur ve Hocaefendi'den");
+    x.nur.forEach(n=>{const c=el("div","st-card st-pt st-nur");c.appendChild(el("span","tag",n.yazar||""));c.appendChild(el("b",null,n.kaynak||""));
+      c.appendChild(elr("p",null,n.metin||""));if(n.alinti)c.appendChild(el("p","st-q","«"+n.alinti+"»"));
+      if(n.url){const a=el("a","st-link","Kaynağı aç ↗");a.href=n.url;a.target="_blank";a.rel="noopener";c.appendChild(a);}body.appendChild(c);});}
   const sec=(title,items,cls)=>{if(!items||(Array.isArray(items)&&!items.length))return;H(title);const c=el("div","st-card"+(cls?" "+cls:""));
     if(Array.isArray(items)){const ul=el("ul");items.forEach(t=>ul.appendChild(elr("li",null,t)));c.appendChild(ul);}else rich(c,items);body.appendChild(c);};
   sec("Cümle tahlili (i‘rab)",x.irab);
