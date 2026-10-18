@@ -1286,7 +1286,7 @@ const P={list:[],i:0,loop:1,playing:false,timer:null,watch:null,key:"",span:null
 const listKey=()=>[CUR.id,S.scope,S.from,S.to,S.vrep,S.order,S.intro,S.skipMem].join("|");
 function ensureList(){const k=listKey();if(k!==P.key||!P.list.length){P.list=buildList();P.i=0;P.loop=1;P.key=k;P.started=false;}}
 
-function setIcon(p){const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");if(!$("car").hidden)carPP(true);}
+function setIcon(p){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=p?"playing":"paused";}catch(e){}const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");if(!$("car").hidden)carPP(true);}
 function status(t,s,err){$("nowT").textContent=t;const sp=$("nowS");sp.textContent=s;sp.className=err?"err":"";if(!$("car").hidden)$("carSub").textContent=s;}
 function highlight(item){
   document.querySelectorAll(".v.now").forEach(e=>e.classList.remove("now"));
@@ -1301,6 +1301,33 @@ function describe(e){
   if(e.seg)parts.push(`building ${e.seg[0]}–${e.seg[1]}`);
   if(rr===0)parts.push(`loop ${P.loop}`);else if(rr>1)parts.push(`round ${P.loop} of ${rr}`);
   return[`${NAMES[CUR.num-1]} · Verse ${e.v}`,parts.join(" · ")||CUR.reciter];
+}
+// ---------- lock screen, CarPlay, Android Auto / car Bluetooth "Now Playing" ----------
+// Car screens only show title, artist, album and a picture, so the current verse is drawn into the picture.
+const ART=new Map();
+function wrapLines(g,text,maxW){const words=String(text).split(/\s+/).filter(Boolean),lines=[];let cur="";
+  for(const w of words){const t=cur?cur+" "+w:w;if(g.measureText(t).width<=maxW||!cur)cur=t;else{lines.push(cur);cur=w;}}if(cur)lines.push(cur);return lines;}
+function verseArt(s,item){
+  const ni=nIntro(s),isIntro=item<ni,v=item-ni+1,key=s.id+"|"+item;if(ART.has(key))return ART.get(key);
+  const ar=isIntro?(s.intro[item].ar||s.intro[item].en):(verseText(s,v)||`${v}`);
+  const N=600,c=document.createElement("canvas");c.width=c.height=N;const g=c.getContext("2d");
+  const gr=g.createLinearGradient(0,0,0,N);gr.addColorStop(0,"#0f4d45");gr.addColorStop(1,"#082a25");g.fillStyle=gr;g.fillRect(0,0,N,N);
+  g.fillStyle="#e2c07a";g.font="600 30px -apple-system,system-ui,sans-serif";g.textAlign="center";g.direction="ltr";
+  g.fillText(isIntro?`${dispName(s)} · ${s.intro[item].en}`:`${dispName(s)} · ${v} / ${COUNTS[s.num-1]}`,N/2,56);
+  g.direction="rtl";g.fillStyle="#f6efdd";let size=120,lines=[],lh=0;
+  for(;size>=26;size-=4){g.font=`${size}px Hamdullah,"Amiri Quran",serif`;lines=wrapLines(g,ar,N-60);lh=size*1.55;if(lines.length*lh<=N-150)break;}
+  const top=(N-lines.length*lh)/2+lh*.62+18;lines.forEach((l,i)=>g.fillText(l,N/2,top+i*lh));
+  g.direction="ltr";g.fillStyle="rgba(246,239,221,.45)";g.font="500 22px -apple-system,system-ui,sans-serif";g.fillText(s.reciter||"",N/2,N-28);
+  const url=c.toDataURL("image/jpeg",.86);ART.set(key,url);if(ART.size>80)ART.delete(ART.keys().next().value);return url;
+}
+function nowPlaying(item,sub){
+  if(!("mediaSession" in navigator)||!CUR)return;
+  const s=CUR,ni=nIntro(s),isIntro=item<ni,v=item-ni+1,m=isIntro?null:mealFor(s,v);
+  try{navigator.mediaSession.metadata=new MediaMetadata({
+    title:isIntro?s.intro[item].en:`${dispName(s)} · ${v}${sub?" · "+sub:""}`,
+    artist:isIntro?(s.intro[item].ar||""):(verseText(s,v)||s.reciter),
+    album:m?m.t:`${s.reciter} · Hifz`,
+    artwork:[{src:verseArt(s,item),sizes:"600x600",type:"image/jpeg"},{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}
 }
 // ---------- session engine ----------
 // The whole practice session (verses, repeats, pauses, rounds) is rendered into ONE audio file,
@@ -1343,7 +1370,7 @@ function onSessionTime(){
   const e=P.list[seg.li],inGap=t>seg.t1;
   if(ti!==lastTi){lastTi=ti;P.i=seg.li;if(!REN.loopWant||REN.loopWant===1)P.loop=seg.pass+1;
     const[tt,sub]=describe(e);status(tt,sub);highlight(e.item);
-    if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:tt,artist:CUR.reciter,album:`Surah ${dispName(CUR)}`,artwork:[{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}}}
+    nowPlaying(e.item,e.of>1?`${e.rep}/${e.of}`:"");}
   if(inGap!==P.inGap){P.inGap=inGap;const[tt,sub]=describe(e);status(tt,inGap?sub+" · your turn":sub);}
   const w=Math.max(0,Math.min(100,(Math.min(t,seg.t1)-seg.t0)/((seg.t1-seg.t0)||1)*100))+"%";$("prog").style.width=w;$("carProg").style.width=w;
 }
@@ -1372,7 +1399,7 @@ function playCurrent(){
   const e=P.list[P.i];if(!e)return stop();
   const[t,sub]=describe(e);status(t,sub);highlight(e.item);P.inGap=false;P.started=true;
   playPart(e.item,afterItem);
-  if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:t,artist:CUR.reciter,album:`Surah ${dispName(CUR)}`,artwork:[{src:"icons/icon-512.png",sizes:"512x512",type:"image/png"}]});}catch(x){}}
+  nowPlaying(e.item,e.of>1?`${e.rep}/${e.of}`:"");
 }
 function afterItem(dur){
   if(!P.playing)return;
@@ -1474,12 +1501,12 @@ function fitCar(){
 }
 function openCar(){
   if(!CUR)return;unstick();$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.documentElement.classList.add("lock");
-  carLayout();renderCar();wake();
+  carLayout();renderCar();wake();if(ANDROID&&S.carLand)realLandscape(true).then(ok=>{if(ok)setTimeout(carLayout,350);});
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
   $("car").hidden=true;$("carPick").hidden=true;$("carGoalP").hidden=true;if(!$("carSetP").hidden)closeCarSet();document.documentElement.classList.remove("lock");try{WL&&WL.release();}catch(e){}WL=null;
-  try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
+  if(ANDROID)realLandscape(false);try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
 $("carBtn").onclick=openCar;$("carClose").onclick=closeCar;
@@ -1514,7 +1541,11 @@ $("carPickClose").onclick=()=>{$("carPick").hidden=true;};
 $("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
 $("carMem").onclick=()=>{const v=carItem()-nIntro(CUR)+1;if(v>=1)toggleMem(v);};
 $("carTheme").onclick=()=>{S.carLight=!S.carLight;save();$("car").classList.toggle("light",S.carLight);};
-$("carRot").onclick=()=>{S.carRot=!S.carRot;save();carLayout();};
+const ANDROID=/Android/i.test(navigator.userAgent);
+async function realLandscape(on){try{if(on){if(!document.fullscreenElement)await document.documentElement.requestFullscreen();await screen.orientation.lock("landscape");}else{try{screen.orientation.unlock();}catch(e){}}return true;}catch(e){return false;}}
+$("carRot").onclick=async()=>{
+  if(ANDROID&&screen.orientation&&screen.orientation.lock){const want=!S.carLand;if(await realLandscape(want)){S.carLand=want;S.carRot=false;save();setTimeout(carLayout,350);return;}}
+  S.carRot=!S.carRot;save();carLayout();};
 (()=>{let x0=null,y0=null,swiped=false;const st=$("carMain");
   st.addEventListener("touchstart",e=>{if(e.target.closest(".car-edge"))return;x0=e.touches[0].clientX;y0=e.touches[0].clientY;swiped=false;},{passive:true});
   st.addEventListener("touchend",e=>{if(x0==null)return;let dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
@@ -1601,7 +1632,8 @@ document.addEventListener("keydown",e=>{
   if(e.code==="Space"){e.preventDefault();P.playing?pause():play();}
   if(e.code==="ArrowRight")jump(1);if(e.code==="ArrowLeft")jump(-1);if(e.code==="Escape"&&!$("car").hidden)closeCar();
 });
-if("mediaSession" in navigator){try{navigator.mediaSession.setActionHandler("play",play);navigator.mediaSession.setActionHandler("pause",pause);navigator.mediaSession.setActionHandler("nexttrack",()=>jump(1));navigator.mediaSession.setActionHandler("previoustrack",()=>jump(-1));}catch(e){}}
+if("mediaSession" in navigator){try{navigator.mediaSession.setActionHandler("play",play);navigator.mediaSession.setActionHandler("pause",pause);navigator.mediaSession.setActionHandler("nexttrack",()=>jump(1));navigator.mediaSession.setActionHandler("previoustrack",()=>jump(-1));}catch(e){}
+  try{navigator.mediaSession.setActionHandler("stop",()=>stop());}catch(e){}}
 
 // ---------- timing fixer (full-screen window) ----------
 const TAP={on:false};
@@ -2461,7 +2493,7 @@ $("stBody").addEventListener("scroll",stArrows,{passive:true});
 
 // ---------- boot ----------
 async function boot(){
-  applyTheme();applyText();
+  applyTheme();applyText();try{document.fonts&&document.fonts.load('40px Hamdullah');}catch(e){}
   const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
   for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
   syncBadge(SY.cfg?"ok":"off");renderPlan();
@@ -2470,7 +2502,7 @@ async function boot(){
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,S,P,ENG,FIX,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,S,P,ENG,FIX,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
