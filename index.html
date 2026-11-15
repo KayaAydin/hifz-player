@@ -651,16 +651,19 @@ body.member .adm{display:none!important}
 .surah-switch svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
 .surah-switch .surah-name{margin:0}
 
-/* ---- iOS 26 Home Screen apps: the normal viewport ends one status-bar height above the bottom
-   (WebKit bug 301108). Only 100lvh is the full screen there, so full-screen layers use it. ---- */
-html.standalone,html.standalone body{min-height:100lvh}
-html.standalone #vp{bottom:auto!important;height:100lvh!important}
-html.standalone .car,html.standalone .study,html.standalone .fix,html.standalone .auth{top:0!important;bottom:auto!important;height:100lvh}
-html.standalone .car{right:auto;width:100%}
-html.standalone .dock{top:0;bottom:auto;height:100lvh;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none}
-html.standalone .dock-in{pointer-events:auto}
-html.standalone dialog.sheet[open]{top:0;bottom:auto;height:100lvh;max-height:100lvh;margin:0 auto;background:transparent;box-shadow:none;border-radius:0;display:flex;flex-direction:column;justify-content:flex-end;overflow:visible}
-html.standalone dialog.sheet[open]>.sheet-in{background:var(--surface);border-radius:24px 24px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.2);max-height:88lvh;width:100%}
+/* ---- iOS 26 Home Screen apps (WebKit bug 301108): while the page is shorter than the screen, iOS
+   draws fixed layers only down to one status-bar height above the bottom. Making the page at least as
+   tall as the screen gives it the full viewport; the min() cap stops it scrolling when the status bar
+   is opaque (top inset 0). Fixed layers stay inset:0. ---- */
+html.standalone{min-height:min(100lvh,calc(100% + env(safe-area-inset-top,0px)))}
+/* paint behind the status bar in car mode, so no grey strip shows above it */
+html.car-on,html.car-on body{background:#050908}
+html.car-on.car-light,html.car-on.car-light body{background:#fbf9f4}
+.chk-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.chk-list li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14px;line-height:1.4}
+.chk-list li i{font-style:normal;font-weight:700;text-align:center}
+.chk-list li.ok i{color:#1f7a55}.chk-list li.bad i{color:#b3402f}.chk-list li.wait i{color:var(--mute,#888)}
+.chk-list li small{display:block;color:var(--mute,#667);font-size:13px}
 </style>
 </head>
 <body>
@@ -936,6 +939,10 @@ html.standalone dialog.sheet[open]>.sheet-in{background:var(--surface);border-ra
         <p class="hint" id="upMsg"></p>
         <button class="btn small secondary" id="upBtn" type="button">Upload them for everyone</button></div>
     </div>
+    <div class="field"><span class="lbl">Server check</span>
+      <p class="hint">If something doesn't upload or sync, this tests each part and says what to fix.</p>
+      <button class="btn small secondary" id="chkBtn" type="button">Check the server</button>
+      <ul class="chk-list" id="chkList" hidden></ul></div>
     <button class="btn secondary danger-t" id="acctOut" type="button">Sign out</button>
   </div>
 </dialog>
@@ -1626,12 +1633,12 @@ function fitCar(){
   ar.style.fontSize=Math.floor(lo)+"px";
 }
 function openCar(){
-  if(!CUR)return;unstick();$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.documentElement.classList.add("lock");
+  if(!CUR)return;unstick();$("car").hidden=false;$("car").classList.toggle("light",!!S.carLight);document.documentElement.classList.add("lock","car-on");document.documentElement.classList.toggle("car-light",!!S.carLight);
   carLayout();renderCar();wake();if(ANDROID&&S.carLand)realLandscape(true).then(ok=>{if(ok)setTimeout(carLayout,350);});
   try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen().catch(()=>{});}catch(e){}
 }
 function closeCar(){
-  $("car").hidden=true;$("carPick").hidden=true;$("carGoalP").hidden=true;if(!$("carSetP").hidden)closeCarSet();document.documentElement.classList.remove("lock");try{WL&&WL.release();}catch(e){}WL=null;
+  $("car").hidden=true;$("carPick").hidden=true;$("carGoalP").hidden=true;if(!$("carSetP").hidden)closeCarSet();document.documentElement.classList.remove("lock","car-on","car-light");try{WL&&WL.release();}catch(e){}WL=null;
   if(ANDROID)realLandscape(false);try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
@@ -1666,7 +1673,7 @@ $("carSurah").onclick=e=>{e.stopPropagation();CP.juz=surahJuz(CUR);CP.num=CUR.nu
 $("carPickClose").onclick=()=>{$("carPick").hidden=true;};
 $("carNext").onclick=e=>{e.stopPropagation();jump(1);};$("carPrev").onclick=e=>{e.stopPropagation();jump(-1);};
 $("carMem").onclick=()=>{const v=carItem()-nIntro(CUR)+1;if(v>=1)toggleMem(v);};
-$("carTheme").onclick=()=>{S.carLight=!S.carLight;save();$("car").classList.toggle("light",S.carLight);};
+$("carTheme").onclick=()=>{S.carLight=!S.carLight;save();$("car").classList.toggle("light",S.carLight);document.documentElement.classList.toggle("car-light",S.carLight);};
 const ANDROID=/Android/i.test(navigator.userAgent);
 async function realLandscape(on){try{if(on){if(!document.fullscreenElement)await document.documentElement.requestFullscreen();await screen.orientation.lock("landscape");}else{try{screen.orientation.unlock();}catch(e){}}return true;}catch(e){return false;}}
 $("carRot").onclick=async()=>{
@@ -2773,7 +2780,7 @@ async function onlineSync(full){
     if(ch&&CUR){loadMem();renderVerses();updateMemo();syncUI();applyText();applyTheme();}else if(ch)renderPlan();
     await pushState();
     ONL.last=Date.now();ls.set("hifz-osync",ONL.last);ONL.err="";onlineBadge("ok");
-  }catch(e){ONL.err=e.status===403||e.status===401?"The server refused this change. Sign out and in again.":"Couldn't sync ("+e.message+"). It will try again.";onlineBadge("error");}
+  }catch(e){ONL.err="Couldn't sync: "+explainErr(e);onlineBadge("error");}
   ONL.busy=false;if(ONL.again){ONL.again=false;onlineSoon(800);}
 }
 function onlineBadge(state,msg){
@@ -2782,6 +2789,46 @@ function onlineBadge(state,msg){
   b.setAttribute("aria-label","Account: "+txt);if($("acctState"))$("acctState").textContent=txt;
   $("menuSyncS").textContent=(ONL.sess?ONL.sess.user.email+" · ":"")+txt;$("menuBtn").classList.toggle("warn",state==="error");
 }
+// plain-language reasons for server errors
+function explainErr(e){
+  const m=(e&&e.message)||"",st=e&&e.status;
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)||!navigator.onLine)return "no internet connection. It will try again.";
+  if(/row-level security|violates|permission denied|not allowed|Unauthorized/i.test(m)||st===403)return "the server doesn't accept changes from this account. Tap “Check the server” below to see why.";
+  if(/bucket not found/i.test(m))return "the recordings folder (bucket “audio”) is missing on the server. Run supabase-setup.sql again.";
+  if(/maximum allowed size|too large|payload/i.test(m)||st===413)return "this file is bigger than the server allows (50 MB on the free plan).";
+  if(/does not exist|schema cache|relation/i.test(m))return "the server tables are missing. Run supabase-setup.sql again.";
+  if(/JWT|expired|signed out/i.test(m)||st===401)return "your sign-in expired. Sign out and sign in again.";
+  return m||("error "+(st||""));
+}
+// step-by-step check of the online setup, so problems can be fixed without guessing
+$("chkBtn").onclick=async()=>{
+  const L=$("chkList");L.hidden=false;L.innerHTML="";$("chkBtn").disabled=true;
+  const row=(t)=>{const li=el("li","wait");li.innerHTML="<i>…</i><span></span>";li.lastChild.textContent=t;L.appendChild(li);
+    return(ok,title,why)=>{li.className=ok?"ok":"bad";li.firstChild.textContent=ok?"✓":"✕";li.lastChild.textContent=title;if(why){const sm=el("small","",why);li.lastChild.appendChild(sm);}};};
+  const stop=()=>{$("chkBtn").disabled=false;};
+  let r=row("Internet");
+  if(!navigator.onLine){r(false,"No internet","Connect and try again.");return stop();}
+  r(true,"Internet connected");
+  r=row("Sign-in");let me="";
+  try{const u=await authCall("user",null,await accessToken(),"GET");me=u.email;r(true,"Signed in as "+me);}
+  catch(e){r(false,"Sign-in doesn't work","Sign out, then sign in again. ("+e.message+")");return stop();}
+  r=row("Admin");let role="";
+  try{role=await(await rest("rpc/my_role",{method:"POST",json:{}})).json();}
+  catch(e){r(false,"The server setup is missing",/does not exist|schema cache|404/i.test(e.message+e.status)?"Run supabase-setup.sql in Supabase → SQL Editor.":e.message);return stop();}
+  if(role!=="admin"){r(false,"This account is a listener, not the admin",`Listening works. That's right for everyone except the admin. If you are the admin: in supabase-setup.sql the line marked ADMIN must have exactly ${me}. Fix it, press Run again in Supabase, then tap Check the server again.`);ONL.role=role;ls.set("hifz-role",role);applyRole();return stop();}
+  r(true,"You are the admin");if(ONL.role!=="admin"){ONL.role="admin";ls.set("hifz-role","admin");applyRole();}
+  r=row("Recordings list");
+  try{const rows=await(await rest("surahs?select=id")).json();r(true,`Recordings list works (${rows.length} on the server)`);}
+  catch(e){r(false,"Recordings list doesn't work",explainErr(e));return stop();}
+  r=row("Recordings folder");const probe="_check.txt";
+  try{await api("/storage/v1/object/audio/"+probe,{method:"POST",body:new Blob(["ok"],{type:"text/plain"}),headers:{"Content-Type":"text/plain","x-upsert":"true"}});
+    try{await api("/storage/v1/object/audio/"+probe,{method:"DELETE"});}catch(e){}
+    r(true,"Uploading recordings works");}
+  catch(e){r(false,"Uploading recordings doesn't work",explainErr(e)+(e.message?" ("+e.message+")":""));return stop();}
+  const n=LIB.filter(s=>!s.file).length;
+  row("")(true,n?`All good. Tap “Upload them for everyone” above to send ${n} recording${n>1?"s":""}.`:"All good. Everything on this phone is on the server.");
+  stop();renderUploads();
+};
 // ---- account sheet ----
 async function openAccount(){
   $("acctEmail").textContent=ONL.sess?ONL.sess.user.email:"";$("acctRole").textContent=ONL.role==="admin"?"Admin: you add the recordings and verse cuts":"You can listen to every recording and your progress is saved to your account";
@@ -2792,7 +2839,7 @@ function offlineSummary(){const n=LIB.length,k=LIB.filter(s=>s.src).length;retur
 function renderUploads(){const L=LIB.filter(s=>!s.file);$("upMsg").textContent=L.length?`${L.length} recording${L.length>1?"s are":" is"} only on this phone: ${L.map(s=>dispName(s)).join(", ")}.`:"Everything on this phone is also on the server.";$("upBtn").hidden=!L.length;}
 $("upBtn").onclick=async()=>{const L=LIB.filter(s=>!s.file);$("upBtn").disabled=true;
   try{for(let i=0;i<L.length;i++){$("upMsg").textContent=`Uploading ${i+1} of ${L.length}: ${dispName(L[i])}…`;touch(L[i]);await saveLocal(L[i]);await pushSurah(L[i]);}
-    $("upMsg").textContent="Done. Your friends can use these recordings now.";}catch(e){$("upMsg").textContent="Upload stopped: "+e.message;}
+    $("upMsg").textContent="Done. Everyone can use these recordings now.";}catch(e){$("upMsg").textContent="Upload stopped: "+explainErr(e);}
   $("upBtn").disabled=false;setTimeout(renderUploads,2500);};
 
 $("acctSync").onclick=()=>onlineSync(true);
