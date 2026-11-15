@@ -585,6 +585,71 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 .st-nur .tag{background:color-mix(in srgb,#2f7a57 16%,transparent);color:#2f7a57}
 .st-q{font-style:italic;color:var(--muted);font-size:13.5px}
 .st-link{align-self:flex-start;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;padding:4px 0}
+
+/* ---- online accounts ---- */
+body.member .adm{display:none!important}
+.auth{position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px 18px calc(24px + env(safe-area-inset-bottom,0px));overflow:auto}
+.auth-in{width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px;text-align:center}
+.auth-mark{width:72px;height:72px;margin:0 auto 4px;border-radius:20px;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font:44px/1 var(--f-ar);padding-top:8px}
+.auth h1{margin:0;font-size:26px}
+.auth-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.auth-form [hidden]{display:none}
+.auth-msg{min-height:20px;margin:0;font-size:14px;color:var(--muted)}
+.auth-msg.err{color:var(--warn,#b3261e)}
+.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.linkbtn{background:none;border:0;padding:6px 0;color:var(--accent);font-weight:600;font-size:14px}
+.auth-wait{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.auth-wait p{margin:0;line-height:1.5}
+.acct-who{display:flex;flex-direction:column;gap:2px}.acct-who b{font-size:17px}.acct-who span{font-size:13px;color:var(--muted)}
+.mem-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.mem-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;font-size:14px}
+.mem-row span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.danger-t{color:var(--warn,#b3261e)}
+
+/* ---- v19: calmer home ---- */
+.appbar-in{gap:10px}
+#menuBtn{position:relative}
+#menuBtn .dot{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:transparent}
+#menuBtn.warn .dot{background:var(--warn,#c0392b)}
+.hero-car{position:relative;z-index:1;margin-top:16px;width:100%;min-height:56px;border-radius:16px;background:#e2c07a;color:#1a1307;display:flex;align-items:center;justify-content:center;gap:10px;font-size:17px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.hero-car svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hero-car:active{filter:brightness(.94)}
+.tools{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:10px}
+.tool{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px 6px 12px;min-height:88px;border-radius:16px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-align:center}
+.tool svg{width:24px;height:24px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;margin-bottom:2px}
+.tool b{font-size:14px;line-height:1.2}
+.tool span{font-size:11.5px;color:var(--muted);line-height:1.25}
+.tool span:empty{display:none}
+.tool:active{background:var(--sunk)}
+.tool.off{opacity:.55}
+.block{display:flex;flex-direction:column;gap:8px}
+.block-h{display:flex;align-items:center;justify-content:space-between;padding:0 4px;min-height:32px}
+.block-h h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.linkbtn{display:inline-flex;align-items:center;gap:2px}
+.chev-r{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.row-btn{display:flex;align-items:center;gap:12px;width:100%;min-height:60px;padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--line);color:var(--ink);text-align:left}
+.row-btn .txtcol{flex:1}
+.row-btn b{font-size:16px}.row-btn .txtcol span{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-btn .chev-r{color:var(--muted)}
+.row-btn:active{background:var(--sunk)}
+.row-btn.sync .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--line)}
+.row-btn.sync[data-state="ok"] .dot{background:#2f9e6b}.row-btn.sync[data-state="error"] .dot{background:var(--warn,#c0392b)}.row-btn.sync[data-state="pending"] .dot,.row-btn.sync[data-state="busy"] .dot{background:#e2a33a}
+.pill-v{font-size:13px;font-weight:600;color:var(--accent);padding:6px 12px;border-radius:99px;background:var(--sunk)}
+.menu-list{display:flex;flex-direction:column;gap:10px}
+.row-tg{padding:12px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.gm-row{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.gm-row .txtcol{flex:1}
+.gm-row b{font-size:16px}.gm-row .txtcol span{font-size:13px;color:var(--muted)}
+.gm-row.done{opacity:.7}
+.gm-play{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
+.gm-play svg{width:20px;height:20px;fill:currentColor}
+.gm-empty{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:16px;border:1px dashed var(--line);color:var(--muted);font-size:14px}
+.gm-missed{align-self:flex-start;background:none;border:0;padding:6px 4px;font-size:13.5px;color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--brass);text-decoration-thickness:2px;text-underline-offset:4px}
+.app-title{flex:1;font-size:18px;font-weight:700;letter-spacing:-.01em}
+.surah-id{min-width:0}
+.surah-switch{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 10px 4px 0;margin:-4px 0;color:inherit;text-align:left;min-height:44px}
+.surah-switch svg{flex:none;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.surah-switch .surah-name{margin:0}
 </style>
 </head>
 <body>
@@ -604,10 +669,8 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 <header class="appbar" id="appbar">
   <div class="appbar-in">
     <span class="brand-mark" aria-hidden="true">ح</span>
-    <button class="surah-pick" id="surahBtn" type="button" aria-label="Choose surah"><span class="sp-name" id="spName">Hifz</span><span class="sp-sub" id="spSub">Add a surah</span><svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg></button>
-    <button class="iconbtn sync" id="syncBtn" type="button" aria-label="Online sync" data-state="off"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.95A6 6 0 0 0 6.2 9.3 4.4 4.4 0 0 0 7 18z"/></svg><i class="dot"></i></button>
-    <button class="iconbtn" id="textBtn" type="button" aria-label="Text size and weight"><span class="aa">Aa</span></button>
-    <button class="iconbtn" id="themeBtn" type="button" aria-label="Light or dark"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
+    <span class="app-title">Hifz Player</span>
+    <button class="iconbtn" id="menuBtn" type="button" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="dot" id="menuDot"></i></button>
   </div>
 </header>
 
@@ -615,53 +678,36 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 
   <section class="card empty" id="empty" hidden>
     <div class="ar-big">حفظ</div>
-    <h2>Add your first surah</h2>
-    <p class="hint">Save a surah's MP3 in the Files app on your iPhone, then choose it here. The audio stays on your phone and works without internet. Yasser Al-Dosari's Murattal of Al-Fajr is recognised automatically, with verse cuts, Arabic text and meal.</p>
-    <button class="btn" id="emptyAdd" type="button">Choose a recording</button>
+    <h2 id="emptyH">Add your first surah</h2>
+    <p class="hint" id="emptyP">Save a surah's MP3 in the Files app on your iPhone, then choose it here. The audio stays on your phone and works without internet. Yasser Al-Dosari's Murattal of Al-Fajr is recognised automatically, with verse cuts, Arabic text and meal.</p>
+    <button class="btn adm" id="emptyAdd" type="button">Choose a recording</button>
   </section>
 
   <section class="surah needs-surah" aria-label="Surah">
     <svg class="pattern" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><pattern id="pt" width="40" height="40" patternUnits="userSpaceOnUse"><g fill="none" stroke="#fff" stroke-width=".8"><rect x="10" y="10" width="20" height="20"/><rect x="10" y="10" width="20" height="20" transform="rotate(45 20 20)"/></g></pattern></defs><rect width="200" height="200" fill="url(#pt)"/></svg>
     <div class="surah-top">
-      <div><h1 class="surah-name" id="sTitle">Al-Fajr</h1><div class="surah-meta" id="sMeta"></div><span class="juz-badge" id="sJuz"></span></div>
+      <div class="surah-id"><button class="surah-switch" id="surahBtn" type="button" aria-label="Change surah"><h1 class="surah-name" id="sTitle">Al-Fajr</h1><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button><div class="surah-meta" id="sMeta"></div></div>
       <div class="surah-ar" id="sAr"></div>
     </div>
     <div class="memo"><div class="memo-bar"><i id="memoBar"></i></div><span class="memo-txt" id="memoTxt">0 / 0 memorised</span></div>
-
+    <button class="hero-car" id="carBtn2" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 16V11l2-5h10l2 5v5M4 16h16v2.5H4zM5 11h14"/><circle cx="7.5" cy="13.5" r=".6"/><circle cx="16.5" cy="13.5" r=".6"/></svg><span>Car mode</span></button>
   </section>
 
-  <section class="tiles needs-surah" aria-label="Open">
-    <button class="tile" id="versesBtn" type="button"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg><b>Verses</b><span id="tileVersesS">Read, tap to play, tick</span></button>
-    <button class="tile" id="studyBtn" type="button"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><b>Kelime tahlili</b><span id="tileStudyS">Word by word</span></button>
-    <button class="tile" id="goalsBtn" type="button"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/></svg><b>Goals</b><span id="tileGoalsS">Plan and calendar</span></button>
-    <button class="tile" id="fixBtn2" type="button"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg><b>Fix timings</b><span id="tileFixS">Verse cuts</span></button>
-    <button class="tile" id="pickBtn2" type="button"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 15l3 3-3 3"/></svg><b>Change surah</b><span>Juz · surah · reciter</span></button>
-    <button class="tile car-tile" id="carBtn2" type="button"><svg viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M4 16h16v2.5H4zM5 11h14"/><circle cx="7.5" cy="13.5" r=".6"/><circle cx="16.5" cy="13.5" r=".6"/></svg><b>Car mode</b><span>Big text, full screen</span></button>
+  <section class="tools needs-surah" aria-label="Open">
+    <button class="tool" id="versesBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg><b>Verses</b><span id="tileVersesS"></span></button>
+    <button class="tool" id="studyBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><b>Kelime tahlili</b><span id="tileStudyS"></span></button>
+    <button class="tool adm" id="fixBtn2" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></svg><b>Fix timings</b><span id="tileFixS"></span></button>
   </section>
 
-  <section class="card plan-card needs-surah" id="planCard" aria-label="Goals">
-    <button class="plan-h plan-open" id="planOpen" type="button">
-      <div class="txtcol"><span class="lbl">Goals</span><b id="planHead">Today</b></div>
-      <span class="plan-more">Open<svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
-    </button>
-    <div class="plan-days" id="planDays"></div>
+  <section class="block needs-surah" id="planCard" aria-label="Today's goal">
+    <div class="block-h"><h2 id="planHead">Today's goal</h2><button class="linkbtn" id="planOpen" type="button">All goals<svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
     <div class="goal-list" id="planList"></div>
   </section>
 
-  <section class="card needs-surah" aria-label="What to play">
-    <div class="seg" id="scope">
-      <button type="button" data-v="surah">Whole surah</button>
-      <button type="button" data-v="range">Range</button>
-      <button type="button" data-v="verse">One verse</button>
-    </div>
-    <div class="row2" id="rangeBox">
-      <div class="field" id="fromBox"><label class="lbl" for="from" id="fromLbl">From verse</label><select id="from"></select></div>
-      <div class="field" id="toBox"><label class="lbl" for="to">To verse</label><select id="to"></select></div>
-    </div>
-    <button class="practice" id="practiceBtn" type="button">
-      <span class="practice-ic"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></span>
-      <span class="txtcol"><b>Practice settings</b><span id="practiceSum"></span></span>
-      <span class="chev">›</span>
+  <section class="block needs-surah" aria-label="Listening">
+    <div class="block-h"><h2>Listening</h2></div>
+    <button class="row-btn" id="practiceBtn" type="button">
+      <span class="txtcol"><b id="practiceWhat">Whole surah</b><span id="practiceSum"></span></span><svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
     </button>
   </section>
 
@@ -678,7 +724,6 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
       <button class="rb" id="prevBtn" type="button" aria-label="Previous verse"><svg><use href="#i-prev"/></svg></button>
       <button class="rb play" id="playBtn" type="button" aria-label="Play"><svg><use id="playUse" href="#i-play"/></svg></button>
       <button class="rb" id="nextBtn" type="button" aria-label="Next verse"><svg><use href="#i-next"/></svg></button>
-      <button class="rb carbtn" id="carBtn" type="button" aria-label="Car mode"><svg viewBox="0 0 24 24"><path d="M5 16V11l2-5h10l2 5v5M4 16h16v2.5H4zM5 11h14"/><circle cx="7.5" cy="13.5" r=".6"/><circle cx="16.5" cy="13.5" r=".6"/></svg></button>
     </div>
   </div>
 </div>
@@ -753,8 +798,8 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   <ul class="verses" id="verses"></ul>
 
   <div class="foot">
-    <button class="ghost" id="editBtn" type="button">Fix verse timings</button>
-    <button class="ghost" id="removeBtn" type="button">Remove this surah</button>
+    
+    <button class="ghost adm" id="removeBtn" type="button">Remove this surah</button>
     <span class="credit" id="credit"></span>
   </div>
   </div>
@@ -842,6 +887,64 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
   </div>
 </div>
 
+<!-- sign in (online mode) -->
+<div class="auth" id="auth" hidden>
+  <div class="auth-in">
+    <div class="auth-mark">حفظ</div>
+    <h1>Hifz Player</h1>
+    <p class="hint" id="authLead">Sign in to listen, follow your goals and save your progress.</p>
+    <form id="authForm" class="auth-form" autocomplete="on">
+      <input class="txtin" id="authEmail" type="email" placeholder="Email" autocomplete="username" required>
+      <input class="txtin" id="authPass" type="password" placeholder="Password (at least 6 characters)" autocomplete="current-password" minlength="6" required>
+      <input class="txtin" id="authPass2" type="password" placeholder="New password again" autocomplete="new-password" minlength="6" hidden>
+      <button class="btn" id="authGo" type="submit">Sign in</button>
+    </form>
+    <p class="auth-msg" id="authMsg"></p>
+    <div class="auth-links">
+      <button class="linkbtn" id="authSwitch" type="button">New here? Create an account</button>
+      <button class="linkbtn" id="authForgot" type="button">Forgot password?</button>
+    </div>
+    <div class="auth-wait" id="authWait" hidden>
+      <p id="authWaitT"></p>
+      <div class="erow"><button class="btn" id="authRecheck" type="button">Check again</button><button class="btn secondary" id="authOut" type="button">Sign out</button></div>
+    </div>
+  </div>
+</div>
+
+<dialog class="sheet" id="acctDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Account</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="acct-who"><b id="acctEmail"></b><span id="acctRole"></span></div>
+    <p class="hint" id="acctState"></p>
+    <div class="erow"><button class="btn small secondary" id="acctSync" type="button">Sync now</button><button class="btn small secondary" id="acctOffline" type="button">Save all recordings on this phone</button></div>
+    <p class="hint" id="acctOfflineMsg"></p>
+    <div class="acct-admin adm">
+      <div class="field"><span class="lbl">Friends who can use the app</span>
+        <form class="pk-recrow" id="memForm"><input class="txtin" id="memEmail" type="email" placeholder="friend@example.com" required><button class="btn small" type="submit">Add</button></form>
+        <p class="hint" id="memMsg">They create an account with this email in the app; then they can listen to everything you add.</p>
+        <div class="mem-list" id="memList"></div></div>
+      <div class="field"><span class="lbl">Recordings only on this phone</span>
+        <p class="hint" id="upMsg"></p>
+        <button class="btn small secondary" id="upBtn" type="button">Upload them for everyone</button></div>
+    </div>
+    <button class="btn secondary danger-t" id="acctOut" type="button">Sign out</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="menuDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2>Settings</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="menu-list">
+      <button class="row-btn sync" id="syncBtn" type="button" data-state="off"><span class="txtcol"><b>Account &amp; sync</b><span id="menuSyncS">Not connected</span></span><i class="dot"></i><svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="row-btn" id="textBtn" type="button"><span class="txtcol"><b>Arabic text</b><span id="menuTextS">Size and boldness</span></span><svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <label class="tg row-tg"><span>Dark mode<small>Easier on the eyes at night</small></span><span class="sw"><input type="checkbox" id="themeBtn"><i></i></span></label>
+      <label class="tg row-tg"><span>Open in car mode<small>Start straight in car mode when you open the app</small></span><span class="sw"><input type="checkbox" id="startCar"><i></i></span></label>
+    </div>
+  </div>
+</dialog>
+
 <!-- surah picker -->
 <dialog class="sheet" id="pickDlg">
   <div class="sheet-in">
@@ -852,9 +955,9 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
       <div class="field"><label class="lbl" for="pkSurah">Surah</label><select id="pkSurah"></select></div>
     </div>
     <div class="field"><label class="lbl" for="pkRec">Reciter</label>
-      <div class="pk-recrow"><select id="pkRec"></select><button class="pick-edit" id="pkRecEdit" type="button" aria-label="Rename reciter"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button></div></div>
+      <div class="pk-recrow"><select id="pkRec"></select><button class="pick-edit adm" id="pkRecEdit" type="button" aria-label="Rename reciter"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></button></div></div>
     <div id="pickList" class="pk-info"></div>
-    <div class="erow"><button class="btn" id="pickGo" type="button" style="flex:1">Done</button><button class="btn secondary" id="pickAdd" type="button">+ Add recording</button></div>
+    <div class="erow"><button class="btn" id="pickGo" type="button" style="flex:1">Done</button><button class="btn secondary adm" id="pickAdd" type="button">+ Add recording</button></div>
     <div class="offline">
       <b>Arabic text and meal</b>
       <p class="hint">Texts come from herkul.app. A surah's text is saved on your phone the first time it opens. Save Juz 29–30 now to have them ready offline.</p>
@@ -936,7 +1039,18 @@ html.lock,html.lock body{overflow:hidden;overscroll-behavior:none;height:100%}
 <dialog class="sheet" id="practiceDlg">
   <div class="sheet-in">
     <div class="grab"></div>
-    <div class="sheet-h"><h2>Practice settings</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="sheet-h"><h2>Listening</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="field"><span class="lbl">What to play</span>
+      <div class="seg" id="scope">
+        <button type="button" data-v="surah">Whole surah</button>
+        <button type="button" data-v="range">Range</button>
+        <button type="button" data-v="verse">One verse</button>
+      </div>
+    </div>
+    <div class="row2" id="rangeBox">
+      <div class="field" id="fromBox"><label class="lbl" for="from" id="fromLbl">From verse</label><select id="from"></select></div>
+      <div class="field" id="toBox"><label class="lbl" for="to">To verse</label><select id="to"></select></div>
+    </div>
     <div class="grid2">
       <div class="field"><label class="lbl" for="vrep">Repeat each verse</label>
         <select id="vrep"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="5">5×</option><option value="7">7×</option><option value="10">10×</option><option value="20">20×</option></select></div>
@@ -1021,7 +1135,8 @@ const idb={
 // Parts = intro parts, then verses; part i spans B[i]..B[i+1].
 let LIB=[], CUR=null;
 const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:1,skipMem:false,carLight:false,carRot:false,autoNext:true},ls.get("hifz-s",{}));
-const save=()=>ls.set("hifz-s",S);
+let onSaved=null;
+const save=()=>{ls.set("hifz-s",S);ls.set("hifz-su",Date.now());if(onSaved)onSaved();};
 const nIntro=s=>s.intro.length;
 const itemSpan=(s,i)=>[s.B[i],s.B[i+1]];
 
@@ -1035,7 +1150,7 @@ function decodeSurah(s){
   ENG.pending[s.id]=(async()=>{
     const dur=s.B[s.B.length-1],rate=dur<=480?44100:dur<=1500?22050:0;
     if(!rate){ENG.buf[s.id]=null;return null;}
-    const ab=await (await fetch(s.src)).arrayBuffer();
+    const ab=await (await fetch(s.src||(await ensureAudio(s),s.src))).arrayBuffer();
     const Off=window.OfflineAudioContext||window.webkitOfflineAudioContext;
     const ctx=new Off(1,rate,rate);
     const buf=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(ab,res,rej);if(p&&p.then)p.then(res,rej);});
@@ -1127,7 +1242,9 @@ function updateMemo(){
 const JUZ_START=[[1,1],[2,142],[2,253],[3,93],[4,24],[4,148],[5,82],[6,111],[7,88],[8,41],[9,93],[11,6],[12,53],[15,1],[17,1],[18,75],[21,1],[23,1],[25,21],[27,56],[29,46],[33,31],[36,28],[39,32],[41,47],[46,1],[51,31],[58,1],[67,1],[78,1]];
 function juzOf(su,a){let j=1;JUZ_START.forEach(([s,v],i)=>{if(su>s||(su===s&&a>=v))j=i+1;});return j;}
 const surahJuz=s=>s.juz||juzOf(s.num,1);
-const dispName=s=>s.trName||NAMES[s.num-1];
+// surah names: English everywhere; the Turkish name only inside Kelime tahlili
+const dispName=s=>NAMES[s.num-1];
+const trNameOf=s=>s.trName||NAMES[s.num-1];
 
 // ---------- Arabic text and meal from herkul.app (saved on the phone after the first load) ----------
 const TXT={};
@@ -1177,8 +1294,7 @@ const libBy=num=>LIB.filter(s=>s.num===num).sort((a,b)=>a.added-b.added);
 function recLabel(s){const dup=libBy(s.num).filter(x=>x.reciter===s.reciter);return dup.length>1?`${s.reciter} (${dup.indexOf(s)+1})`:s.reciter;}
 const PK={juz:null};
 function renderPicker(){
-  if(CUR){$("spName").textContent=`${CUR.num} · ${dispName(CUR)}`;$("spSub").textContent=`Juz ${surahJuz(CUR)} · ${CUR.reciter}`;}
-  else{$("spName").textContent="Hifz";$("spSub").textContent="Add a surah to begin";}
+
   const jz=$("pkJuz");if(!jz)return;
   const juzs=[...new Set(LIB.map(surahJuz))].sort((a,b)=>a-b);
   if(PK.juz==null||(PK.juz!=="all"&&!juzs.includes(PK.juz)))PK.juz=CUR?surahJuz(CUR):"all";
@@ -1253,6 +1369,7 @@ function practiceSummary(){
   const p=[+S.vrep>1?`Each verse ${S.vrep}×`:"Each verse once",GAPS[S.gap],`${S.speed}× speed`];
   if(S.order==="build")p.push("Build up");if(+S.rrep!==1)p.push(S.rrep==="0"?"Loop":`Selection ${S.rrep}×`);if(S.skipMem)p.push("Skip memorised");
   $("practiceSum").textContent=p.join(" · ");
+  if(CUR){const[a,b]=range();$("practiceWhat").textContent=S.scope==="surah"?`Whole surah · ${COUNTS[CUR.num-1]} verses`:a===b?`Verse ${a}`:`Verses ${a}–${b}`;}
 }
 function syncUI(){
   $("from").value=S.from;$("to").value=S.to;$("vrep").value=S.vrep;$("rrep").value=S.rrep;$("gap").value=S.gap;$("speed").value=S.speed;$("meal").value=S.meal;
@@ -1266,7 +1383,7 @@ function syncUI(){
 }
 function renderHeader(){
   const s=CUR;$("sTitle").textContent=dispName(s);$("sAr").textContent=s.arName||"";
-  $("sMeta").textContent=`Surah ${s.num} · ${COUNTS[s.num-1]} verses · ${s.reciter}`;$("sJuz").textContent=`Juz ${surahJuz(s)}`;
+  $("sMeta").textContent=`${s.num} · Juz ${surahJuz(s)} · ${s.reciter}`;
   $("removeBtn").textContent="Remove this surah";delete $("removeBtn").dataset.arm;
   $("credit").textContent=s.text?"Audio: your file, on this phone · Arabic text"+(s.hasHerkul?" and meal":"")+": herkul.app":"Audio: your file, on this phone";
 }
@@ -1509,7 +1626,7 @@ function closeCar(){
   if(ANDROID)realLandscape(false);try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
   if(P.cur!=null)highlight(P.cur);
 }
-$("carBtn").onclick=openCar;$("carClose").onclick=closeCar;
+$("carClose").onclick=closeCar;
 function autoNextOK(){return S.autoNext&&S.scope==="surah"&&S.rrep==="1"&&S.vrep==="1";}
 function nextSurah(){const L=[...LIB].sort((a,b)=>a.num-b.num);return L.find(x=>x.num>CUR.num)||null;}
 function renderCarLoop(){const b=$("carLoop");if(!b)return;const once=S.rrep==="1"||S.rrep==="0";b.hidden=!once;b.setAttribute("aria-pressed",S.rrep==="0");
@@ -1574,13 +1691,10 @@ function openVerses(){$("versesW").hidden=false;$("vwTitle").textContent=`${disp
   const li=document.querySelector(".v.now")||null;if(li)li.scrollIntoView({block:"center"});else $("vwBody").scrollTop=0;}
 function closeVerses(){$("versesW").hidden=true;}
 $("versesBtn").onclick=openVerses;$("vwClose").onclick=closeVerses;$("vwTop").onclick=()=>$("vwBody").scrollTo({top:0,behavior:"smooth"});
-$("goalsBtn").onclick=()=>openGoals(TODAY());
-$("pickBtn2").onclick=()=>{renderPicker();openSheet("pickDlg");};
 $("carBtn2").onclick=()=>openCar();
-function renderTiles(){if(!CUR)return;const d=STUDY[CUR.num];$("studyBtn").classList.toggle("off",!d);$("tileStudyS").textContent=d?"Word by word":"Not ready for this surah";
-  $("tileVersesS").textContent=`${COUNTS[CUR.num-1]} verses · ${MEM.size} memorised`;const sus=suspicious().size;$("tileFixS").textContent=sus?`⚠ ${sus} to check`:"Verse cuts";
-  const t=entriesOn(TODAY());$("tileGoalsS").textContent=!GOALS.list.length?"Plan and calendar":t.length?`Today: ${t.map(x=>x.e.a+"–"+x.e.b).join(", ")}`:"Nothing today";}
-$("textBtn").onclick=()=>{$("textPreview").textContent=CUR&&CUR.text?CUR.text.slice(0,2).join(" "):"وَالْفَجْرِۙ وَلَيَالٍ عَشْرٍۙ";openSheet("textDlg");};
+function renderTiles(){if(!CUR)return;const d=STUDY[CUR.num];$("studyBtn").classList.toggle("off",!d);$("tileStudyS").textContent=d?"":"Not ready yet";
+  $("tileVersesS").textContent="";const sus=suspicious().size;$("tileFixS").textContent=sus?`⚠ ${sus} to check`:"";}
+$("textBtn").onclick=()=>{$("menuDlg").close();$("textPreview").textContent=CUR&&CUR.text?CUR.text.slice(0,2).join(" "):"وَالْفَجْرِۙ وَلَيَالٍ عَشْرٍۙ";openSheet("textDlg");};
 $("arSize").oninput=e=>{S.arSize=+e.target.value;save();applyText();};
 document.querySelectorAll("#arWeight button").forEach(b=>b.onclick=()=>{S.arWeight=+b.dataset.v;save();applyText();});
 
@@ -1595,7 +1709,7 @@ function selectSurah(id){
   const s=LIB.find(x=>x.id===id)||LIB[0];stop();CUR=s;S.cur=s.id;P.cur=null;
   if(S._last!==s.id){S.scope="surah";S.from=1;S.to=COUNTS[s.num-1];S._last=s.id;}
   save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();if($("car").hidden)scrollTo(0,0);else renderCar();$("vwBody").scrollTop=0;if(!$("versesW").hidden)openVerses();
-  setTimeout(()=>decodeSurah(s),50);ensureText(s);refreshStudy(s);
+  if(!s.src&&ONL.on)ensureAudio(s).catch(()=>{});setTimeout(()=>decodeSurah(s),50);ensureText(s);refreshStudy(s);
 }
 function changed(reset){save();syncUI();if(reset&&P.key!==listKey()){const was=P.playing;stop();if(was)play();}}
 $("from").onchange=e=>{S.from=+e.target.value;if(S.to<S.from)S.to=S.from;changed(true);};
@@ -1613,7 +1727,12 @@ $("autoNext").onchange=e=>{S.autoNext=e.target.checked;changed(false);};
 document.querySelectorAll("#scope button").forEach(b=>b.onclick=()=>{S.scope=b.dataset.v;changed(true);});
 document.querySelectorAll("#order button").forEach(b=>b.onclick=()=>{S.order=b.dataset.v;changed(true);});
 function applyTheme(){if(S.theme)document.documentElement.dataset.theme=S.theme;}
-$("themeBtn").onclick=()=>{const cur=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");S.theme=cur==="dark"?"light":"dark";applyTheme();save();};
+const curTheme=()=>document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+$("themeBtn").onclick=()=>{S.theme=curTheme()==="dark"?"light":"dark";applyTheme();save();renderMenu();};
+// ---------- settings sheet ----------
+function renderMenu(){$("themeBtn").checked=curTheme()==="dark";$("menuTextS").textContent=`${S.arSize} px · ${["Regular","Medium","Bold","Extra bold"][S.arWeight]||""}`;$("startCar").checked=!!S.startCar;}
+$("menuBtn").onclick=()=>{renderMenu();openSheet("menuDlg");};
+$("startCar").onchange=e=>{S.startCar=e.target.checked;save();};
 $("verses").addEventListener("click",e=>{
   const li=e.target.closest(".v");if(!li)return;
   if(e.target.closest(".mem")){toggleMem(+li.dataset.v);return;}
@@ -1773,7 +1892,6 @@ function loop(){cancelAnimationFrame(FIX.raf);FIX.raf=requestAnimationFrame(()=>
 function fixStop(keepLabel){cancelAnimationFrame(FIX.raf);FIX.stopAt=null;try{fixA.pause();}catch(e){}if(!keepLabel)$("fixPlay").textContent="Play verse";drawWave();}
 const nowT=()=>FIX.stopAt!=null&&!fixA.paused?fixA.currentTime+FIX.off:FIX.cursor;
 // ---- controls ----
-$("editBtn").onclick=()=>openFix(P.cur!=null?P.cur:nIntro(CUR));
 $("fixDone").onclick=closeFix;
 $("fixUndo").onclick=fixUndo;
 $("fixNoteUndo").onclick=fixUndo;
@@ -1811,7 +1929,7 @@ $("fixVerse").addEventListener("click",()=>{const[a,b]=itemSpan(CUR,FIX.item);FI
 addEventListener("resize",()=>{if(FIX.on){fixFit();drawWave();}});
 $("removeBtn").onclick=async()=>{
   const b=$("removeBtn");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to remove";setTimeout(()=>{delete b.dataset.arm;b.textContent="Remove this surah";},4000);return;}
-  const id=CUR.id;const tb=tomb();tb[id]=Date.now();ls.set("hifz-deleted",tb);scheduleSync(1000);await idb.del(id);try{URL.revokeObjectURL(CUR.src);}catch(e){}LIB=LIB.filter(x=>x.id!==id);delete ENG.buf[id];delete ENG.pending[id];if(LIB.length)selectSurah(LIB[0].id);else showEmpty(true);
+  const id=CUR.id;if(ONL.on){if(CUR.file)try{await deleteRemote(id,CUR.file);}catch(e){status("Couldn't remove it from the server",e.message,true);return;}ONL.dirty.delete(id);ls.set("hifz-dirty",[...ONL.dirty]);}else{const tb=tomb();tb[id]=Date.now();ls.set("hifz-deleted",tb);scheduleSync(1000);}await idb.del(id);try{URL.revokeObjectURL(CUR.src);}catch(e){}LIB=LIB.filter(x=>x.id!==id);delete ENG.buf[id];delete ENG.pending[id];if(LIB.length)selectSurah(LIB[0].id);else showEmpty(true);
 };
 
 // ---------- adding a surah from the phone ----------
@@ -1834,7 +1952,7 @@ $("addForm").addEventListener("submit",async e=>{
     const id="u-"+num+"-"+Date.now().toString(36);
     const recName=$("addReciter").value.trim()||(K?K.reciter:"Your recording");if($("addReciter").value.trim())ls.set("hifz-lastReciter",recName);
     const now=Date.now(),rec={id,num,reciter:recName,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:now,updated:now,type:f.type||"audio/mpeg"};
-    await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);scheduleSync(1000);
+    await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);if(ONL.on){ONL.dirty.add(id);ls.set("hifz-dirty",[...ONL.dirty]);}scheduleSync(1000);
     if(K)status("Recording recognised","Verse cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few verses to check the cuts. Use “Fix verse timings” for any that are off.");
   }catch(err){$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah.";$("addGo").disabled=false;}
@@ -1901,7 +2019,7 @@ function autoSplit(ab,K,L){
 function fromRecord(r){
   const K=r.known?KNOWN.find(k=>k.num===r.num):null,I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
   const intro=r.introN===2?I:r.introN===1?[I[1]]:[];
-  return{id:r.id,num:r.num,reciter:r.reciter||(K?K.reciter:"Your recording"),src:URL.createObjectURL(r.blob),blob:r.blob,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
+  return{id:r.id,num:r.num,reciter:r.reciter||(K?K.reciter:"Your recording"),src:r.blob?URL.createObjectURL(r.blob):null,blob:r.blob||null,file:r.file||null,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
     B:r.B.slice(),B0:r.B0.slice(),L:(r.L||[]).slice(),added:r.added,updated:r.updated||r.added,type:r.type||(r.blob&&r.blob.type)||"audio/mpeg",juz:juzOf(r.num,1)};
 }
 
@@ -1911,10 +2029,10 @@ function fromRecord(r){
 const SY={cfg:ls.get("hifz-sync",null),sha:null,busy:false,again:false,timer:null,last:ls.get("hifz-sync-last",0),err:""};
 const tomb=()=>ls.get("hifz-deleted",{});
 const memU=num=>ls.get("hifz-memu-"+num,0);
-function recOf(s){return{id:s.id,num:s.num,reciter:s.reciter,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
+function recOf(s){return{id:s.id,num:s.num,reciter:s.reciter,file:s.file||null,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
 function saveLocal(s){return idb.put(recOf(s));}
-function touch(s){s.updated=Date.now();}
-function scheduleSync(ms){if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setTimeout(syncNow,ms??2500);syncBadge("pending");}
+function touch(s){s.updated=Date.now();if(ONL.on&&isAdmin()){ONL.dirty.add(s.id);ls.set("hifz-dirty",[...ONL.dirty]);}}
+function scheduleSync(ms){if(ONL.on){onlineSoon(ms);return;}if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setTimeout(syncNow,ms??2500);syncBadge("pending");}
 async function gh(path,opt={}){
   const c=SY.cfg,h={Authorization:`Bearer ${c.token}`,"X-GitHub-Api-Version":"2022-11-28",Accept:opt.raw?"application/vnd.github.raw":"application/vnd.github+json"};
   if(opt.body)h["Content-Type"]="application/json";
@@ -2000,10 +2118,10 @@ function ago(t){if(!t)return"never";const s=(Date.now()-t)/1000;return s<60?"jus
 function syncBadge(state,msg){
   const b=$("syncBtn");if(!b)return;b.dataset.state=SY.cfg?state:"off";
   const txt=!SY.cfg?"Not connected":state==="busy"?(msg||"Syncing…"):state==="pending"?"Changes waiting to sync":state==="offline"?"Offline. Changes will sync when you're back online.":state==="error"?SY.err:`Synced ${ago(SY.last)}`;
-  b.setAttribute("aria-label","Online sync: "+txt);$("syncState").textContent=txt;$("syncState").className="sync-state "+(state==="error"?"err":"");
+  b.setAttribute("aria-label","Online sync: "+txt);$("syncState").textContent=txt;$("menuSyncS").textContent=txt;$("menuBtn").classList.toggle("warn",state==="error");$("syncState").className="sync-state "+(state==="error"?"err":"");
   $("syncOn").hidden=!SY.cfg;$("syncSetup").hidden=!!SY.cfg;if(SY.cfg)$("syncRepo").textContent=SY.cfg.repo;
 }
-$("syncBtn").onclick=()=>{syncBadge(SY.cfg?(SY.err?"error":"ok"):"off");openSheet("syncDlg");};
+$("syncBtn").onclick=()=>{$("menuDlg").close();if(ONL.on){openAccount();return;}syncBadge(SY.cfg?(SY.err?"error":"ok"):"off");openSheet("syncDlg");};
 $("syncConnect").onclick=async()=>{
   const repo=$("syncRepoIn").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/\/$/,""),token=$("syncToken").value.trim();
   if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){$("syncMsg").textContent="Type the repository as owner/name, for example kaya/hifz-data.";return;}
@@ -2132,19 +2250,18 @@ async function studyGoal(g,e,b){
   if(s!==CUR)selectSurah(s.id);openStudy(e.a,[e.a,e.b]);
 }
 function renderPlan(){
-  if(!$("planCard"))return;const t=TODAY(),T=today0();
-  const box=$("planDays");box.innerHTML="";
-  for(let j=-3;j<=3;j++){const k=dkey(addD(T,j)),st=dayState(k),el=document.createElement("i");
-    el.className=(st?st+" ":"")+(j===0?"today":"");el.innerHTML=`<span></span><b>${addD(T,j).getDate()}</b>`;el.querySelector("span").textContent=addD(T,j).toLocaleDateString(undefined,{weekday:"short"});
-    el.onclick=()=>openGoals(k);box.appendChild(el);}
-  box.hidden=!GOALS.list.length;
-  const list=$("planList");list.innerHTML="";const today=entriesOn(t),missed=missedEntries();
-  $("planHead").textContent=!GOALS.list.length?"No goals yet":today.length?`Today · ${today.filter(x=>entryDone(x.g,x.e)).length} of ${today.length} done`:"Nothing planned today";
-  today.forEach(x=>list.appendChild(goalRow(x)));
-  missed.slice(-2).forEach(x=>list.appendChild(goalRow(x)));
-  if(!today.length){const nx=nextEntry(),p=document.createElement("div");p.className="gl-empty";
-    p.textContent=!GOALS.list.length?"Set a daily, weekly or custom goal for a surah or a range of verses.":nx?`Next: ${fmtK(nx.e.d)} · ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:"All goals finished. Well done!";list.appendChild(p);
-    if(!GOALS.list.length){const b=document.createElement("button");b.type="button";b.className="btn small";b.textContent="+ Set a goal";b.onclick=()=>openPlan(null);list.appendChild(b);}}
+  if(!$("planCard"))return;const t=TODAY(),list=$("planList");list.innerHTML="";const today=entriesOn(t),missed=missedEntries();
+  $("planHead").textContent=today.length>1?`Today's goals · ${today.filter(x=>entryDone(x.g,x.e)).length}/${today.length} done`:"Today's goal";
+  today.forEach(({g,e,i})=>{const dn=entryDone(g,e),r=document.createElement("div");r.className="gm-row"+(dn?" done":"");
+    r.innerHTML=`<div class="txtcol"><b></b><span></span></div><button class="gm-play" type="button" aria-label="Listen to this goal"><svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></button><button class="gl-ck" type="button" aria-label="Done" aria-pressed="${dn}">${SV.ck}</button>`;
+    r.querySelector("b").textContent=`${sName(g.num)} · ${e.a===e.b?"verse "+e.a:"verses "+e.a+"–"+e.b}`;
+    r.querySelector(".txtcol span").textContent=`Day ${i+1} of ${g.days.length}${dn?" · done":""}`;
+    r.querySelector(".gm-play").onclick=()=>playRange(g.num,e.a,e.b);r.querySelector(".gl-ck").onclick=()=>toggleDone(g,i);list.appendChild(r);});
+  if(!today.length){const nx=nextEntry(),p=document.createElement("div");p.className="gm-empty";
+    const tx=document.createElement("span");tx.textContent=!GOALS.list.length?"No goal yet.":nx?`Nothing today. Next: ${fmtK(nx.e.d)}, ${sName(nx.g.num)} ${nx.e.a}–${nx.e.b}`:"All goals finished. Well done!";p.appendChild(tx);
+    if(!GOALS.list.length){const b=document.createElement("button");b.type="button";b.className="btn small";b.textContent="Set a goal";b.onclick=()=>openPlan(null);p.appendChild(b);}
+    list.appendChild(p);}
+  if(missed.length){const m=document.createElement("button");m.type="button";m.className="gm-missed";m.textContent=`${missed.length} missed day${missed.length>1?"s":""}: open goals to catch up or move ${missed.length>1?"them":"it"}`;m.onclick=()=>openGoals(t);list.appendChild(m);}
   renderGoalChip();if(!$("goalsW").hidden)renderGW();renderTiles();
 }
 $("planOpen").onclick=()=>openGoals(TODAY());
@@ -2431,7 +2548,7 @@ function elr(tag,cls,txt,seen){const e=document.createElement(tag);if(cls)e.clas
 const TUR={belagat:"Belâgat",kural:"Kural",karsilastirma:"Karşılaştırma",ilginc:"İlginç"};
 function renderStudy(){
   const d=STUDY[CUR.num],v=ST.v,x=d.verses.find(y=>y.v===v),body=$("stBody");body.innerHTML="";body.scrollTop=0;$("stTip").hidden=true;
-  const[B0,B1]=stBounds();$("stTitle").textContent=`${dispName(CUR)} · âyet ${v}`;$("stSub").textContent=ST.rng?`Hedef: âyet ${B0}–${B1} · ${v-B0+1}/${B1-B0+1}`:"Kelime tahlili";
+  const[B0,B1]=stBounds();$("stTitle").textContent=`${trNameOf(CUR)} · âyet ${v}`;$("stSub").textContent=ST.rng?`Hedef: âyet ${B0}–${B1} · ${v-B0+1}/${B1-B0+1}`:"Kelime tahlili";
   $("stPrev").disabled=v<=B0;$("stNext").disabled=v>=B1;stTop();
   const H=t=>body.appendChild(el("div","st-h",t));
   // verse
@@ -2491,18 +2608,237 @@ $("stBody").addEventListener("scroll",stArrows,{passive:true});
   b.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
     if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*2){const[B0,B1]=stBounds();const nv=ST.v+(dx<0?1:-1);if(nv>=B0&&nv<=B1){ST.v=nv;renderStudy();}}},{passive:true});})();
 
+// ---------- online accounts (Supabase) ----------
+// One admin adds the recordings, verse cuts and goals tools' content; friends sign in and use it.
+// Everyone's own progress (memorised verses, goals, settings) is saved under their own account.
+const ONL={cfg:null,on:false,sess:ls.get("hifz-auth",null),role:ls.get("hifz-role",null),timer:null,busy:false,again:false,dirty:new Set(ls.get("hifz-dirty",[])),err:"",last:ls.get("hifz-osync",0),mode:"signin"};
+async function loadConfig(){
+  try{const r=await fetch("config.json",{cache:"no-store"});if(r.ok){const c=await r.json();if(c&&c.supabaseUrl&&c.supabaseAnonKey&&!/YOUR-/.test(c.supabaseUrl)){ls.set("hifz-cfg",c);return c;}}}catch(e){}
+  return ls.get("hifz-cfg",null);
+}
+const sbu=p=>ONL.cfg.supabaseUrl.replace(/\/+$/,"")+p;
+async function authCall(path,body,tok,method){
+  const r=await fetch(sbu("/auth/v1/"+path),{method:method||"POST",headers:{apikey:ONL.cfg.supabaseAnonKey,"Content-Type":"application/json",...(tok?{Authorization:"Bearer "+tok}:{})},body:method==="GET"?undefined:JSON.stringify(body||{})});
+  let j={};try{j=await r.json();}catch(e){}
+  if(!r.ok){const e=new Error(j.msg||j.error_description||j.message||j.error||("HTTP "+r.status));e.status=r.status;throw e;}
+  return j;
+}
+function setSession(j){ONL.sess={access_token:j.access_token,refresh_token:j.refresh_token,expires_at:Date.now()+((+j.expires_in)||3600)*1000,user:{id:j.user.id,email:j.user.email}};ls.set("hifz-auth",ONL.sess);}
+async function accessToken(){
+  const s=ONL.sess;if(!s)throw new Error("signed out");
+  if(Date.now()>s.expires_at-60000){
+    try{setSession(await authCall("token?grant_type=refresh_token",{refresh_token:s.refresh_token}));}
+    catch(e){if(e.status===400||e.status===401){signOut(true);}throw e;}
+  }
+  return ONL.sess.access_token;
+}
+async function api(path,opt={}){
+  const t=await accessToken(),h={apikey:ONL.cfg.supabaseAnonKey,Authorization:"Bearer "+t,...(opt.headers||{})};
+  if(opt.json!==undefined)h["Content-Type"]="application/json";
+  const r=await fetch(sbu(path),{method:opt.method||"GET",headers:h,body:opt.json!==undefined?JSON.stringify(opt.json):opt.body,cache:"no-store"});
+  if(!r.ok){let m="";try{const j=await r.json();m=j.message||j.error||"";}catch(e){}const e=new Error(m||("HTTP "+r.status));e.status=r.status;throw e;}
+  return r;
+}
+const rest=(p,o)=>api("/rest/v1/"+p,o);
+const upsertHdr={Prefer:"resolution=merge-duplicates,return=minimal"};
+const isAdmin=()=>!ONL.on||ONL.role==="admin";
+function applyRole(){
+  document.body.classList.toggle("online",ONL.on);document.body.classList.toggle("member",ONL.on&&ONL.role!=="admin");
+  if(ONL.on&&ONL.role!=="admin"){$("emptyH").textContent="No recordings yet";$("emptyP").textContent="The recordings will appear here as soon as they are added. Pull down or reopen the app later.";}
+}
+// ---- sign in screen ----
+function showAuth(mode,msg){
+  ONL.mode=mode||"signin";const A=$("auth");A.hidden=false;document.documentElement.classList.add("lock");
+  const m=ONL.mode;$("authForm").hidden=m==="wait";$("authWait").hidden=m!=="wait";
+  $("authPass").hidden=m==="forgot";$("authPass").required=m!=="forgot";$("authPass2").hidden=m!=="newpass";$("authPass2").required=m==="newpass";
+  $("authEmail").hidden=m==="newpass";$("authEmail").required=m!=="newpass";
+  $("authGo").textContent={signin:"Sign in",signup:"Create account",forgot:"Send reset link",newpass:"Save new password"}[m]||"";
+  $("authLead").textContent={signin:"Sign in to listen, follow your goals and save your progress.",signup:"Create your account. Your progress is saved to it, on every device you sign in with.",forgot:"Type your email and we'll send you a link to choose a new password.",newpass:"Choose a new password.",wait:""}[m]||"";
+  $("authSwitch").textContent=m==="signin"?"New here? Create an account":"I already have an account";$("authSwitch").hidden=m==="wait"||m==="newpass";$("authForgot").hidden=m!=="signin";
+  $("authPass").autocomplete=m==="signup"?"new-password":"current-password";
+  if(m==="wait")$("authWaitT").textContent=`You're signed in as ${ONL.sess&&ONL.sess.user.email}. The admin still has to add this email to the list of friends. Ask them, then tap “Check again”.`;
+  authMsg(msg||"");
+}
+function authMsg(t,err){const el=$("authMsg");el.textContent=t;el.classList.toggle("err",!!err);}
+$("authSwitch").onclick=()=>showAuth(ONL.mode==="signin"?"signup":"signin");
+$("authForgot").onclick=()=>showAuth("forgot");
+$("authRecheck").onclick=()=>location.reload();
+$("authOut").onclick=()=>signOut();
+$("authForm").addEventListener("submit",async e=>{
+  e.preventDefault();const email=$("authEmail").value.trim(),pw=$("authPass").value,m=ONL.mode;$("authGo").disabled=true;authMsg("Please wait…");
+  try{
+    if(m==="signin"){setSession(await authCall("token?grant_type=password",{email,password:pw}));location.reload();return;}
+    if(m==="signup"){const j=await authCall("signup",{email,password:pw});
+      if(j.access_token){setSession(j);location.reload();return;}
+      showAuth("signin","Account created. Open the confirmation email we sent you, then sign in here.");$("authEmail").value=email;}
+    if(m==="forgot"){await authCall("recover",{email,redirect_to:location.origin+location.pathname});authMsg("If this email has an account, a reset link is on its way. Open it on this device.");}
+    if(m==="newpass"){if(pw!==$("authPass2").value)throw new Error("The two passwords are different.");
+      await authCall("user",{password:pw},ONL.sess.access_token,"PUT");location.reload();return;}
+  }catch(err){authMsg(/invalid login/i.test(err.message)?"Wrong email or password.":/already registered|already exists/i.test(err.message)?"This email already has an account. Sign in instead.":/Failed to fetch|NetworkError|Load failed/i.test(err.message)?"No internet connection. Try again when you're online.":err.message,true);}
+  $("authGo").disabled=false;
+});
+function signOut(silent){
+  const keep=["hifz-cfg"];
+  Object.keys(localStorage).forEach(k=>{if(/^hifz-(mem|memu)-\d+$/.test(k)||["hifz-auth","hifz-role","hifz-goals","hifz-su","hifz-osync","hifz-dirty","hifz-plan"].includes(k))localStorage.removeItem(k);});
+  ONL.sess=null;if(!silent)location.reload();
+}
+// a password-reset link opens the app with the token in the address
+function readAuthHash(){
+  const h=new URLSearchParams(location.hash.slice(1));if(!h.get("access_token"))return null;
+  const type=h.get("type");setSession({access_token:h.get("access_token"),refresh_token:h.get("refresh_token"),expires_in:h.get("expires_in"),user:{id:"",email:""}});
+  history.replaceState(null,"",location.pathname+location.search);return type;
+}
+// ---- library from the server ----
+function rowToRec(row,ex){
+  return{id:row.id,num:row.num,reciter:row.reciter,introN:row.intro_n||0,known:!!row.known,blob:ex?ex.blob:null,B:row.b,B0:row.b0||row.b,L:row.l||[],added:row.added,updated:row.updated||row.added,type:row.type||"audio/mpeg",file:row.file};
+}
+async function pullLibrary(){
+  const rows=await(await rest("surahs?select=*&order=num.asc")).json();
+  const local=await idb.all(),byId=Object.fromEntries(local.map(r=>[r.id,r])),ids=new Set(rows.map(r=>r.id));let changed=false;
+  for(const row of rows){const ex=byId[row.id];
+    if(ex&&(ex.updated||0)>=(row.updated||0)&&ex.file===row.file)continue;
+    if(ex&&ONL.dirty.has(row.id)&&(ex.updated||0)>(row.updated||0))continue;
+    await idb.put(rowToRec(row,ex));changed=true;}
+  // surahs the admin removed disappear; the admin's own not-yet-uploaded recordings stay
+  for(const r of local){if(!ids.has(r.id)&&(r.file||!isAdmin())){await idb.del(r.id);changed=true;}}
+  if(changed)await reloadLibrary();
+  return changed;
+}
+async function reloadLibrary(){
+  const keep=CUR&&CUR.id;LIB.forEach(s=>{try{s.src&&URL.revokeObjectURL(s.src);}catch(e){}});LIB=[];
+  const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
+  for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
+  Object.keys(ENG.buf).forEach(k=>{if(!LIB.find(s=>s.id===k)){delete ENG.buf[k];delete ENG.pending[k];}});
+  if(!LIB.length){showEmpty(true);return;}
+  const s=LIB.find(x=>x.id===keep);S._last=s?s.id:null;selectSurah(s?s.id:(LIB.find(x=>x.id===S.cur)||LIB[0]).id);
+}
+// recordings are downloaded the first time they are opened, then kept on the phone
+const AUD={};
+function ensureAudio(s){
+  if(s.src)return Promise.resolve(true);if(AUD[s.id])return AUD[s.id];
+  AUD[s.id]=(async()=>{
+    if(!ONL.on||!s.file)throw new Error("no audio");
+    if(s===CUR)status("Downloading the recording…",`${dispName(s)} · ${s.reciter}`);
+    const r=await api("/storage/v1/object/authenticated/audio/"+s.file.split("/").map(encodeURIComponent).join("/"));
+    const blob=new Blob([await r.arrayBuffer()],{type:s.type||"audio/mpeg"});s.blob=blob;s.src=URL.createObjectURL(blob);await idb.put(recOf(s));
+    if(s===CUR&&!P.playing)status("Ready","Press play to start");return true;
+  })().catch(e=>{if(s===CUR)status("Couldn't download the recording",navigator.onLine?e.message:"Connect to the internet once to download it.",true);throw e;}).finally(()=>{delete AUD[s.id];});
+  return AUD[s.id];
+}
+// ---- admin: send recordings and verse cuts ----
+async function pushSurah(s){
+  if(!s.file){
+    if(!s.blob)return;const path=`${s.id}.${extOf(s.type||s.blob.type)}`;
+    await api("/storage/v1/object/audio/"+encodeURIComponent(path),{method:"POST",body:s.blob,headers:{"Content-Type":s.type||s.blob.type||"audio/mpeg","x-upsert":"true"}});
+    s.file=path;await idb.put(recOf(s));
+  }
+  await rest("surahs?on_conflict=id",{method:"POST",json:[{id:s.id,num:s.num,reciter:s.reciter,intro_n:s.intro.length,known:!!s.known,b:s.B,b0:s.B0,l:s.L||[],type:s.type,file:s.file,added:s.added,updated:s.updated||s.added}],headers:upsertHdr});
+}
+async function deleteRemote(id,file){
+  await rest("surahs?id=eq."+encodeURIComponent(id),{method:"DELETE"});
+  if(file)try{await api("/storage/v1/object/audio/"+encodeURIComponent(file),{method:"DELETE"});}catch(e){}
+}
+// ---- everyone: own progress ----
+function localState(){
+  const mem={};for(let n=1;n<=114;n++){const u=ls.get("hifz-memu-"+n,0);if(u)mem[n]={v:ls.get("hifz-mem-"+n,[]),u};}
+  const s=Object.assign({},S);delete s.cur;delete s._last;
+  return{v:1,mem,goals:GOALS,s,su:ls.get("hifz-su",0)};
+}
+async function pullState(){
+  const rows=await(await rest("user_state?select=data")).json(),d=rows[0]&&rows[0].data;if(!d)return false;let ch=false;
+  Object.entries(d.mem||{}).forEach(([n,r])=>{if(r&&r.u>ls.get("hifz-memu-"+n,0)){ls.set("hifz-mem-"+n,r.v);ls.set("hifz-memu-"+n,r.u);ch=true;}});
+  if(d.goals&&(d.goals.u||0)>(GOALS.u||0)){GOALS=Object.assign({list:[],del:{}},d.goals);ls.set("hifz-goals",GOALS);ch=true;}
+  if(d.s&&(d.su||0)>ls.get("hifz-su",0)){const cur=S.cur,last=S._last;Object.assign(S,d.s,{cur,_last:last});ls.set("hifz-s",S);ls.set("hifz-su",d.su);ch=true;}
+  return ch;
+}
+async function pushState(){await rest("user_state?on_conflict=user_id",{method:"POST",json:[{user_id:ONL.sess.user.id,data:localState(),updated_at:new Date().toISOString()}],headers:upsertHdr});}
+function onlineSoon(ms){if(!ONL.on||!ONL.sess)return;clearTimeout(ONL.timer);ONL.timer=setTimeout(onlineSync,ms??2500);onlineBadge("pending");}
+async function onlineSync(full){
+  if(!ONL.on||!ONL.sess)return;if(ONL.busy){ONL.again=true;return;}
+  if(!navigator.onLine){onlineBadge("offline");return;}
+  ONL.busy=true;onlineBadge("busy");
+  try{
+    if(isAdmin()&&ONL.dirty.size){for(const id of [...ONL.dirty]){const s=LIB.find(x=>x.id===id);if(s){onlineBadge("busy",`Uploading ${dispName(s)}…`);await pushSurah(s);}ONL.dirty.delete(id);ls.set("hifz-dirty",[...ONL.dirty]);}}
+    if(full)await pullLibrary();
+    const ch=await pullState();
+    if(ch&&CUR){loadMem();renderVerses();updateMemo();syncUI();applyText();applyTheme();}else if(ch)renderPlan();
+    await pushState();
+    ONL.last=Date.now();ls.set("hifz-osync",ONL.last);ONL.err="";onlineBadge("ok");
+  }catch(e){ONL.err=e.status===403||e.status===401?"The server refused this change. Sign out and in again.":"Couldn't sync ("+e.message+"). It will try again.";onlineBadge("error");}
+  ONL.busy=false;if(ONL.again){ONL.again=false;onlineSoon(800);}
+}
+function onlineBadge(state,msg){
+  const b=$("syncBtn");b.dataset.state=state;
+  const txt=state==="busy"?(msg||"Syncing…"):state==="pending"?"Changes waiting to sync":state==="offline"?"Offline. Your progress syncs when you're back online.":state==="error"?ONL.err:`Synced ${ago(ONL.last)}`;
+  b.setAttribute("aria-label","Account: "+txt);if($("acctState"))$("acctState").textContent=txt;
+  $("menuSyncS").textContent=(ONL.sess?ONL.sess.user.email+" · ":"")+txt;$("menuBtn").classList.toggle("warn",state==="error");
+}
+// ---- account sheet ----
+async function openAccount(){
+  $("acctEmail").textContent=ONL.sess?ONL.sess.user.email:"";$("acctRole").textContent=ONL.role==="admin"?"Admin: you add the recordings and verse cuts":"Friend: you can listen and save your own progress";
+  onlineBadge($("syncBtn").dataset.state||"ok");$("acctOfflineMsg").textContent=offlineSummary();openSheet("acctDlg");
+  if(isAdmin()){renderUploads();loadMembers();}
+}
+function offlineSummary(){const n=LIB.length,k=LIB.filter(s=>s.src).length;return n?`${k} of ${n} recordings are saved on this phone${k<n?"; the rest download when you open them":""}.`:"";}
+function renderUploads(){const L=LIB.filter(s=>!s.file);$("upMsg").textContent=L.length?`${L.length} recording${L.length>1?"s are":" is"} only on this phone: ${L.map(s=>dispName(s)).join(", ")}.`:"Everything on this phone is also on the server.";$("upBtn").hidden=!L.length;}
+$("upBtn").onclick=async()=>{const L=LIB.filter(s=>!s.file);$("upBtn").disabled=true;
+  try{for(let i=0;i<L.length;i++){$("upMsg").textContent=`Uploading ${i+1} of ${L.length}: ${dispName(L[i])}…`;touch(L[i]);await saveLocal(L[i]);await pushSurah(L[i]);}
+    $("upMsg").textContent="Done. Your friends can use these recordings now.";}catch(e){$("upMsg").textContent="Upload stopped: "+e.message;}
+  $("upBtn").disabled=false;setTimeout(renderUploads,2500);};
+async function loadMembers(){
+  const box=$("memList");box.textContent="Loading…";
+  try{const rows=await(await rest("members?select=email,added_at&order=added_at.desc")).json();box.innerHTML="";
+    if(!rows.length)box.innerHTML='<p class="hint">No friends added yet.</p>';
+    rows.forEach(r=>{const d=document.createElement("div");d.className="mem-row";d.innerHTML="<span></span><button class=\"btn small secondary\" type=\"button\">Remove</button>";d.querySelector("span").textContent=r.email;
+      d.querySelector("button").onclick=async ev=>{const b=ev.target;if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again";return;}await rest("members?email=eq."+encodeURIComponent(r.email),{method:"DELETE"});loadMembers();};box.appendChild(d);});
+  }catch(e){box.textContent="Couldn't load the list: "+e.message;}
+}
+$("memForm").addEventListener("submit",async e=>{e.preventDefault();const em=$("memEmail").value.trim().toLowerCase();if(!em)return;
+  try{await rest("members",{method:"POST",json:[{email:em}],headers:{Prefer:"resolution=ignore-duplicates,return=minimal"}});$("memEmail").value="";$("memMsg").textContent=`${em} can now sign in and use the app.`;loadMembers();}
+  catch(err){$("memMsg").textContent="Couldn't add: "+err.message;}});
+$("acctSync").onclick=()=>onlineSync(true);
+$("acctOut").onclick=()=>{const b=$("acctOut");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to sign out";setTimeout(()=>{delete b.dataset.arm;b.textContent="Sign out";},3500);return;}signOut();};
+$("acctOffline").onclick=async()=>{const L=LIB.filter(s=>!s.src);$("acctOffline").disabled=true;
+  for(let i=0;i<L.length;i++){$("acctOfflineMsg").textContent=`Downloading ${i+1} of ${L.length}: ${dispName(L[i])}…`;try{await ensureAudio(L[i]);}catch(e){}}
+  $("acctOffline").disabled=false;$("acctOfflineMsg").textContent=offlineSummary();};
+// ---- start ----
+async function onlineStart(){
+  try{
+    if(!ONL.sess.user.id){const u=await authCall("user",null,await accessToken(),"GET");ONL.sess.user={id:u.id,email:u.email};ls.set("hifz-auth",ONL.sess);}
+    const role=await(await rest("rpc/my_role",{method:"POST",json:{}})).json();
+    ONL.role=role;ls.set("hifz-role",role);
+    if(role!=="admin"&&role!=="member"){showAuth("wait");return;}
+    applyRole();await onlineSync(true);
+  }catch(e){
+    if(!ONL.sess){showAuth("signin","Please sign in again.");return;}
+    onlineBadge(navigator.onLine?"error":"offline");if(navigator.onLine){ONL.err="Couldn't reach the server ("+e.message+").";onlineBadge("error");}
+  }
+}
+addEventListener("online",()=>{if(ONL.on)onlineSoon(500);});
+document.addEventListener("visibilitychange",()=>{if(ONL.on&&document.visibilityState==="visible"&&Date.now()-ONL.last>60000)onlineSync(true);});
+onSaved=()=>{if(ONL.on)onlineSoon(4000);};
+
 // ---------- boot ----------
 async function boot(){
   applyTheme();applyText();try{document.fonts&&document.fonts.load('40px Hamdullah');}catch(e){}
+  ONL.cfg=await loadConfig();ONL.on=!!ONL.cfg;if(ONL.on)SY.cfg=null; // the old GitHub sync is replaced by accounts
+  if(ONL.on){
+    const hashType=readAuthHash();
+    if(!ONL.sess){showAuth("signin");return;}
+    if(hashType==="recovery"){showAuth("newpass");return;}
+    applyRole();
+  }
   const recs=await idb.all();recs.sort((a,b)=>a.added-b.added).forEach(r=>LIB.push(fromRecord(r)));
   for(const s of LIB){const t=await getText(s.num,false);if(t)mergeText(s,t);}
+  if(ONL.on){onlineBadge("ok");renderPlan();if(!LIB.length)showEmpty(true);else{S._last=S.cur;selectSurah(S.cur);if(S.startCar)openCar();}onlineStart();
+    try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}return;}
   syncBadge(SY.cfg?"ok":"off");renderPlan();
   if(!LIB.length){showEmpty(true);if(SY.cfg)setTimeout(syncNow,800);return;}
-  S._last=S.cur;selectSurah(S.cur);if(SY.cfg)setTimeout(syncNow,800);
+  S._last=S.cur;selectSurah(S.cur);if(S.startCar)openCar();if(SY.cfg)setTimeout(syncNow,800);
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,S,P,ENG,FIX,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,S,P,ENG,FIX,ONL,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
