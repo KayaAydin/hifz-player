@@ -2742,10 +2742,29 @@ function ensureAudio(s){
   return AUD[s.id];
 }
 // ---- admin: send recordings and verse cuts ----
-async function pushSurah(s){
+// Upload with XHR so we can show progress and notice an upload that stops moving.
+async function xhrUpload(path,data,type,onp){
+  const t=await accessToken();
+  return new Promise((res,rej)=>{
+    const x=new XMLHttpRequest();x.open("POST",sbu("/storage/v1/object/audio/"+encodeURIComponent(path)));
+    x.setRequestHeader("apikey",ONL.cfg.supabaseAnonKey);x.setRequestHeader("Authorization","Bearer "+t);
+    x.setRequestHeader("Content-Type",type);x.setRequestHeader("x-upsert","true");
+    let last=Date.now();const iv=setInterval(()=>{if(Date.now()-last>45000)x.abort();},3000);const done=()=>clearInterval(iv);
+    x.upload.onprogress=e=>{last=Date.now();if(e.lengthComputable&&onp)onp(e.loaded/e.total);};
+    x.onload=()=>{done();if(x.status>=200&&x.status<300)return res();let m="";try{const j=JSON.parse(x.responseText);m=j.message||j.error||"";}catch(e){}
+      const er=new Error(m||("HTTP "+x.status));er.status=+x.status;rej(er);};
+    x.onerror=()=>{done();rej(new Error("Load failed"));};
+    x.onabort=()=>{done();const er=new Error("stalled");er.stall=true;rej(er);};
+    x.send(data);
+  });
+}
+async function pushSurah(s,onp){
   if(!s.file){
-    if(!s.blob)return;const path=`${s.id}.${extOf(s.type||s.blob.type)}`;
-    await api("/storage/v1/object/audio/"+encodeURIComponent(path),{method:"POST",body:s.blob,headers:{"Content-Type":s.type||s.blob.type||"audio/mpeg","x-upsert":"true"}});
+    if(!s.blob){const e=new Error("noaudio");e.noaudio=true;throw e;}
+    const type=s.type||s.blob.type||"audio/mpeg",path=`${s.id}.${extOf(type)}`;
+    // iPhone can't always send a file straight from its storage, so read it into memory first
+    let buf;try{buf=await s.blob.arrayBuffer();}catch(e){const er=new Error("unreadable");er.unreadable=true;throw er;}
+    await xhrUpload(path,new Blob([buf],{type}),type,onp);
     s.file=path;await idb.put(recOf(s));
   }
   await rest("surahs?on_conflict=id",{method:"POST",json:[{id:s.id,num:s.num,reciter:s.reciter,intro_n:s.intro.length,known:!!s.known,b:s.B,b0:s.B0,l:s.L||[],type:s.type,file:s.file,added:s.added,updated:s.updated||s.added}],headers:upsertHdr});
@@ -2754,6 +2773,22 @@ async function deleteRemote(id,file){
   await rest("surahs?id=eq."+encodeURIComponent(id),{method:"DELETE"});
   if(file)try{await api("/storage/v1/object/audio/"+encodeURIComponent(file),{method:"DELETE"});}catch(e){}
 }
+let UPL=null;
+function uploadAll(report){
+  if(UPL)return UPL;
+  UPL=(async()=>{
+    const L=LIB.filter(s=>!s.file),fails=[];let ok=0;
+    let lock=null;try{lock=await navigator.wakeLock.request("screen");}catch(e){}
+    for(let i=0;i<L.length;i++){const s=L[i];
+      try{if(report)report(i,L.length,s,0);await pushSurah(s,p=>report&&report(i,L.length,s,p));ONL.dirty.delete(s.id);ls.set("hifz-dirty",[...ONL.dirty]);ok++;}
+      catch(e){fails.push({s,e});if(e.status===401||e.status===403)break;}
+    }
+    try{lock&&lock.release();}catch(e){}
+    return{ok,fails,total:L.length};
+  })().finally(()=>{UPL=null;});
+  return UPL;
+}
+const pct=p=>p>0?` ${Math.round(p*100)}%`:"";
 // ---- everyone: own progress ----
 function localState(){
   const mem={};for(let n=1;n<=114;n++){const u=ls.get("hifz-memu-"+n,0);if(u)mem[n]={v:ls.get("hifz-mem-"+n,[]),u};}
@@ -2774,12 +2809,22 @@ async function onlineSync(full){
   if(!navigator.onLine){onlineBadge("offline");return;}
   ONL.busy=true;onlineBadge("busy");
   try{
-    if(isAdmin()&&ONL.dirty.size){for(const id of [...ONL.dirty]){const s=LIB.find(x=>x.id===id);if(s){onlineBadge("busy",`Uploading ${dispName(s)}…`);await pushSurah(s);}ONL.dirty.delete(id);ls.set("hifz-dirty",[...ONL.dirty]);}}
+    let upErr=null;
+    if(isAdmin()&&ONL.dirty.size){
+      for(const id of [...ONL.dirty]){const s=LIB.find(x=>x.id===id);
+        if(s&&!s.file)continue; // new recordings go through the upload queue below
+        try{if(s)await pushSurah(s);ONL.dirty.delete(id);ls.set("hifz-dirty",[...ONL.dirty]);}catch(e){upErr={s,e};}}
+      if(LIB.some(s=>!s.file&&ONL.dirty.has(s.id))&&!UPL){
+        const r=await uploadAll((i,n,s,p)=>onlineBadge("busy",`Uploading ${i+1} of ${n}: ${dispName(s)}…${pct(p)}`));
+        if(r.fails.length)upErr=r.fails[0];
+      }
+    }
     if(full)await pullLibrary();
     const ch=await pullState();
     if(ch&&CUR){loadMem();renderVerses();updateMemo();syncUI();applyText();applyTheme();}else if(ch)renderPlan();
     await pushState();
-    ONL.last=Date.now();ls.set("hifz-osync",ONL.last);ONL.err="";onlineBadge("ok");
+    ONL.last=Date.now();ls.set("hifz-osync",ONL.last);
+    if(upErr){ONL.err=`Couldn't upload ${upErr.s?dispName(upErr.s):"a recording"}: `+explainErr(upErr.e);onlineBadge("error");}else{ONL.err="";onlineBadge("ok");}
   }catch(e){ONL.err="Couldn't sync: "+explainErr(e);onlineBadge("error");}
   ONL.busy=false;if(ONL.again){ONL.again=false;onlineSoon(800);}
 }
@@ -2792,6 +2837,9 @@ function onlineBadge(state,msg){
 // plain-language reasons for server errors
 function explainErr(e){
   const m=(e&&e.message)||"",st=e&&e.status;
+  if(e&&e.noaudio)return "the audio isn't on this phone. Add the MP3 again.";
+  if(e&&e.unreadable)return "the audio saved on this phone can't be read any more. Remove this surah and add the MP3 again.";
+  if(e&&e.stall)return "the upload stopped moving for 45 seconds (weak signal, or the app went to the background). Keep the app open and try again.";
   if(/Failed to fetch|NetworkError|Load failed/i.test(m)||!navigator.onLine)return "no internet connection. It will try again.";
   if(/row-level security|violates|permission denied|not allowed|Unauthorized/i.test(m)||st===403)return "the server doesn't accept changes from this account. Tap “Check the server” below to see why.";
   if(/bucket not found/i.test(m))return "the recordings folder (bucket “audio”) is missing on the server. Run supabase-setup.sql again.";
@@ -2837,10 +2885,16 @@ async function openAccount(){
 }
 function offlineSummary(){const n=LIB.length,k=LIB.filter(s=>s.src).length;return n?`${k} of ${n} recordings are saved on this phone${k<n?"; the rest download when you open them":""}.`:"";}
 function renderUploads(){const L=LIB.filter(s=>!s.file);$("upMsg").textContent=L.length?`${L.length} recording${L.length>1?"s are":" is"} only on this phone: ${L.map(s=>dispName(s)).join(", ")}.`:"Everything on this phone is also on the server.";$("upBtn").hidden=!L.length;}
-$("upBtn").onclick=async()=>{const L=LIB.filter(s=>!s.file);$("upBtn").disabled=true;
-  try{for(let i=0;i<L.length;i++){$("upMsg").textContent=`Uploading ${i+1} of ${L.length}: ${dispName(L[i])}…`;touch(L[i]);await saveLocal(L[i]);await pushSurah(L[i]);}
-    $("upMsg").textContent="Done. Everyone can use these recordings now.";}catch(e){$("upMsg").textContent="Upload stopped: "+explainErr(e);}
-  $("upBtn").disabled=false;setTimeout(renderUploads,2500);};
+$("upBtn").onclick=async()=>{$("upBtn").disabled=true;$("upMsg").textContent="Starting… keep the app open until it finishes.";
+  const show=(i,n,s,p)=>{const t=`Uploading ${i+1} of ${n}: ${dispName(s)}…${pct(p)}`;$("upMsg").textContent=t+" Keep the app open.";onlineBadge("busy",t);};
+  let r;
+  if(UPL){$("upMsg").textContent="An upload is already running…";r=await UPL;if(LIB.some(s=>!s.file))r=await uploadAll(show);}
+  else r=await uploadAll(show);
+  const f=r.fails;
+  $("upMsg").textContent=!f.length?`Done. ${r.ok} recording${r.ok===1?"":"s"} uploaded; everyone can use them now.`
+    :`${r.ok} uploaded, ${f.length} not: ${f.slice(0,3).map(x=>dispName(x.s)).join(", ")}${f.length>3?"…":""}. Reason: ${explainErr(f[0].e)}`;
+  $("upBtn").disabled=false;if(f.length)ONL.err=`Couldn't upload ${dispName(f[0].s)}: `+explainErr(f[0].e);else ONL.last=Date.now();onlineBadge(f.length?"error":"ok");
+  setTimeout(()=>{if(!f.length)renderUploads();else{const L=LIB.filter(s=>!s.file);$("upBtn").hidden=!L.length;}},f.length?0:4000);};
 
 $("acctSync").onclick=()=>onlineSync(true);
 $("acctOut").onclick=()=>{const b=$("acctOut");if(!b.dataset.arm){b.dataset.arm="1";b.textContent="Tap again to sign out";setTimeout(()=>{delete b.dataset.arm;b.textContent="Sign out";},3500);return;}signOut();};
