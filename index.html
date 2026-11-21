@@ -964,6 +964,50 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
 #fixBtn2.warn .dot{background:var(--warn)}
 .study-empty{margin:auto;max-width:330px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:40px 10px;color:var(--muted)}
 .study-empty b{font-size:19px;color:var(--ink)}
+
+/* =====================================================================
+   v25 · golden ayah markers, surah cartouche, light green highlight
+   ===================================================================== */
+:root{--gold:#A87B22;--gold-soft:#F4E9CD;--gold-ink:#86601A;--hl:#D3ECDB}
+:root[data-theme="dark"]{--gold:#D9AE5F;--gold-soft:#3A2F1C;--gold-ink:#E9C47E;--hl:#1E3A2E}
+body[data-tab="read"] .dock{display:none}
+body .vw .st-body{padding-bottom:30px!important}
+body .vw .pg-foot{margin-bottom:0!important}
+.rd-play{background:var(--accent);color:var(--on-accent)}
+.rd-play svg{width:20px!important;height:20px!important;fill:currentColor;stroke:none}
+/* highlight of the ayah being read */
+.pg-a.now,.v.now{background:var(--hl)}
+.v.now{border-bottom-color:transparent}
+.pg-a.sel{background:var(--gold-soft)}
+/* golden ayah marker */
+.pg-m{position:relative;display:inline-grid;place-items:center;width:2.15em;height:2.15em;margin:0 .1em;font-size:.6em;vertical-align:.1em;border:0;border-radius:0;color:var(--gold);-webkit-text-stroke:0}
+.pg-m svg{position:absolute;inset:0;width:100%;height:100%;fill:var(--gold-soft);stroke:currentColor;stroke-width:1.6}
+.pg-m b{position:relative;font:700 .95em/1 var(--f-ar);color:var(--gold-ink);padding-top:.12em}
+.num{width:38px;height:38px;margin-top:6px}
+.num svg{display:block!important;position:absolute;inset:0;width:38px;height:38px;fill:var(--gold-soft);stroke:var(--gold);stroke-width:1.5}
+.num span{position:relative;font:700 13px/1 var(--f-ui)!important;color:var(--gold-ink)!important}
+.v.intro .num svg{opacity:.45}
+.v.intro .num span::before{content:""}
+/* Bismillah in gold */
+.pg-bs{color:var(--gold);margin:6px 0 2px}
+.v.intro .txt{color:var(--gold)}
+/* surah name cartouche */
+.pg-sh{position:relative;margin:20px 0 10px;padding:13px 54px 11px;border-radius:16px;background:var(--acc-soft);border:1.5px solid var(--accent);
+  box-shadow:inset 0 0 0 4px var(--acc-soft),inset 0 0 0 5.5px color-mix(in srgb,var(--accent) 55%,transparent);text-align:center}
+.pg-sh::before,.pg-sh::after{content:"";position:absolute;top:50%;width:15px;height:15px;margin-top:-8px;border:1.5px solid var(--accent);background:var(--bg);transform:rotate(45deg);box-shadow:0 0 0 3px var(--acc-soft)}
+.pg-sh::before{left:18px}.pg-sh::after{right:18px}
+.pg-sh .ar{font-size:calc(var(--ar-size)*1.1);line-height:1.45;color:var(--accent-2)}
+.pg-sh small{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:color-mix(in srgb,var(--accent-2) 70%,var(--muted))}
+.pg-body>.pg-sh:first-child{margin-top:6px}
+/* ayah card */
+.ad-ar{font-size:calc(var(--ar-size)*1.05);line-height:2;text-align:center;-webkit-text-stroke:var(--ar-stroke) currentColor;max-height:34vh;overflow:auto}
+.ad-meal{font-size:16px;line-height:1.6;color:var(--ink);background:var(--surface);border-radius:18px;padding:14px 16px;max-height:30vh;overflow:auto}
+.ad-meal small{display:block;margin-top:6px;font-size:12.5px;color:var(--muted)}
+.ad-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.ad-btns .btn{padding:10px 6px;font-size:15px;min-height:52px;gap:6px}
+.ad-btns .btn svg{width:18px;height:18px;fill:currentColor}
+.ad-btns .btn[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.ad-btns .btn:disabled{opacity:.45}
 </style>
 </head>
 <body>
@@ -1027,7 +1071,6 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
   <div class="dock-in">
     <div class="prog"><i id="prog"></i></div>
     <div class="dock-row">
-      <button class="rb dhide" id="dockHide" type="button" aria-label="Hide player"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
       <div class="now-info"><b id="nowT">Ready</b><span id="nowS">Press play to start</span></div>
       <button class="rb" id="prevBtn" type="button" aria-label="Previous ayah"><svg><use href="#i-prev"/></svg></button>
       <button class="rb play" id="playBtn" type="button" aria-label="Play"><svg><use id="playUse" href="#i-play"/></svg></button>
@@ -1043,7 +1086,7 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
   <button type="button" data-tab="study"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h12M3 10h8M3 15h6M3 20h6"/><circle cx="16.5" cy="15.5" r="3.5"/><path d="m19 18 2.5 2.5"/></svg><span>Study</span></button>
   <button type="button" data-tab="goals"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></button>
 </nav>
-<button class="dock-show" id="dockShow" type="button" aria-label="Show player" hidden><svg><use id="dsUse" href="#i-play"/></svg></button>
+
 <div class="toast" id="toast" role="status" hidden></div>
 
 <!-- car mode -->
@@ -1108,6 +1151,7 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
 <div class="study vw" id="versesW" hidden>
   <div class="st-top">
     <button class="hd-title" id="rdTitleBtn" type="button" aria-label="Choose surah"><b><span id="vwTitle">Read</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></b><span id="vwSub"></span></button>
+    <button class="rbtn rd-play" id="rdPlay" type="button" aria-label="Play"><svg><use id="rdPlayUse" href="#i-play"/></svg></button>
     <button class="rbtn" id="rdMark" type="button" aria-label="Bookmark" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
     <button class="rbtn" id="rdSet" type="button" aria-label="Reading settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 9 6l5 12M5.6 14h6.8"/><path d="M15 18l3-7.5 3 7.5M15.9 16h4.2"/></svg></button>
   </div>
@@ -1408,15 +1452,30 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
   </div>
 </dialog>
 
+<!-- ayah card (tap an ayah in page view) -->
+<dialog class="sheet" id="ayahDlg">
+  <div class="sheet-in">
+    <div class="grab"></div>
+    <div class="sheet-h"><h2 id="adTitle"></h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
+    <div class="ad-ar ar" id="adAr"></div>
+    <div class="ad-meal" id="adMeal" hidden></div>
+    <div class="ad-btns">
+      <button class="btn" id="adPlay" type="button"><svg><use href="#i-play"/></svg><span>Play</span></button>
+      <button class="btn secondary" id="adMealBtn" type="button" aria-pressed="false">Meaning</button>
+      <button class="btn secondary" id="adStudy" type="button">Kelime tahlili</button>
+    </div>
+    <p class="hint" id="adNote" hidden></p>
+  </div>
+</dialog>
+
 <!-- reading settings -->
 <dialog class="sheet" id="readDlg">
   <div class="sheet-in">
     <div class="grab"></div>
     <div class="sheet-h"><h2>Reading</h2><button class="close" type="button" data-close aria-label="Close">×</button></div>
     <div class="field"><span class="lbl">View</span><div class="seg" id="rdView2"><button type="button" data-v="ayah">Ayah by ayah</button><button type="button" data-v="page">Page</button></div></div>
-    <div class="field"><span class="lbl">Page view</span>
-      <label class="tg row-tg"><span>Show the Turkish meaning<small>Below each page</small></span><span class="sw"><input type="checkbox" id="pgMeal"><i></i></span></label></div>
-    <button class="row-btn" id="rdText" type="button"><span class="txtcol"><b>Text size and meaning</b><span id="rdTextS"></span></span><svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+    <label class="tg row-tg"><span>Show the Turkish meaning<small>Under each ayah, or below the page in page view</small></span><span class="sw"><input type="checkbox" id="pgMeal"><i></i></span></label>
+    <button class="row-btn" id="rdText" type="button"><span class="txtcol"><b>Text size and translation</b><span id="rdTextS"></span></span><svg class="chev-r" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
     <div class="field"><span class="lbl">Where you left off</span><div class="bm-list" id="rdLast"></div></div>
     <div class="field"><span class="lbl">Bookmarks</span><div class="bm-list" id="rdBms"></div></div>
   </div>
@@ -1434,7 +1493,7 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
     <div class="field"><span class="lbl">Boldness</span>
       <div class="seg" id="arWeight"><button type="button" data-v="0">Regular</button><button type="button" data-v="1">Medium</button><button type="button" data-v="2">Bold</button><button type="button" data-v="3">Extra</button></div>
     </div>
-    <div class="field" id="mealBox"><label class="lbl" for="meal">Turkish meaning</label>
+    <div class="field" id="mealBox"><label class="lbl" for="meal">Turkish translation</label>
       <select id="meal"></select></div>
   </div>
 </dialog>
@@ -1482,11 +1541,14 @@ const idb={
 // A surah = {id, num, reciter, src, intro:[{en,ar}], text:[..]|null, meal:{key:{name,v}}|null, B:[boundaries], B0:[original]}
 // Parts = intro parts, then verses; part i spans B[i]..B[i+1].
 let LIB=[], CUR=null;
-const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:false,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:0,skipMem:false,carLight:false,carRot:false,autoNext:true},ls.get("hifz-s",{}));
+const S=Object.assign({cur:null,scope:"surah",from:1,to:1,vrep:"1",rrep:"1",gap:"0",speed:"1",order:"seq",intro:true,hide:false,follow:true,meal:"sy",theme:null,arSize:30,arWeight:0,skipMem:false,carLight:false,carRot:false,autoNext:true},ls.get("hifz-s",{}));
 let onSaved=null;
 const save=()=>{ls.set("hifz-s",S);ls.set("hifz-su",Date.now());if(onSaved)onSaved();};
 // v23: Regular is the default boldness; apply it once to phones that still carry the old default
 if(!ls.get("hifz-v23",0)){S.arWeight=0;ls.set("hifz-s",S);ls.set("hifz-su",Date.now());ls.set("hifz-v23",1);}
+// v25: Isti'adha & Bismillah on by default; "show meaning" is one switch, the meal setting only picks the translator
+if(!ls.get("hifz-v25",0)){S.intro=true;if(S.meal==="off"){S.meal=S._meal&&S._meal!=="off"?S._meal:"sy";S.showMeal=false;}ls.set("hifz-s",S);ls.set("hifz-su",Date.now());ls.set("hifz-v25",1);}
+if(S.showMeal===undefined)S.showMeal=true;if(S.meal==="off")S.meal="sy";
 const nIntro=s=>s.intro.length;
 const itemSpan=(s,i)=>[s.B[i],s.B[i+1]];
 
@@ -1631,12 +1693,10 @@ async function ensureText(s){
   renderPicker();
 }
 function fillMeal(){
-  const el=$("meal");el.innerHTML="";const keys=CUR.meal?Object.keys(CUR.meal):[];
-  const order=["sy","au","hamdi","diyanet"].filter(k=>keys.includes(k));
-  order.forEach(k=>el.add(new Option(CUR.meal[k].name,k)));
-  el.add(new Option("Don't show","off"));
-  if(order.length&&S.meal!=="off"&&!order.includes(S.meal))S.meal=order[0];
-  el.value=S.meal;
+  const el=$("meal");el.innerHTML="";const keys=CUR&&CUR.meal?Object.keys(CUR.meal):[];
+  const order=["sy","au","ab","hamdi","diyanet"].filter(k=>k==="ab"||k==="sy"||k==="au"||keys.includes(k));
+  order.forEach(k=>el.add(new Option(MEAL_NAMES[k]||CUR.meal[k].name,k)));
+  el.value=order.includes(S.meal)?S.meal:"sy";
 }
 
 // ---------- surah picker ----------
@@ -1685,15 +1745,34 @@ $("pkRecEdit").onclick=()=>{if(CUR)editReciter(CUR);};
 async function saveTexts(from,to){
   const msg=$("dlMsg");let ok=0,fail=0;const nums=[];for(let n=from;n<=to;n++)nums.push(n);
   $("dl2930").disabled=$("dlAll").disabled=true;
-  const work=async()=>{while(nums.length){const n=nums.shift();const t=await getText(n);t?ok++:fail++;msg.textContent=`Saving… ${ok+fail} of ${to-from+1}`;}};
+  const work=async()=>{while(nums.length){const n=nums.shift();const t=await getText(n);if(t&&S.meal==="ab")await getBulac(n);t?ok++:fail++;msg.textContent=`Saving… ${ok+fail} of ${to-from+1}`;}};
   await Promise.all([work(),work(),work()]);
   msg.textContent=fail?`Saved ${ok} surahs. ${fail} could not be loaded; check the internet connection and try again.`:`Saved ${ok} surahs. They now work offline.`;
   $("dl2930").disabled=$("dlAll").disabled=false;
   LIB.forEach(s=>{if(!s.hasHerkul&&TXT[s.num])mergeText(s,TXT[s.num]);});if(CUR){renderHeader();fillMeal();renderVerses();syncUI();renderNow();}renderPicker();
 }
+const MEAL_NAMES={sy:"Suat Yıldırım",au:"Ali Ünal",ab:"Ali Bulaç"};
+const BUL={},BULQ={};
+async function getBulac(n,allowFetch=true){
+  if(BUL[n])return BUL[n];const c=await idb.getText("b"+n);if(c&&c.v){BUL[n]=c.v;return c.v;}if(!allowFetch)return null;
+  try{const r=await fetch(`https://api.alquran.cloud/v1/surah/${n}/tr.bulac`);if(!r.ok)return null;const j=await r.json();
+    const v=j&&j.data&&j.data.ayahs?j.data.ayahs.map(x=>x.text):null;if(!v||v.length!==COUNTS[n-1])return null;
+    await idb.putText({num:"b"+n,v});BUL[n]=v;return v;}catch(e){return null;}
+}
+// load Ali Bulaç for a surah, then refresh whatever shows it
+function ensureBulac(n){
+  if(BUL[n]||BULQ[n])return;BULQ[n]=getBulac(n).then(v=>{delete BULQ[n];if(!v)return;
+    if(CUR&&CUR.num===n){renderVerses();if(P.cur!=null)highlight(P.cur);renderNow();}
+    if(!$("versesW").hidden&&rdView()==="page"&&pageAyahs(S.read.page||0).some(x=>x[0]===n))renderPage();
+    if($("ayahDlg").open&&AD.n===n)renderAyahCard();});
+}
+function mealArr(s){
+  if(S.meal==="ab"){if(BUL[s.num])return BUL[s.num];ensureBulac(s.num);return null;}
+  const m=s.meal||{};return(m[S.meal]||m.sy||m.au||{}).v||null;
+}
 function mealFor(s,v){
-  if(!s.meal||S.meal==="off"||!s.meal[S.meal])return null;
-  const arr=s.meal[S.meal].v,t=arr[v-1];
+  if(!S.showMeal)return null;const arr=mealArr(s);if(!arr)return null;
+  const t=arr[v-1];if(!t)return null;
   let a=v,b=v;while(a>1&&arr[a-2]===t)a--;while(b<arr.length&&arr[b]===t)b++;
   if(a===b)return{t};
   return v===a?{t,tag:`${a}–${b}`}:{t:`${a}. ayetle birlikte (${a}–${b})`,dim:true};
@@ -1742,7 +1821,7 @@ function practiceSummary(){
 function syncUI(){
   $("from").value=S.from;$("to").value=S.to;$("vrep").value=S.vrep;$("rrep").value=S.rrep;$("gap").value=S.gap;$("speed").value=S.speed;$("meal").value=S.meal;
   $("intro").checked=S.intro;$("hideTxt").checked=S.hide;$("follow").checked=S.follow;$("skipMem").checked=S.skipMem;$("autoNext").checked=S.autoNext;renderCarLoop();
-  $("intro").disabled=!CUR.intro.length;$("mealBox").hidden=!CUR.meal;
+  $("intro").disabled=!CUR.intro.length;
   setSeg("scope",S.scope);setSeg("order",S.order);
   $("rangeBox").hidden=S.scope==="surah";$("toBox").hidden=S.scope==="verse";
   $("fromLbl").textContent=S.scope==="verse"?"Ayah":"From ayah";
@@ -1769,7 +1848,7 @@ const P={list:[],i:0,loop:1,playing:false,timer:null,watch:null,key:"",span:null
 const listKey=()=>[CUR.id,S.scope,S.from,S.to,S.vrep,S.order,S.intro,S.skipMem].join("|");
 function ensureList(){const k=listKey();if(k!==P.key||!P.list.length){P.list=buildList();P.i=0;P.loop=1;P.key=k;P.started=false;}}
 
-function setIcon(p){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=p?"playing":"paused";}catch(e){}const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("hPlayUse").setAttribute("href",h);$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");$("hPlay").setAttribute("aria-label",p?"Pause":"Play");if(!$("car").hidden)carPP(true);}
+function setIcon(p){try{if("mediaSession" in navigator)navigator.mediaSession.playbackState=p?"playing":"paused";}catch(e){}const h=p?"#i-pause":"#i-play";$("playUse").setAttribute("href",h);$("hPlayUse").setAttribute("href",h);if($("rdPlayUse"))$("rdPlayUse").setAttribute("href",h);if($("rdPlay"))$("rdPlay").setAttribute("aria-label",p?"Pause":"Play");$("carPlayUse").setAttribute("href",h);$("playBtn").setAttribute("aria-label",p?"Pause":"Play");$("hPlay").setAttribute("aria-label",p?"Pause":"Play");if(!$("car").hidden)carPP(true);}
 function status(t,s,err){$("nowT").textContent=t;const sp=$("nowS");sp.textContent=s;sp.className=err?"err":"";if(!$("car").hidden)$("carSub").textContent=s;
   // home: the verse is on screen already, so only show what it doesn't say (repeat 2 of 3, downloading, errors)
   const hs=$("hmStat"),isVerse=!err&&CUR&&(/ · Ayah \d+$/.test(t)||CUR.intro.some(x=>x.en===t));
@@ -1777,8 +1856,8 @@ function status(t,s,err){$("nowT").textContent=t;const sp=$("nowS");sp.textConte
 function highlight(item){
   document.querySelectorAll(".v.now").forEach(e=>e.classList.remove("now"));
   P.cur=item;if(item==null){renderNow();return;}const li=document.querySelector(`.v[data-item="${item}"]`);
-  if(li){li.classList.add("now");if(S.follow&&$("car").hidden&&!$("versesW").hidden)li.scrollIntoView({block:"center",behavior:"smooth"});}
-  renderCar();renderNow();markPage();followPage();
+  if(li){li.classList.add("now");if(S.follow&&$("car").hidden&&!$("versesW").hidden&&rdView()==="ayah")li.scrollIntoView({block:"center",behavior:"smooth"});}
+  renderCar();renderNow();markPage();followPage();renderRdPlay();
 }
 function describe(e){
   if(e.intro)return[CUR.intro[e.item].en,NAMES[CUR.num-1]];
@@ -2073,7 +2152,7 @@ function renderNow(){
   $("hmVn").textContent=isIntro?CUR.intro[item].en:`Ayah ${v}`;
   const ar=$("hmAr"),vt=isIntro?(CUR.intro[item].ar||CUR.intro[item].en):verseText(CUR,v);
   ar.textContent=vt||String(v);ar.classList.toggle("plain",!vt);
-  const M=!isIntro&&CUR.meal&&S.meal!=="off"&&CUR.meal[S.meal],mt=M?(M.v[v-1]||""):"",tr=$("hmTr");tr.textContent=mt;tr.hidden=!mt;
+  const mt=!isIntro&&S.showMeal?mealAny(CUR.num,v):"",tr=$("hmTr");tr.textContent=mt;tr.hidden=!mt;
   $("hmPos").textContent=isIntro?`Before ayah 1 of ${n}`:`Ayah ${v} of ${n}`;
   $("hmVerse").classList.remove("peek");renderTicks();fitNow();
 }
@@ -2103,8 +2182,12 @@ function pageAyahs(p){const[s0,a0]=PAGES[p],e=p<PAGES.length-1?PAGES[p+1]:[115,1
   for(let n=s0;n<=Math.min(114,e[0]);n++){const from=n===s0?a0:1,to=n===e[0]?e[1]-1:COUNTS[n-1];for(let v=from;v<=to;v++)L.push([n,v]);}return L;}
 const pageLabel=p=>p===0?"Al-Fatihah":`Page ${p}`;
 function ayahText(n,v){if(TXT[n])return TXT[n].v[v-1].t;const r=CUR&&CUR.num===n?CUR:libBy(n)[0];return r&&r.text?r.text[v-1]:null;}
-function mealText(n,v){if(S.meal==="off")return"";const r=CUR&&CUR.num===n?CUR:libBy(n)[0];if(r&&r.meal&&r.meal[S.meal])return r.meal[S.meal].v[v-1]||"";
+// the meaning of one ayah in the chosen translation (whether or not meanings are shown)
+function mealAny(n,v){
+  if(S.meal==="ab"){if(BUL[n])return BUL[n][v-1]||"";ensureBulac(n);return"";}
+  const r=CUR&&CUR.num===n?CUR:libBy(n)[0];if(r&&r.meal&&r.meal[S.meal])return r.meal[S.meal].v[v-1]||"";
   if(TXT[n]){const x=TXT[n].v[v-1];return(S.meal==="au"?x.au:x.sy)||x.sy||"";}return"";}
+const mealText=(n,v)=>S.showMeal?mealAny(n,v):"";
 const curAyah=()=>Math.max(1,nowItem()-nIntro(CUR)+1);
 let SAVE_T=null;const saveSoon=()=>{clearTimeout(SAVE_T);SAVE_T=setTimeout(save,700);};
 if(!S.read||typeof S.read!=="object")S.read={view:"ayah",page:null,num:null,v:1};
@@ -2128,9 +2211,7 @@ function setTab(t){
 document.querySelectorAll("#tabs button[data-tab]").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 document.body.dataset.tab="listen";
 // the small player can be hidden to see the whole page
-function renderDock(){const t=document.body.dataset.tab,off=!!S.dockOff;document.body.classList.toggle("dock-off",off);$("dockShow").hidden=!off||t==="listen"||t==="study"||!CUR;}
-$("dockHide").onclick=()=>{S.dockOff=true;save();renderDock();};
-$("dockShow").onclick=()=>{S.dockOff=false;save();renderDock();};
+function renderDock(){document.body.classList.remove("dock-off");}
 
 // ---------- going to a surah / ayah from anywhere ----------
 function gotoAyah(n,v,opt={}){
@@ -2151,10 +2232,17 @@ function gotoAyah(n,v,opt={}){
 
 // ---------- Read: ayah by ayah, or page by page ----------
 // while audio plays in page view, turn the page when the ayah being played is on the next one
-function followPage(){if(!P.playing||!S.follow||$("versesW").hidden||rdView()!=="page"||!CUR)return;const p=pageOf(CUR.num,curAyah());if(p!==S.read.page){S.read.page=p;renderPage();}}
+function followPage(){
+  if(!P.playing||$("versesW").hidden||!CUR)return;const v=curAyah();
+  if(S.read.num!==CUR.num||S.read.v!==v){S.read.num=CUR.num;S.read.v=v;saveSoon();}
+  if(rdView()!=="page"||!S.follow)return;const p=pageOf(CUR.num,v);if(p!==S.read.page){S.read.page=p;renderPage();}else markPage(true);}
 const rdView=()=>S.read.view==="page"?"page":"ayah";
 function openVerses(){
   $("versesW").hidden=false;markTabs();applyRdView(true);
+}
+function refreshRead(){
+  if(rdView()==="page"){if((S.read.page||0)!==RD_LASTP)renderPage();else{renderRdHead();markPage(P.playing);}}
+  else{renderRdHead();$("vwBody").scrollTop=0;}renderMark();
 }
 function closeVerses(){if($("versesW").hidden)return;$("versesW").hidden=true;markTabs();}
 function applyRdView(restore){
@@ -2179,7 +2267,7 @@ $("vwBody").addEventListener("scroll",()=>{clearTimeout(RD_T);RD_T=setTimeout(()
   if($("versesW").hidden||rdView()!=="ayah"||!CUR)return;const top=$("vwBody").getBoundingClientRect().top;
   const li=[...document.querySelectorAll("#verses .v[data-v]")].find(x=>x.getBoundingClientRect().bottom>top+30);if(!li)return;
   const v=+li.dataset.v;if(S.read.num!==CUR.num||S.read.v!==v){S.read.num=CUR.num;S.read.v=v;S.read.page=pageOf(CUR.num,v);saveSoon();renderMark();}},350);},{passive:true});
-let RD_T=null,PG_TOK=0;
+let RD_T=null,PG_TOK=0,RD_LASTP=-1;
 async function renderPage(){
   const p=S.read.page=Math.max(0,Math.min(604,S.read.page|0)),tok=++PG_TOK,L=pageAyahs(p),body=$("pgBody");
   if(!S.read.num||pageOf(S.read.num,S.read.v)!==p){const f=(CUR&&L.find(x=>x[0]===CUR.num))||L[0];S.read.num=f[0];S.read.v=f[1];}saveSoon();
@@ -2191,24 +2279,63 @@ async function renderPage(){
     for(const n of need){const t=await getText(n);if(tok!==PG_TOK)return;if(!t){body.innerHTML='<div class="pg-load">Connect to the internet once to load this page.</div>';return;}}
     LIB.forEach(r=>{if(!r.hasHerkul&&TXT[r.num])mergeText(r,TXT[r.num]);});}
   if(tok!==PG_TOK)return;
-  body.innerHTML="";body.scrollTop=0;let para=null;
+  if(S.showMeal&&S.meal==="ab")[...new Set(L.map(x=>x[0]))].forEach(n=>{if(!BUL[n])ensureBulac(n);});
+  const keep=RD_LASTP===p?body.scrollTop:0;RD_LASTP=p;
+  body.innerHTML="";let para=null;
   for(const[n,v]of L){
     if(v===1){const h=el("div","pg-sh");h.append(el("div","ar",TXT[n]&&TXT[n].ar?"سورة "+TXT[n].ar:NAMES[n-1]),el("small",null,`${n} · ${NAMES[n-1]} · ${COUNTS[n-1]} ayahs`));body.appendChild(h);
       if(n!==1&&n!==9)body.appendChild(el("div","pg-bs",KNOWN[0].bismillah));para=null;}
     if(!para){para=el("p","pg-txt");body.appendChild(para);}
-    const sp=el("span","pg-a",ayahText(n,v)||"");sp.dataset.s=n;sp.dataset.v=v;sp.append(" ",el("span","pg-m",arNum(v)));para.append(sp," ");
+    const sp=el("span","pg-a",ayahText(n,v)||"");sp.dataset.s=n;sp.dataset.v=v;const mk=el("span","pg-m");
+    mk.innerHTML=`<svg viewBox="0 0 40 40" aria-hidden="true"><use href="#star"/></svg><b>${arNum(v)}</b>`;sp.append(" ",mk);para.append(sp," ");
   }
-  if(S.pgMeal&&S.meal!=="off"){const m=el("div","pg-meal"),multi=new Set(L.map(x=>x[0])).size>1;
+  if(S.showMeal){const m=el("div","pg-meal"),multi=new Set(L.map(x=>x[0])).size>1;
     for(const[n,v]of L){const t=mealText(n,v);if(!t)continue;const q=el("p");q.append(el("b",null,multi?`${n}:${v}`:String(v)),t);m.appendChild(q);}if(m.children.length)body.appendChild(m);}
-  markPage();
+  body.scrollTop=keep;markPage(P.playing&&S.follow);
 }
-function markPage(){if($("pgView").hidden||!CUR)return;const v=curAyah();
+// mark the ayah being read; while playing, keep it in view (scroll down as it reads, also for the last lines)
+function markPage(scroll){if($("pgView").hidden||!CUR)return;const v=curAyah();
   document.querySelectorAll("#pgBody .pg-a.now").forEach(e=>e.classList.remove("now"));
-  const e=document.querySelector(`#pgBody .pg-a[data-s="${CUR.num}"][data-v="${v}"]`);if(e)e.classList.add("now");}
+  const e=document.querySelector(`#pgBody .pg-a[data-s="${CUR.num}"][data-v="${v}"]`);if(!e)return;e.classList.add("now");
+  if(scroll)keepInView(e);}
+function keepInView(e){
+  const b=$("pgBody"),br=b.getBoundingClientRect(),rs=e.getClientRects();if(!rs.length)return;
+  const top=rs[0].top-br.top+b.scrollTop,bot=rs[rs.length-1].bottom-br.top+b.scrollTop,view=b.clientHeight;
+  if(top>=b.scrollTop+8&&bot<=b.scrollTop+view-8)return;
+  const want=bot-top<view*0.7?top-view*0.25:top-12;
+  b.scrollTo({top:Math.max(0,Math.min(want,b.scrollHeight-view)),behavior:"smooth"});}
 function pageGo(d){S.read.page=Math.max(0,Math.min(604,(S.read.page||0)+d));renderPage();}
 $("pgNext").onclick=()=>pageGo(1);$("pgPrev").onclick=()=>pageGo(-1);
 $("pgNum").onclick=()=>openPicker("juz",true);
-$("pgBody").addEventListener("click",e=>{const a=e.target.closest(".pg-a");if(!a)return;gotoAyah(+a.dataset.s,+a.dataset.v,{page:S.read.page,stay:true});});
+$("pgBody").addEventListener("click",e=>{const a=e.target.closest(".pg-a");if(!a)return;openAyahCard(+a.dataset.s,+a.dataset.v,a);});
+const AD={n:0,v:0,meal:false,el:null};
+function openAyahCard(n,v,elx){
+  document.querySelectorAll("#pgBody .pg-a.sel").forEach(x=>x.classList.remove("sel"));if(elx)elx.classList.add("sel");
+  Object.assign(AD,{n,v,meal:false,el:elx});renderAyahCard();openSheet("ayahDlg");
+}
+function renderAyahCard(){
+  const{n,v}=AD,rec=n===CUR.num&&!CUR.noAudio?CUR:pickNum(n);
+  $("adTitle").textContent=`${NAMES[n-1]} · ayah ${v}`;$("adAr").textContent=ayahText(n,v)||"";
+  const pb=$("adPlay");pb.disabled=!rec;pb.querySelector("span").textContent=rec?(P.playing&&CUR.num===n&&curAyah()===v?"Pause":"Play"):"No audio yet";
+  const mb=$("adMealBtn");mb.setAttribute("aria-pressed",AD.meal);const box=$("adMeal");box.hidden=!AD.meal;
+  if(AD.meal){const t=mealAny(n,v);box.textContent=t||(S.meal==="ab"?"Loading the meaning…":"The meaning isn't loaded yet. Connect to the internet once.");if(t)box.appendChild(el("small",null,MEAL_NAMES[S.meal]||""));}
+  const sb=$("adStudy");sb.disabled=false;sb.textContent="Kelime tahlili";$("adNote").hidden=true;
+  loadStudy(n).then(d=>{if(AD.n!==n)return;if(!d){sb.disabled=true;$("adNote").textContent="Kelime tahlili isn't ready for this surah yet.";$("adNote").hidden=false;}});
+}
+$("ayahDlg").addEventListener("close",()=>{if(AD.el)AD.el.classList.remove("sel");});
+$("adMealBtn").onclick=()=>{AD.meal=!AD.meal;renderAyahCard();};
+$("adPlay").onclick=()=>{const{n,v}=AD;
+  if(P.playing&&CUR.num===n&&curAyah()===v){pause();renderAyahCard();return;}
+  $("ayahDlg").close();gotoAyah(n,v,{page:S.read.page,stay:true});unlock();play();};
+$("adStudy").onclick=()=>{const{n,v}=AD;$("ayahDlg").close();gotoAyah(n,v,{page:S.read.page,stay:true});setTab("study");loadStudy(n).then(d=>{if(d&&CUR.num===n)openStudy(v);});};
+// play / pause in the Read header (starts at the ayah you are reading)
+function renderRdPlay(){const b=$("rdPlay");if(!b)return;const on=!!P.playing;$("rdPlayUse").setAttribute("href",on?"#i-pause":"#i-play");b.setAttribute("aria-label",on?"Pause":"Play");}
+$("rdPlay").onclick=()=>{
+  if(P.playing){pause();return;}
+  const n=S.read.num||CUR.num,v=S.read.v||1,rec=n===CUR.num&&!CUR.noAudio?CUR:pickNum(n);
+  if(!rec){toast(`Audio is not available yet for ${NAMES[n-1]}.`);return;}
+  if(CUR.num!==n||curAyah()!==v)gotoAyah(n,v,{page:S.read.page,stay:true});
+  unlock();play();};
 (()=>{let x0=null,y0=null;const b=$("pgBody");b.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
   b.addEventListener("touchend",e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;x0=null;
     if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6)pageGo(dx>0?1:-1);},{passive:true});})();
@@ -2227,8 +2354,8 @@ function goMark(b){try{$("readDlg").close();}catch(e){}if(curTab()!=="read")setT
   if(b.kind==="page"){S.read.view="page";S.read.page=b.page;gotoAyah(b.num,b.v,{page:b.page});applyRdView();}
   else gotoAyah(b.num,b.v);}
 function renderReadDlg(){
-  setSeg("rdView2",rdView());$("pgMeal").checked=!!S.pgMeal;
-  $("rdTextS").textContent=`${S.arSize} px · ${["Regular","Medium","Bold","Extra bold"][S.arWeight]||""} · ${S.meal==="off"?"meaning hidden":"Turkish meaning shown"}`;
+  setSeg("rdView2",rdView());$("pgMeal").checked=!!S.showMeal;
+  $("rdTextS").textContent=`${S.arSize} px · ${["Regular","Medium","Bold","Extra bold"][S.arWeight]||""} · ${MEAL_NAMES[S.meal]||(CUR&&CUR.meal&&CUR.meal[S.meal]?CUR.meal[S.meal].name:"")}`;
   const row=(b,box,rm)=>{const d=el("div","bm-row"),g=el("button","go");g.type="button";g.append(el("b",null,bmTitle(b)),el("span",null,bmSub(b)));g.onclick=()=>goMark(b);d.appendChild(g);
     if(rm){const x=el("button","x","×");x.type="button";x.setAttribute("aria-label","Remove bookmark");x.onclick=()=>{S.bm=S.bm.filter(y=>y!==b);save();renderReadDlg();renderMark();};d.appendChild(x);}box.appendChild(d);};
   const L=$("rdLast");L.innerHTML="";const r=S.read;
@@ -2237,7 +2364,7 @@ function renderReadDlg(){
   const B=$("rdBms");B.innerHTML="";S.bm.forEach(b=>row(b,B,true));if(!S.bm.length)B.appendChild(el("div","bm-none","Tap the bookmark at the top to keep your place."));
 }
 $("rdSet").onclick=()=>{renderReadDlg();openSheet("readDlg");};
-$("pgMeal").onchange=e=>{S.pgMeal=e.target.checked;save();if(rdView()==="page")renderPage();};
+$("pgMeal").onchange=e=>{S.showMeal=e.target.checked;save();renderVerses();if(P.cur!=null)highlight(P.cur);renderNow();if(rdView()==="page")renderPage();renderReadDlg();};
 function openText(){$("textPreview").textContent=CUR&&CUR.text?CUR.text.slice(0,2).join(" "):"وَالْفَجْرِۙ وَلَيَالٍ عَشْرٍۙ";openSheet("textDlg");}
 $("rdText").onclick=()=>{$("readDlg").close();openText();};
 $("rdTitleBtn").onclick=()=>openPicker(rdView()==="page"?"juz":"surah");
@@ -2274,7 +2401,7 @@ function selectSurah(id){
   stop();CUR=s;S.cur=s.id;P.cur=null;
   if(S._last!==s.id){S.scope="surah";S.from=1;S.to=COUNTS[s.num-1];S._last=s.id;}
   if(!GOTO&&!BOOT&&S.read.num!==s.num){S.read.num=s.num;S.read.v=1;S.read.page=pageOf(s.num,1);}
-  save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();renderNow();if(!$("car").hidden)renderCar();$("vwBody").scrollTop=0;if(!$("versesW").hidden)openVerses();
+  save();loadMem();fillSelectors();fillMeal();renderHeader();renderPicker();renderVerses();syncUI();updateMemo();closeEditor();renderNow();if(!$("car").hidden)renderCar();if(!$("versesW").hidden)refreshRead();
   if(!s.noAudio){if(!s.src&&ONL.on)ensureAudio(s).catch(()=>{});setTimeout(()=>decodeSurah(s),50);}ensureText(s);refreshStudy(s);
 }
 function changed(reset){save();syncUI();if(reset&&P.key!==listKey()){const was=P.playing;stop();if(was)play();}}
@@ -2284,7 +2411,7 @@ $("vrep").onchange=e=>{S.vrep=e.target.value;changed(true);};
 $("rrep").onchange=e=>{S.rrep=e.target.value;changed(false);};
 $("gap").onchange=e=>{S.gap=e.target.value;changed(false);};
 $("speed").onchange=e=>{S.speed=e.target.value;changed(false);};
-$("meal").onchange=e=>{S.meal=e.target.value;save();renderVerses();if(P.cur!=null)highlight(P.cur);renderNow();if(curTab()==="read"&&rdView()==="page")renderPage();};
+$("meal").onchange=e=>{S.meal=e.target.value;save();renderVerses();if(P.cur!=null)highlight(P.cur);renderNow();if(curTab()==="read"&&rdView()==="page")renderPage();if($("readDlg").open)renderReadDlg();};
 $("intro").onchange=e=>{S.intro=e.target.checked;changed(true);};
 $("hideTxt").onchange=e=>{S.hide=e.target.checked;changed(false);};
 $("follow").onchange=e=>{S.follow=e.target.checked;changed(false);};
@@ -3001,14 +3128,13 @@ let CS0="";
 function openCarSet(){CS0=listKey()+"#"+renKey();renderCarSet();$("carSetP").hidden=false;}
 function closeCarSet(){$("carSetP").hidden=true;if(P.playing&&listKey()+"#"+renKey()!==CS0){stop();play();}renderCar();}
 function renderCarSet(){
-  document.querySelectorAll("#carSetP .cs-chips").forEach(g=>{const k=g.dataset.k;let v=k==="mealOn"?(S.meal==="off"?"0":"1"):String(S[k]);if(k==="scope"&&v==="verse")v="range";
+  document.querySelectorAll("#carSetP .cs-chips").forEach(g=>{const k=g.dataset.k;let v=k==="mealOn"?(S.showMeal?"1":"0"):String(S[k]);if(k==="scope"&&v==="verse")v="range";
     g.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===v));});
   const[a,b]=range();$("csRange").hidden=S.scope==="surah";$("csFrom").textContent=a;$("csTo").textContent=b;
-  $("carSetP").querySelector('[data-k="mealOn"]').parentElement.hidden=!CUR.meal;
+  $("carSetP").querySelector('[data-k="mealOn"]').parentElement.hidden=false;
 }
 document.querySelectorAll("#carSetP .cs-chips button").forEach(b=>b.onclick=e=>{e.stopPropagation();const k=b.parentElement.dataset.k,v=b.dataset.v;
-  if(k==="mealOn"){if(v==="0"){if(S.meal!=="off")S._meal=S.meal;S.meal="off";}else{const keys=CUR.meal?Object.keys(CUR.meal):[];S.meal=keys.includes(S._meal)?S._meal:(["sy","au","hamdi","diyanet"].find(x=>keys.includes(x))||"off");}
-    $("meal").value=S.meal;renderVerses();if(P.cur!=null)highlight(P.cur);}
+  if(k==="mealOn"){S.showMeal=v==="1";renderVerses();if(P.cur!=null)highlight(P.cur);renderNow();}
   else if(k==="scope"){if(v==="range"){const[a,c]=range();S.from=a;S.to=c;}S.scope=v;}
   else{S[k]=v;if(k==="rrep"){applyLoop();renderCarLoop();}}
   save();syncUI();renderCarSet();});
@@ -3520,7 +3646,7 @@ async function boot(){
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,S,P,ENG,FIX,ONL,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,selectSurah,gotoAyah,S,P,ENG,FIX,ONL,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
