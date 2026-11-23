@@ -2677,10 +2677,15 @@ $("addForm").addEventListener("submit",async e=>{
   $("addGo").disabled=true;$("addMsg").textContent=TM?"Reading the recording…":"Listening for the pauses between ayahs…";
   try{
     const buf=await f.arrayBuffer();
-    const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
-    const ab=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(buf.slice(0),res,rej);if(p&&p.then)p.then(res,rej);});try{ctx.close();}catch(x){}
+    // A whole long surah (Al-Baqarah is about 2 hours) is far too big to decode on a phone, so with a timings
+    // file only the length is read; without one, long recordings can't be analysed here.
+    const dur=await fileDuration(f,TM);let ab=null;
+    if(!TM){
+      if(dur>1500){$("addMsg").textContent=`This recording is ${Math.round(dur/60)} minutes long, too long for the app to find the ayahs by itself. Add it with an ayah timings file (see the AI prompt).`;$("addGo").disabled=false;return;}
+      const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
+      ab=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(buf.slice(0),res,rej);if(p&&p.then)p.then(res,rej);});try{ctx.close();}catch(x){}}
     let K=TM?null:KNOWN.find(k=>k.num===num&&Math.abs(ab.duration-k.dur)<1.0),B=null,LK=[];
-    if(TM){let R;try{R=timingsToB(TM,num,ab.duration);}catch(err){$("addMsg").textContent="The timings file: "+err.message;$("addGo").disabled=false;return;}
+    if(TM){let R;try{R=timingsToB(TM,num,dur||TM.duration||0);}catch(err){$("addMsg").textContent="The timings file: "+err.message;$("addGo").disabled=false;return;}
       B=R.B;introN=R.code;LK=R.L;}
     let L=null;if(!K&&!TM){$("addMsg").textContent="Loading the Arabic text to place the cuts…";const tt0=await getText(num);if(tt0){const I=[KNOWN[0].istiadha,KNOWN[0].bismillah],ii=introOf(introN,I);L=[...ii.map(letterCount),...tt0.v.map(x=>letterCount(x.t))];}$("addMsg").textContent="Listening for the pauses between ayahs…";}
     if(!B)B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introOf(introN,[0,0]).length,L);
@@ -2691,7 +2696,7 @@ $("addForm").addEventListener("submit",async e=>{
     if(TM)status("Surah added with your timings",`${COUNTS[num-1]} ayahs placed from the timings file. Press play.`);
     else if(K)status("Recording recognised","Ayah cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few ayahs to check the cuts. Use “Fix ayah timings” for any that are off.");
-  }catch(err){$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah.";$("addGo").disabled=false;}
+  }catch(err){console.error(err);$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah."+(err&&err.message?` (${err.message})`:"");$("addGo").disabled=false;}
 });
 // ---------- ayah timings from a file (made by an AI chat, by hand, or as Audacity labels) ----------
 // Accepted: the JSON described in the README / AI prompt, CSV or TSV lines "ayah,start,end",
@@ -2702,6 +2707,7 @@ function parseTime(t){
   const m=t.match(/^(\d+):(\d{1,2})(?::(\d{1,2}))?(\.\d+)?$/);if(!m)return NaN;
   const a=+m[1],b=+m[2],c=m[3]!=null?+m[3]:null,f=m[4]?+m[4]:0;return c!=null?a*3600+b*60+c+f:a*60+b+f;
 }
+const fmtDur=t=>{t=Math.round(t);const h=Math.floor(t/3600),m=Math.floor(t%3600/60),x=t%60;return h?`${h}:${String(m).padStart(2,"0")}:${String(x).padStart(2,"0")}`:`${m}:${String(x).padStart(2,"0")}`;};
 const isTimeTok=t=>/^\d+(?:[.,]\d+)?$|^\d+:\d{1,2}(?::\d{1,2})?(?:[.,]\d+)?$/.test(String(t).trim());
 function labelKey(t){
   const x=String(t).trim().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
@@ -2712,11 +2718,11 @@ function labelKey(t){
 }
 function parseTimings(text){
   text=String(text).replace(/^\uFEFF/,"").trim();if(!text)throw new Error("it is empty.");
-  let surah=null;const E=[];
+  let surah=null,duration=null;const E=[];
   const push=(k,a,b)=>{const st=parseTime(a),en=b==null||b===""?NaN:parseTime(b);if(k==null||!isFinite(st))return;E.push({k,s:st,e:en});};
   if(/^[\[{]/.test(text)){
     let j;try{j=JSON.parse(text);}catch(e){throw new Error("it isn't valid JSON ("+e.message+").");}
-    const o=Array.isArray(j)?{ayahs:j}:j;surah=+(o.surah??o.sura??o.surah_number??o.chapter)||null;
+    const o=Array.isArray(j)?{ayahs:j}:j;surah=+(o.surah??o.sura??o.surah_number??o.chapter)||null;duration=+o.duration||null;
     const it=o.intro||{};
     for(const k of["istiadha","bismillah"]){const x=it[k]??o[k];if(x){if(Array.isArray(x))push(k,x[0],x[1]);else push(k,x.start??x.from,x.end??x.to);}}
     const A=o.ayahs||o.verses||o.timings||o.segments||[];
@@ -2738,12 +2744,15 @@ function parseTimings(text){
     }
   }
   if(!E.length)throw new Error("no ayah times found in it.");
-  return{surah,E};
+  return{surah,duration,E};
 }
 // turn parsed times into the app's cut list (one boundary between each part), checking everything
 function timingsToB(T,num,dur){
   if(T.surah&&T.surah!==num)throw new Error(`it is for surah ${T.surah} (${NAMES[T.surah-1]||"?"}), but you chose ${num} (${NAMES[num-1]}).`);
-  const n=COUNTS[num-1],tol=1.5;
+  const n=COUNTS[num-1];
+  if(!(dur>0)){const L=T.E.reduce((m,x)=>Math.max(m,isFinite(x.e)?x.e:x.s),0);dur=T.duration||L+1;}   // length unknown: trust the file
+  if(T.duration&&Math.abs(T.duration-dur)>Math.max(5,dur*0.03))throw new Error(`it was made for a recording of ${fmtDur(T.duration)}, but this MP3 is ${fmtDur(dur)}. Is it the same MP3?`);
+  const tol=Math.max(1.5,dur*0.01);
   const iS=T.E.find(x=>x.k==="istiadha"),bS=num===1?null:T.E.find(x=>x.k==="bismillah");
   const seen=new Map();for(const x of T.E)if(typeof x.k==="number"){if(x.k<1||x.k>n)throw new Error(`it has ayah ${x.k}, but ${NAMES[num-1]} has ${n} ayahs.`);if(seen.has(x.k))throw new Error(`ayah ${x.k} is listed twice.`);seen.set(x.k,x);}
   const miss=[];for(let v=1;v<=n;v++)if(!seen.has(v))miss.push(v);
@@ -2758,12 +2767,19 @@ function timingsToB(T,num,dur){
   const B=[Math.max(0,items[0].s-0.05)];
   for(let i=1;i<items.length;i++){const pe=items[i-1].e,st=items[i].s;
     const b=isFinite(pe)&&pe<st?st-Math.min(0.25,(st-pe)/2):st;B.push(Math.round(Math.max(b,B[i-1]+0.05)*100)/100);}
-  B.push(Math.round(Math.min(dur,isFinite(last.e)?last.e+0.35:dur)*100)/100);
+  B.push(Math.round((isFinite(last.e)?Math.min(last.e+0.35,dur+tol):dur)*100)/100);
   const code=iS&&bS?2:bS?1:iS?3:0;
   // every imported cut counts as checked, so fixing one ayah later doesn't move the others
   const L=[];for(let k=1;k<B.length-1;k++)L.push(k);
   return{B,code,L};
 }
+// length of an audio file without decoding it (the browser reads only the header)
+function fileDuration(f,TM){return new Promise(res=>{const u=URL.createObjectURL(f),a=new Audio();let done=false;
+  const fin=d=>{if(done)return;done=true;clearTimeout(t);try{a.removeAttribute("src");a.load();}catch(e){}URL.revokeObjectURL(u);
+    res(isFinite(d)&&d>0?d:(TM&&TM.duration)||0);};
+  const t=setTimeout(()=>fin(a.duration),15000);a.preload="metadata";
+  a.onloadedmetadata=()=>{if(isFinite(a.duration))fin(a.duration);else{a.ontimeupdate=()=>{if(isFinite(a.duration))fin(a.duration);};try{a.currentTime=1e7;}catch(e){fin(NaN);}}};
+  a.onerror=()=>fin(NaN);a.src=u;});}
 // load the recording's length (works for long surahs too)
 function audioDur(s){return new Promise(async res=>{try{if(!s.src)await ensureAudio(s);const a=new Audio();a.preload="metadata";
   a.onloadedmetadata=()=>res(isFinite(a.duration)?a.duration:s.B[s.B.length-1]);a.onerror=()=>res(s.B[s.B.length-1]);a.src=s.src;}catch(e){res(s.B[s.B.length-1]);}});}
