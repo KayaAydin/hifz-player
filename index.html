@@ -959,7 +959,12 @@ body:not(.dock-off) .vw .pg-foot{margin-bottom:82px}
 .bm-row button.go b{font-size:16px;font-weight:600}.bm-row button.go span{font-size:13.5px;color:var(--muted)}
 .bm-row .x{width:40px;height:40px;border-radius:50%;color:var(--muted);font-size:20px}
 .bm-none{font-size:14.5px;color:var(--muted);padding:6px 0}
-#practiceDlg #fixBtn2{position:relative;align-self:stretch}
+#practiceDlg #fixBtn2{position:relative}
+.sheet-in>*{flex-shrink:0}
+.imp-row{flex-wrap:nowrap}.imp-row .btn{flex:1;min-width:0;padding-inline:10px}
+.imp-box{border-radius:18px;background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.imp-box p{margin:0;font-size:15px;line-height:1.5}
+#addAyahList{align-self:flex-start;padding:4px 0;font-size:14.5px}
 #fixBtn2 .dot{position:absolute;top:10px;right:16px;width:9px;height:9px;border-radius:50%;background:transparent}
 #fixBtn2.warn .dot{background:var(--warn)}
 .study-empty{margin:auto;max-width:330px;text-align:center;display:flex;flex-direction:column;gap:12px;align-items:center;padding:40px 10px;color:var(--muted)}
@@ -1448,7 +1453,9 @@ body .vw .pg-foot{margin-bottom:0!important}
       <label class="tg"><span>Continue to the next surah<small>When a whole surah is played once, go on to your next surah</small></span><span class="sw"><input type="checkbox" id="autoNext"><i></i></span></label>
       <label class="tg"><span>Follow along<small>Keep the ayah being played in view when reading</small></span><span class="sw"><input type="checkbox" id="follow"><i></i></span></label>
     </div>
-    <button class="btn secondary adm" id="fixBtn2" type="button">Fix ayah timings<i class="dot"></i></button>
+    <div class="erow adm imp-row"><button class="btn secondary" id="fixBtn2" type="button">Fix ayah timings<i class="dot"></i></button><button class="btn secondary" id="impBtn" type="button">Import timings…</button></div>
+    <input type="file" id="impFile" accept=".json,.txt,.csv,.tsv,application/json,text/plain,text/csv" hidden>
+    <div class="imp-box adm" id="impBox" hidden><p id="impMsg"></p><div class="erow"><button class="btn small" id="impGo" type="button">Replace the cuts</button><button class="btn small secondary" id="impCancel" type="button">Cancel</button></div></div>
   </div>
 </dialog>
 
@@ -1506,9 +1513,12 @@ body .vw .pg-foot{margin-bottom:0!important}
     <p class="hint">Choose the MP3 of one full surah from Files. The app finds the pauses between ayahs; you can fix any cut afterwards.</p>
     <div class="field"><label class="lbl" for="addSurah">Surah</label><select id="addSurah"></select></div>
     <div class="field"><label class="lbl" for="addIntro">Recording starts with</label>
-      <select id="addIntro"><option value="2">Isti'adha, then Bismillah</option><option value="1">Bismillah</option><option value="0">The first ayah</option></select></div>
+      <select id="addIntro"><option value="2">Isti'adha, then Bismillah</option><option value="1">Bismillah</option><option value="3">Isti'adha only (At-Tawbah)</option><option value="0">The first ayah</option></select></div>
     <div class="field"><label class="lbl" for="addReciter">Reciter</label><input class="txtin" id="addReciter" list="reciterList" placeholder="e.g. Yasser Al-Dosari" autocomplete="off"><datalist id="reciterList"></datalist></div>
     <div class="field"><label class="lbl" for="addFile">Audio file</label><input type="file" id="addFile"></div>
+    <div class="field"><label class="lbl" for="addTimes">Ayah timings (optional)</label><input type="file" id="addTimes" accept=".json,.txt,.csv,.tsv,application/json,text/plain,text/csv">
+      <p class="hint">A timings file for this MP3, for example from an AI chat. Without it, the app finds the cuts itself.</p>
+      <button class="linkbtn" id="addAyahList" type="button">Ayah list to give the AI with the MP3</button></div>
     <p class="hint" id="addMsg"></p>
     <button class="btn" type="submit" id="addGo">Add surah</button>
   </form>
@@ -2384,7 +2394,7 @@ $("hPlay").onclick=()=>$("playBtn").click();$("hPrev").onclick=()=>$("prevBtn").
 $("loopBtn").onclick=()=>{S.rrep=S.rrep==="1"?"0":"1";save();applyLoop();renderCarLoop();$("rrep").value=S.rrep;practiceSummary();toast(S.rrep==="1"?"Repeat off":"Repeat on: the selection plays again until you stop it");};
 $("emptyMenu").onclick=()=>$("menuBtn").click();
 function renderTiles(){if(!CUR)return;
-  const sus=CUR.noAudio?0:suspicious().size;$("fixBtn2").hidden=!!CUR.noAudio;$("fixBtn2").classList.toggle("warn",!!sus);$("fixBtn2").firstChild.textContent=sus?`Fix ayah timings · ${sus} to check`:"Fix ayah timings";
+  const sus=CUR.noAudio?0:suspicious().size;$("fixBtn2").hidden=!!CUR.noAudio;$("impBtn").hidden=!!CUR.noAudio;$("fixBtn2").classList.toggle("warn",!!sus);$("fixBtn2").firstChild.textContent=sus?`Fix ayah timings · ${sus} to check`:"Fix ayah timings";
   if(!$("versesW").hidden&&rdView()==="ayah")renderRdHead();}
 $("textBtn").onclick=()=>{$("menuDlg").close();openText();};
 $("arSize").oninput=e=>{S.arSize=+e.target.value;save();applyText();};
@@ -2655,29 +2665,135 @@ $("pickManage").onclick=()=>{$("mgHint").textContent="";openSheet("manageDlg");r
 
 // ---------- adding a surah from the phone ----------
 for(let i=1;i<=114;i++)$("addSurah").add(new Option(`${i} · ${NAMES[i-1]}`,i));$("addSurah").value="89";
-function openAdd(){$("addMsg").textContent="";$("addFile").value="";$("addGo").disabled=false;fillReciterList();$("addReciter").value=ls.get("hifz-lastReciter","");if(CUR&&CUR.noAudio)$("addSurah").value=String(CUR.num);openSheet("addDlg");}
+function openAdd(){$("addMsg").textContent="";$("addFile").value="";$("addTimes").value="";$("addGo").disabled=false;fillReciterList();$("addReciter").value=ls.get("hifz-lastReciter","");if(CUR&&CUR.noAudio)$("addSurah").value=String(CUR.num);openSheet("addDlg");}
 $("emptyAdd").onclick=openAdd;
 $("addForm").addEventListener("submit",async e=>{
   e.preventDefault();const f=$("addFile").files[0];
   if(!f){$("addMsg").textContent="Choose an audio file first.";return;}
   if(!/^audio\//.test(f.type)&&!/\.(mp3|m4a|aac|wav|mp4|ogg|opus|flac)$/i.test(f.name)){$("addMsg").textContent="That file isn't audio. Choose the surah's MP3 (or M4A) file.";return;}
-  const num=+$("addSurah").value,introN=+$("addIntro").value;
-  $("addGo").disabled=true;$("addMsg").textContent="Listening for the pauses between ayahs…";
+  const num=+$("addSurah").value;let introN=+$("addIntro").value;
+  const tf=$("addTimes").files[0];let TM=null;
+  if(tf){try{TM=parseTimings(await tf.text());}catch(err){$("addMsg").textContent="The timings file: "+err.message;return;}}
+  $("addGo").disabled=true;$("addMsg").textContent=TM?"Reading the recording…":"Listening for the pauses between ayahs…";
   try{
     const buf=await f.arrayBuffer();
     const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
     const ab=await new Promise((res,rej)=>{const p=ctx.decodeAudioData(buf.slice(0),res,rej);if(p&&p.then)p.then(res,rej);});try{ctx.close();}catch(x){}
-    const K=KNOWN.find(k=>k.num===num&&Math.abs(ab.duration-k.dur)<1.0);
-    let L=null;if(!K){$("addMsg").textContent="Loading the Arabic text to place the cuts…";const tt0=await getText(num);if(tt0){const I=[KNOWN[0].istiadha,KNOWN[0].bismillah],ii=introN===2?I:introN===1?[I[1]]:[];L=[...ii.map(letterCount),...tt0.v.map(x=>letterCount(x.t))];}$("addMsg").textContent="Listening for the pauses between ayahs…";}
-    const B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introN,L);
+    let K=TM?null:KNOWN.find(k=>k.num===num&&Math.abs(ab.duration-k.dur)<1.0),B=null,LK=[];
+    if(TM){let R;try{R=timingsToB(TM,num,ab.duration);}catch(err){$("addMsg").textContent="The timings file: "+err.message;$("addGo").disabled=false;return;}
+      B=R.B;introN=R.code;LK=R.L;}
+    let L=null;if(!K&&!TM){$("addMsg").textContent="Loading the Arabic text to place the cuts…";const tt0=await getText(num);if(tt0){const I=[KNOWN[0].istiadha,KNOWN[0].bismillah],ii=introOf(introN,I);L=[...ii.map(letterCount),...tt0.v.map(x=>letterCount(x.t))];}$("addMsg").textContent="Listening for the pauses between ayahs…";}
+    if(!B)B=K?K.B.slice():autoSplit(ab,COUNTS[num-1]+introOf(introN,[0,0]).length,L);
     const id="u-"+num+"-"+Date.now().toString(36);
     const recName=$("addReciter").value.trim()||(K?K.reciter:"Your recording");if($("addReciter").value.trim())ls.set("hifz-lastReciter",recName);
-    const now=Date.now(),rec={id,num,reciter:recName,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),added:now,updated:now,type:f.type||"audio/mpeg"};
+    const now=Date.now(),rec={id,num,reciter:recName,introN:K?K.introN:introN,known:!!K,blob:new Blob([buf],{type:f.type||"audio/mpeg"}),B,B0:B.slice(),L:LK,added:now,updated:now,type:f.type||"audio/mpeg"};
     await idb.put(rec);const ns=fromRecord(rec);const tt=await getText(num);if(tt)mergeText(ns,tt);LIB.push(ns);$("addDlg").close();S._last=null;selectSurah(id);if(ONL.on){ONL.dirty.add(id);ls.set("hifz-dirty",[...ONL.dirty]);}scheduleSync(1000);
-    if(K)status("Recording recognised","Ayah cuts, Arabic text and meal are ready. Press play.");
+    if(TM)status("Surah added with your timings",`${COUNTS[num-1]} ayahs placed from the timings file. Press play.`);
+    else if(K)status("Recording recognised","Ayah cuts, Arabic text and meal are ready. Press play.");
     else status("Surah added","Play a few ayahs to check the cuts. Use “Fix ayah timings” for any that are off.");
   }catch(err){$("addMsg").textContent="Couldn't read that file. Try an MP3 or M4A of a single surah.";$("addGo").disabled=false;}
 });
+// ---------- ayah timings from a file (made by an AI chat, by hand, or as Audacity labels) ----------
+// Accepted: the JSON described in the README / AI prompt, CSV or TSV lines "ayah,start,end",
+// and Audacity label files "start<TAB>end<TAB>label". Times in seconds (12.34) or m:ss.xx / h:mm:ss.xx.
+function parseTime(t){
+  if(typeof t==="number")return t;t=String(t==null?"":t).trim().replace(",",".");if(!t)return NaN;
+  if(/^\d+(\.\d+)?$/.test(t))return +t;
+  const m=t.match(/^(\d+):(\d{1,2})(?::(\d{1,2}))?(\.\d+)?$/);if(!m)return NaN;
+  const a=+m[1],b=+m[2],c=m[3]!=null?+m[3]:null,f=m[4]?+m[4]:0;return c!=null?a*3600+b*60+c+f:a*60+b+f;
+}
+const isTimeTok=t=>/^\d+(?:[.,]\d+)?$|^\d+:\d{1,2}(?::\d{1,2})?(?:[.,]\d+)?$/.test(String(t).trim());
+function labelKey(t){
+  const x=String(t).trim().toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,"");
+  if(/^\d+$/.test(x))return +x;
+  if(/^(ist|euz|euzu|audhu|tawwudh|taawwudh|taawudh|aud)/.test(x))return"istiadha";
+  if(/^(bism|besm|basm|besmele)/.test(x))return"bismillah";
+  const m=x.match(/^(?:ayah|ayat|ayet|aya|verse|v)(\d+)$/);return m?+m[1]:null;
+}
+function parseTimings(text){
+  text=String(text).replace(/^\uFEFF/,"").trim();if(!text)throw new Error("it is empty.");
+  let surah=null;const E=[];
+  const push=(k,a,b)=>{const st=parseTime(a),en=b==null||b===""?NaN:parseTime(b);if(k==null||!isFinite(st))return;E.push({k,s:st,e:en});};
+  if(/^[\[{]/.test(text)){
+    let j;try{j=JSON.parse(text);}catch(e){throw new Error("it isn't valid JSON ("+e.message+").");}
+    const o=Array.isArray(j)?{ayahs:j}:j;surah=+(o.surah??o.sura??o.surah_number??o.chapter)||null;
+    const it=o.intro||{};
+    for(const k of["istiadha","bismillah"]){const x=it[k]??o[k];if(x){if(Array.isArray(x))push(k,x[0],x[1]);else push(k,x.start??x.from,x.end??x.to);}}
+    const A=o.ayahs||o.verses||o.timings||o.segments||[];
+    A.forEach((x,i)=>{
+      if(typeof x==="number"||typeof x==="string")push(i+1,x,null);
+      else if(Array.isArray(x))x.length>=3&&!isTimeTok(x[0])?push(labelKey(x[0]),x[1],x[2]):push(i+1,x[0],x[1]);
+      else if(x&&typeof x==="object"){const lab=x.ayah??x.verse??x.number??x.n??x.label??x.name??(i+1);push(labelKey(lab),x.start??x.from??x.s,x.end??x.to??x.e);}
+    });
+  }else{
+    for(const raw of text.split(/\r?\n/)){
+      const line=raw.replace(/#.*$/,"").trim();if(!line)continue;
+      if(!surah){const m=line.match(/^(?:surah|sura|sure)\s*[:=]?\s*(\d{1,3})/i);if(m){surah=+m[1];continue;}}
+      let t=line.split(/[\t,;|]+|\s{2,}|\s+(?=\d)/).map(x=>x.trim()).filter(Boolean);
+      if(t.length>1&&/^(ayah|ayet|ayat|aya|verse|âyet)$/i.test(t[0]))t=t.slice(1);
+      if(t.length<2)continue;
+      const k0=labelKey(t[0]);
+      if(k0!=null&&!/[.:]/.test(t[0])&&isTimeTok(t[1]))push(k0,t[1],t[2]&&isTimeTok(t[2])?t[2]:null);   // ayah,start,end
+      else if(isTimeTok(t[0])&&isTimeTok(t[1])&&t[2]!=null)push(labelKey(t.slice(2).join(" ")),t[0],t[1]); // Audacity: start end label
+    }
+  }
+  if(!E.length)throw new Error("no ayah times found in it.");
+  return{surah,E};
+}
+// turn parsed times into the app's cut list (one boundary between each part), checking everything
+function timingsToB(T,num,dur){
+  if(T.surah&&T.surah!==num)throw new Error(`it is for surah ${T.surah} (${NAMES[T.surah-1]||"?"}), but you chose ${num} (${NAMES[num-1]}).`);
+  const n=COUNTS[num-1],tol=1.5;
+  const iS=T.E.find(x=>x.k==="istiadha"),bS=num===1?null:T.E.find(x=>x.k==="bismillah");
+  const seen=new Map();for(const x of T.E)if(typeof x.k==="number"){if(x.k<1||x.k>n)throw new Error(`it has ayah ${x.k}, but ${NAMES[num-1]} has ${n} ayahs.`);if(seen.has(x.k))throw new Error(`ayah ${x.k} is listed twice.`);seen.set(x.k,x);}
+  const miss=[];for(let v=1;v<=n;v++)if(!seen.has(v))miss.push(v);
+  if(miss.length)throw new Error(`${miss.length} ayah${miss.length>1?"s are":" is"} missing (${miss.slice(0,8).join(", ")}${miss.length>8?"…":""}). ${NAMES[num-1]} has ${n} ayahs.`);
+  const items=[...(iS?[iS]:[]),...(bS?[bS]:[]),...Array.from({length:n},(_,i)=>seen.get(i+1))];
+  const lab=x=>typeof x.k==="number"?`ayah ${x.k}`:x.k==="istiadha"?"Isti'adha":"Bismillah";
+  for(let i=0;i<items.length;i++){const x=items[i];
+    if(x.s<0||x.s>dur+tol)throw new Error(`${lab(x)} starts at ${x.s.toFixed(2)} s, but the recording is ${dur.toFixed(1)} s long. Is it the same MP3?`);
+    if(i&&x.s<=items[i-1].s)throw new Error(`${lab(x)} starts before ${lab(items[i-1])} ends. The times must go forward.`);}
+  const last=items[items.length-1];
+  if(isFinite(last.e)&&last.e>dur+tol)throw new Error(`the last ayah ends at ${last.e.toFixed(1)} s, but the recording is ${dur.toFixed(1)} s long. Is it the same MP3?`);
+  const B=[Math.max(0,items[0].s-0.05)];
+  for(let i=1;i<items.length;i++){const pe=items[i-1].e,st=items[i].s;
+    const b=isFinite(pe)&&pe<st?st-Math.min(0.25,(st-pe)/2):st;B.push(Math.round(Math.max(b,B[i-1]+0.05)*100)/100);}
+  B.push(Math.round(Math.min(dur,isFinite(last.e)?last.e+0.35:dur)*100)/100);
+  const code=iS&&bS?2:bS?1:iS?3:0;
+  // every imported cut counts as checked, so fixing one ayah later doesn't move the others
+  const L=[];for(let k=1;k<B.length-1;k++)L.push(k);
+  return{B,code,L};
+}
+// load the recording's length (works for long surahs too)
+function audioDur(s){return new Promise(async res=>{try{if(!s.src)await ensureAudio(s);const a=new Audio();a.preload="metadata";
+  a.onloadedmetadata=()=>res(isFinite(a.duration)?a.duration:s.B[s.B.length-1]);a.onerror=()=>res(s.B[s.B.length-1]);a.src=s.src;}catch(e){res(s.B[s.B.length-1]);}});}
+const IMP={B:null,code:0,L:null};
+$("impBtn").onclick=()=>{$("impFile").value="";$("impFile").click();};
+$("impFile").onchange=async()=>{const f=$("impFile").files[0];if(!f||!CUR||CUR.noAudio)return;const box=$("impBox"),msg=$("impMsg");box.hidden=false;$("impGo").hidden=true;
+  msg.textContent="Checking the file…";
+  try{const T=parseTimings(await f.text()),dur=await audioDur(CUR),R=timingsToB(T,CUR.num,dur);Object.assign(IMP,R);
+    msg.textContent=`Replace the cuts of ${dispName(CUR)} (${CUR.reciter}) with this file? ${COUNTS[CUR.num-1]} ayahs${R.code===2?", with Isti'adha and Bismillah":R.code===1?", with Bismillah":R.code===3?", with Isti'adha":""}.`;$("impGo").hidden=false;}
+  catch(err){msg.textContent="The timings file: "+err.message;}};
+$("impCancel").onclick=()=>{$("impBox").hidden=true;IMP.B=null;};
+$("impGo").onclick=()=>{if(!IMP.B||!CUR)return;
+  const I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
+  stop();CUR.intro=introOf(IMP.code,I);CUR.B=IMP.B.slice();CUR.B0=IMP.B.slice();CUR.L=IMP.L.slice();
+  delete ENG.buf[CUR.id];delete ENG.pending[CUR.id];ENG.cache.clear();REN.key="";
+  persistB();renderVerses();syncUI();renderNow();$("impBox").hidden=true;IMP.B=null;$("practiceDlg").close();
+  toast(`Timings imported: ${COUNTS[CUR.num-1]} ayahs of ${dispName(CUR)}.`);};
+// a small file with this surah's ayahs, to give an AI chat together with the MP3
+async function ayahListFile(num,code){
+  const t=await getText(num);if(!t)throw new Error("Connect to the internet once to load this surah's text.");
+  const d={surah:num,name:NAMES[num-1],ayah_count:COUNTS[num-1],recording_starts_with:code===2?"istiadha+bismillah":code===1?"bismillah":code===3?"istiadha":"ayah 1",
+    ayahs:t.v.map((x,i)=>({ayah:i+1,letters:letterCount(x.t),text:x.t}))};
+  return new File([JSON.stringify(d,null,1)],`surah-${String(num).padStart(3,"0")}-ayahs.json`,{type:"application/json"});
+}
+$("addAyahList").onclick=async()=>{const b=$("addAyahList");b.disabled=true;
+  try{const f=await ayahListFile(+$("addSurah").value,+$("addIntro").value);
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:f.name});}catch(e){}}
+    else{const a=document.createElement("a");a.href=URL.createObjectURL(f);a.download=f.name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);}}
+  catch(err){$("addMsg").textContent=err.message;}b.disabled=false;};
+
 // ---------- finding verse cuts ----------
 // Loudness per 10 ms → pauses (dips). Cuts are then chosen so that each part's length fits the length
 // of its Arabic text (letters), which keeps one missed pause from shifting every later verse.
@@ -2727,9 +2843,12 @@ function cutRange(F,t0,t1,K,L){
   const idx=[M-1];for(let j=K-1;j>=0;j--)idx.push(back[j][idx[idx.length-1]]);idx.reverse();
   return idx.map(i=>Math.round(P[i].t*100)/100);
 }
+// intro codes: 2 = Isti'adha then Bismillah, 1 = Bismillah, 3 = Isti'adha only (At-Tawbah), 0 = starts with ayah 1
+const introOf=(code,I)=>code===2?I:code===1?[I[1]]:code===3?[I[0]]:[];
+const introCode=s=>s.intro.length===2?2:s.intro.length===1?(s.intro[0].en==="Isti'adha"?3:1):0;
 function partLetters(s,introN,num){
   const tx=s&&s.text?s.text:(TXT[num]?TXT[num].v.map(x=>x.t):null);if(!tx)return null;
-  const I=[KNOWN[0].istiadha,KNOWN[0].bismillah],intro=introN===2?I:introN===1?[I[1]]:[];
+  const intro=s&&s.intro?s.intro.map(x=>x.ar):introOf(introN,[KNOWN[0].istiadha,KNOWN[0].bismillah]);
   return[...intro.map(letterCount),...tx.map(letterCount)];
 }
 function autoSplit(ab,K,L){
@@ -2739,7 +2858,7 @@ function autoSplit(ab,K,L){
 
 function fromRecord(r){
   const K=r.known?KNOWN.find(k=>k.num===r.num):null,I=[{en:"Isti'adha",ar:KNOWN[0].istiadha},{en:"Bismillah",ar:KNOWN[0].bismillah}];
-  const intro=r.introN===2?I:r.introN===1?[I[1]]:[];
+  const intro=introOf(r.introN,I);
   return{id:r.id,num:r.num,reciter:r.reciter||(K?K.reciter:"Your recording"),src:r.blob?URL.createObjectURL(r.blob):null,blob:r.blob||null,file:r.file||null,intro,text:K?K.text:null,meal:K?K.meal:null,arName:K?K.arName:"",known:!!K,
     B:r.B.slice(),B0:r.B0.slice(),L:(r.L||[]).slice(),added:r.added,updated:r.updated||r.added,type:r.type||(r.blob&&r.blob.type)||"audio/mpeg",juz:juzOf(r.num,1)};
 }
@@ -2750,7 +2869,7 @@ function fromRecord(r){
 const SY={cfg:ls.get("hifz-sync",null),sha:null,busy:false,again:false,timer:null,last:ls.get("hifz-sync-last",0),err:""};
 const tomb=()=>ls.get("hifz-deleted",{});
 const memU=num=>ls.get("hifz-memu-"+num,0);
-function recOf(s){return{id:s.id,num:s.num,reciter:s.reciter,file:s.file||null,introN:s.intro.length,known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
+function recOf(s){return{id:s.id,num:s.num,reciter:s.reciter,file:s.file||null,introN:introCode(s),known:!!s.known,blob:s.blob,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||(s.blob&&s.blob.type)||"audio/mpeg"};}
 function saveLocal(s){return idb.put(recOf(s));}
 function touch(s){s.updated=Date.now();if(ONL.on&&isAdmin()){ONL.dirty.add(s.id);ls.set("hifz-dirty",[...ONL.dirty]);}}
 function scheduleSync(ms){if(ONL.on){onlineSoon(ms);return;}if(!SY.cfg)return;clearTimeout(SY.timer);SY.timer=setTimeout(syncNow,ms??2500);syncBadge("pending");}
@@ -2805,7 +2924,7 @@ async function syncNow(){
       const out={};
       for(const s of LIB){const r=remote.surahs[s.id];
         if(r&&r.updated>(s.updated||s.added)){s.B=r.B.slice();s.B0=(r.B0||r.B).slice();s.L=(r.L||[]).slice();s.updated=r.updated;if(r.reciter)s.reciter=r.reciter;await saveLocal(s);changedLocal=true;if(s===CUR){P.key="";renderTimes();}}
-        out[s.id]={num:s.num,reciter:s.reciter,introN:s.intro.length,known:!!s.known,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||s.blob.type||"audio/mpeg",file:r&&r.file};
+        out[s.id]={num:s.num,reciter:s.reciter,introN:introCode(s),known:!!s.known,B:s.B,B0:s.B0,L:s.L||[],added:s.added,updated:s.updated||s.added,type:s.type||s.blob.type||"audio/mpeg",file:r&&r.file};
       }
       for(const[id,r]of Object.entries(remote.surahs)){
         if(out[id]||(del[id]&&del[id]>=r.updated))continue;
@@ -3464,7 +3583,7 @@ async function pushSurah(s,onp){
     await xhrUpload(path,new Blob([buf],{type}),type,onp);
     s.file=path;await idb.put(recOf(s));
   }
-  await rest("surahs?on_conflict=id",{method:"POST",json:[{id:s.id,num:s.num,reciter:s.reciter,intro_n:s.intro.length,known:!!s.known,b:s.B,b0:s.B0,l:s.L||[],type:s.type,file:s.file,added:s.added,updated:s.updated||s.added}],headers:upsertHdr});
+  await rest("surahs?on_conflict=id",{method:"POST",json:[{id:s.id,num:s.num,reciter:s.reciter,intro_n:introCode(s),known:!!s.known,b:s.B,b0:s.B0,l:s.L||[],type:s.type,file:s.file,added:s.added,updated:s.updated||s.added}],headers:upsertHdr});
 }
 async function deleteRemote(id,file){
   await rest("surahs?id=eq."+encodeURIComponent(id),{method:"DELETE"});
@@ -3646,7 +3765,7 @@ async function boot(){
   try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist();}catch(e){}
 }
 if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
-window.__hifz={stop,selectSurah,gotoAyah,S,P,ENG,FIX,ONL,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
+window.__hifz={stop,selectSurah,gotoAyah,parseTimings,timingsToB,S,P,ENG,FIX,ONL,verseArt,planDays,get GOALS(){return GOALS;},moveEntry,get LIB(){return LIB;},get CUR(){return CUR;},buildList,autoSplit,fitCar};
 boot();
 })();
 
