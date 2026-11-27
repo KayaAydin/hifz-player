@@ -3562,13 +3562,22 @@ async function reloadLibrary(){
 }
 // recordings are downloaded the first time they are opened, then kept on the phone
 const AUD={};
+// The free Supabase plan takes files up to 50 MB. Bigger recordings (Al-Baqarah is over 100 MB) are stored
+// as 40 MB pieces; the "file" field then reads "name.mp3|3" (3 pieces) and the pieces are put back together
+// byte for byte when a phone downloads them, so the recording is exactly the original.
+const PART=40*1024*1024;
+function fileParts(file){const m=String(file||"").match(/^(.*)\|(\d+)$/);return m?{base:m[1],n:+m[2]}:{base:String(file||""),n:1};}
+const partPath=(base,n,i)=>n>1?`${base}.part${i+1}`:base;
+const encPath=p=>p.split("/").map(encodeURIComponent).join("/");
 function ensureAudio(s){
   if(s.src)return Promise.resolve(true);if(AUD[s.id])return AUD[s.id];
   AUD[s.id]=(async()=>{
     if(!ONL.on||!s.file)throw new Error("no audio");
     if(s===CUR)status("Downloading the recording…",`${dispName(s)} · ${s.reciter}`);
-    const r=await api("/storage/v1/object/authenticated/audio/"+s.file.split("/").map(encodeURIComponent).join("/"));
-    const blob=new Blob([await r.arrayBuffer()],{type:s.type||"audio/mpeg"});s.blob=blob;s.src=URL.createObjectURL(blob);await idb.put(recOf(s));
+    const{base,n}=fileParts(s.file),bufs=[];
+    for(let i=0;i<n;i++){if(n>1&&s===CUR)status("Downloading the recording…",`${dispName(s)} · part ${i+1} of ${n}`);
+      const r=await api("/storage/v1/object/authenticated/audio/"+encPath(partPath(base,n,i)));bufs.push(await r.arrayBuffer());}
+    const blob=new Blob(bufs,{type:s.type||"audio/mpeg"});s.blob=blob;s.src=URL.createObjectURL(blob);await idb.put(recOf(s));
     if(s===CUR&&!P.playing)status("Ready","Press play to start");return true;
   })().catch(e=>{if(s===CUR)status("Couldn't download the recording",navigator.onLine?e.message:"Connect to the internet once to download it.",true);throw e;}).finally(()=>{delete AUD[s.id];});
   return AUD[s.id];
@@ -3596,14 +3605,18 @@ async function pushSurah(s,onp){
     const type=s.type||s.blob.type||"audio/mpeg",path=`${s.id}.${extOf(type)}`;
     // iPhone can't always send a file straight from its storage, so read it into memory first
     let buf;try{buf=await s.blob.arrayBuffer();}catch(e){const er=new Error("unreadable");er.unreadable=true;throw er;}
-    await xhrUpload(path,new Blob([buf],{type}),type,onp);
-    s.file=path;await idb.put(recOf(s));
+    const n=Math.ceil(buf.byteLength/PART);
+    if(n<=1){await xhrUpload(path,new Blob([buf],{type}),type,onp);s.file=path;}
+    else{for(let i=0;i<n;i++){const piece=buf.slice(i*PART,Math.min(buf.byteLength,(i+1)*PART));
+        await xhrUpload(partPath(path,n,i),new Blob([piece],{type}),type,p=>onp&&onp((i+p)/n));}
+      s.file=`${path}|${n}`;}
+    await idb.put(recOf(s));
   }
   await rest("surahs?on_conflict=id",{method:"POST",json:[{id:s.id,num:s.num,reciter:s.reciter,intro_n:introCode(s),known:!!s.known,b:s.B,b0:s.B0,l:s.L||[],type:s.type,file:s.file,added:s.added,updated:s.updated||s.added}],headers:upsertHdr});
 }
 async function deleteRemote(id,file){
   await rest("surahs?id=eq."+encodeURIComponent(id),{method:"DELETE"});
-  if(file)try{await api("/storage/v1/object/audio/"+encodeURIComponent(file),{method:"DELETE"});}catch(e){}
+  if(file){const{base,n}=fileParts(file);for(let i=0;i<n;i++)try{await api("/storage/v1/object/audio/"+encPath(partPath(base,n,i)),{method:"DELETE"});}catch(e){}}
 }
 let UPL=null;
 function uploadAll(report){
@@ -3675,7 +3688,8 @@ function explainErr(e){
   if(/Failed to fetch|NetworkError|Load failed/i.test(m)||!navigator.onLine)return "no internet connection. It will try again.";
   if(/row-level security|violates|permission denied|not allowed|Unauthorized/i.test(m)||st===403)return "the server doesn't accept changes from this account. Tap “Check the server” below to see why.";
   if(/bucket not found/i.test(m))return "the recordings folder (bucket “audio”) is missing on the server. Run supabase-setup.sql again.";
-  if(/maximum allowed size|too large|payload/i.test(m)||st===413)return "this file is bigger than the server allows (50 MB on the free plan).";
+  if(/quota|exceed|storage limit|insufficient/i.test(m))return "the server's storage is full (1 GB on the free Supabase plan). Remove recordings you no longer need, or use smaller MP3 files.";
+  if(/maximum allowed size|too large|payload/i.test(m)||st===413)return "the server refused a file piece as too big. In Supabase → Storage → Settings, check that the upload size limit is 50 MB.";
   if(/does not exist|schema cache|relation/i.test(m))return "the server tables are missing. Run supabase-setup.sql again.";
   if(/JWT|expired|signed out/i.test(m)||st===401)return "your sign-in expired. Sign out and sign in again.";
   return m||("error "+(st||""));
